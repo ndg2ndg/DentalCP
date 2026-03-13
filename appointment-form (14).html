@@ -1,0 +1,427 @@
+<meta name="format-detection" content="telephone=no">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: transparent; font-family: 'Barlow Condensed', sans-serif; }
+  .form-wrap { max-width: 560px; margin: 0 auto; padding: 1.5rem; }
+  h2 { font-size: 22px; font-weight: 700; color: #222; margin: 0 0 4px; }
+  .subtitle { font-size: 15px; color: #666; margin: 0 0 10px; }
+  .chat-note { font-size: 16px; color: #555; background: #f5f7fa; border-radius: 8px; padding: 10px 14px; margin-bottom: 1.5rem; }
+  .chat-note a { color: #4a90d9; text-decoration: none; font-weight: 500; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+  .field.half { margin-bottom: 0; }
+  label { font-size: 13px; color: #555; font-weight: 500; }
+  label span.req { color: #E24B4A; margin-left: 2px; }
+  label span.opt { color: #999; font-weight: 400; font-size: 11px; margin-left: 4px; }
+  input, select, textarea { font-family: 'Barlow Condensed', sans-serif; font-size: 15px; padding: 8px 12px; border-radius: 8px; border: 0.5px solid #ccc; background: #fff; color: #222; width: 100%; box-sizing: border-box; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: #4a90d9; }
+  textarea { resize: vertical; min-height: 80px; }
+  .radio-group { display: flex; gap: 16px; margin-top: 4px; }
+  .radio-group label { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #222; font-weight: 400; cursor: pointer; }
+  .radio-group input[type=radio] { width: auto; }
+  .divider { border: none; border-top: 0.5px solid #e0e0e0; margin: 1.5rem 0; }
+  .section-label { font-size: 12px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+  .new-patient-badge { display: inline-block; background: #e6f1fb; color: #185fa5; font-size: 12px; padding: 3px 10px; border-radius: 8px; margin-left: 8px; vertical-align: middle; }
+  .consent-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 16px; }
+  .consent-row input[type=checkbox] { width: 16px; min-width: 16px; height: 16px; margin-top: 2px; cursor: pointer; }
+  .consent-row span { font-size: 13px; color: #666; line-height: 1.5; }
+  .submit-btn { width: 100%; padding: 12px; background: #4a90d9; color: #fff; border: none; border-radius: 8px; font-size: 17px; font-weight: 700; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
+  .submit-btn:hover { background: #2c6fad; }
+  .submit-btn:disabled { background: #aaa; cursor: not-allowed; }
+  .success-msg { display: none; text-align: center; padding: 30px 20px; background: #eafaf1; border-radius: 12px; border: 0.5px solid #2eaa5e; margin-top: 20px; }
+  .success-msg h3 { color: #1e8a49; font-size: 22px; margin-bottom: 8px; }
+  .success-msg p { color: #555; font-size: 15px; line-height: 1.6; }
+  .error-msg { display: none; color: #E24B4A; font-size: 13px; text-align: center; margin-top: 10px; }
+
+  /* TABS */
+  .tab-bar { display: flex; align-items: center; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab-btn { padding: 7px 16px; border-radius: 20px; border: 1.5px solid #ccc; background: #fff; color: #888; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn.active { background: #4a90d9; border-color: #4a90d9; color: #fff; }
+  .tab-btn:hover:not(.active) { border-color: #4a90d9; color: #4a90d9; }
+  .tab-btn.remove-tab { padding: 7px 10px; border-color: #eee; color: #ccc; background: #fafafa; font-size: 16px; }
+  .tab-btn.remove-tab:hover { border-color: #E24B4A; color: #E24B4A; background: #fff5f5; }
+  .add-tab-btn { padding: 7px 14px; border-radius: 20px; border: 1.5px dashed #4a90d9; background: transparent; color: #4a90d9; font-family: 'Barlow Condensed', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .add-tab-btn:hover { background: #f0f6ff; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  @media (max-width: 480px) { .row { grid-template-columns: 1fr; } }
+</style>
+
+<div class="form-wrap">
+  <h2>Contact Us / Request Appointment</h2>
+  <p class="subtitle">Dental Center Pediatrics &middot; (508) 830-1212</p>
+  <div class="chat-note">&#128172; Have a quick question? Visit our <a href="https://www.dentalcenterpediatrics.com/chat-with-us">Chat With Us</a> page for instant answers.</div>
+
+  <div id="formContainer">
+
+    <div class="field">
+      <label>Is your child a: <span class="req">*</span></label>
+      <div class="radio-group">
+        <label><input type="radio" name="patient_type" value="New Patient" onchange="toggleInsurance(this)"> New Patient</label>
+        <label><input type="radio" name="patient_type" value="Current Patient" onchange="toggleInsurance(this)"> Current Patient</label>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div class="section-label">Parent / Guardian Information</div>
+
+    <div class="row">
+      <div class="field half">
+        <label>Full Name <span class="req">*</span></label>
+        <input type="text" id="parent_name" placeholder="Parent or guardian name">
+      </div>
+      <div class="field half">
+        <label>Phone <span class="req">*</span></label>
+        <input type="tel" id="phone" placeholder="(508) 000-0000">
+      </div>
+    </div>
+    <div class="field">
+      <label>Email <span class="req">*</span></label>
+      <input type="email" id="email" placeholder="your@email.com">
+    </div>
+
+    <hr class="divider">
+    <div class="section-label">Child Information</div>
+
+    <!-- Child Tabs -->
+    <div class="tab-bar" id="childTabBar">
+      <button type="button" class="tab-btn active" id="child-tab-1" onclick="switchChildTab(1)">Child 1</button>
+      <button type="button" class="add-tab-btn" onclick="addChildTab()">+ Add Child</button>
+    </div>
+
+    <div id="child-panel-1" class="tab-panel active">
+      <div class="row">
+        <div class="field half">
+          <label>Child's Name <span class="req">*</span></label>
+          <input type="text" id="child_1_name" placeholder="First and Last">
+        </div>
+        <div class="field half">
+          <label>Date of Birth <span class="req">*</span></label>
+          <input type="date" id="child_1_dob">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field half">
+          <label>Appointment For <span class="req">*</span></label>
+          <select id="child_1_appointment">
+            <option value="">Select...</option>
+            <option>Pediatric Dentist</option>
+            <option>Orthodontist</option>
+            <option>Hygienist</option>
+          </select>
+        </div>
+        <div class="field half">
+          <label>Preferred Date</label>
+          <input type="date" id="child_1_preferred_date">
+        </div>
+      </div>
+    </div>
+
+    <!-- Insurance Section -->
+    <div class="insurance-section" id="insuranceSection" style="display:none;">
+      <hr class="divider">
+      <div class="section-label">Subscriber Insurance Information <span class="new-patient-badge">New patients only</span></div>
+
+      <!-- Insurance Tabs -->
+      <div class="tab-bar" id="insTabBar">
+        <button type="button" class="tab-btn active" id="ins-tab-1" onclick="switchInsTab(1)">Primary</button>
+        <button type="button" class="add-tab-btn" id="addInsBtn" onclick="addInsTab()">+ Add Secondary</button>
+      </div>
+
+      <div id="ins-panel-1" class="tab-panel active">
+        <div class="field">
+          <label>Insurance Provider</label>
+          <input type="text" id="ins_1_provider" placeholder="e.g. Delta Dental, Blue Cross Blue Shield">
+        </div>
+        <div class="row">
+          <div class="field half">
+            <label>Subscriber / Insurance ID</label>
+            <input type="text" id="ins_1_member_id" placeholder="Subscriber ID number">
+          </div>
+          <div class="field half">
+            <label>Group Number <span class="opt">(optional)</span></label>
+            <input type="text" id="ins_1_group_number" placeholder="Group number" inputmode="text" autocomplete="off" pattern=".*">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field half">
+            <label>Subscriber Name</label>
+            <input type="text" id="ins_1_subscriber" placeholder="Name on the insurance card">
+          </div>
+          <div class="field half">
+            <label>Subscriber Date of Birth</label>
+            <input type="date" id="ins_1_dob">
+          </div>
+        </div>
+      </div>
+
+      <div id="ins-panel-2" class="tab-panel">
+        <div class="field">
+          <label>Insurance Provider</label>
+          <input type="text" id="ins_2_provider" placeholder="e.g. Delta Dental, Blue Cross Blue Shield">
+        </div>
+        <div class="row">
+          <div class="field half">
+            <label>Subscriber / Insurance ID</label>
+            <input type="text" id="ins_2_member_id" placeholder="Subscriber ID number">
+          </div>
+          <div class="field half">
+            <label>Group Number <span class="opt">(optional)</span></label>
+            <input type="text" id="ins_2_group_number" placeholder="Group number" inputmode="text" autocomplete="off" pattern=".*">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field half">
+            <label>Subscriber Name</label>
+            <input type="text" id="ins_2_subscriber" placeholder="Name on the insurance card">
+          </div>
+          <div class="field half">
+            <label>Subscriber Date of Birth</label>
+            <input type="date" id="ins_2_dob">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <div class="field">
+      <label>Additional Notes</label>
+      <textarea id="notes" placeholder="Any other information you'd like us to know..."></textarea>
+    </div>
+
+    <div class="consent-row">
+      <input type="checkbox" id="sms_consent" checked>
+      <span>By submitting this form, I consent to receive texts from Dental Center Pediatrics.</span>
+    </div>
+
+    <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">Submit Request</button>
+    <div class="error-msg" id="errorMsg"></div>
+
+  </div>
+
+  <div class="success-msg" id="successMsg">
+    <h3>&#10003; Request Received!</h3>
+    <p>Thank you! We'll be in touch within 1 business day to confirm your appointment.<br><br>
+    Questions? Call us at <a href="tel:5088301212" style="color:#1e8a49; font-weight:700;">(508) 830-1212</a>.</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  emailjs.init('SNrO4xTAhqUxj7aQg');
+
+  var childCount = 1;
+  var activeChildTab = 1;
+  var insTabCount = 1;
+  var activeInsTab = 1;
+  var patientType = '';
+
+  // ── Child Tabs ──
+  function switchChildTab(n) {
+    for (var i = 1; i <= childCount; i++) {
+      var tab = document.getElementById('child-tab-' + i);
+      var panel = document.getElementById('child-panel-' + i);
+      if (tab) tab.classList.toggle('active', i === n);
+      if (panel) panel.classList.toggle('active', i === n);
+    }
+    activeChildTab = n;
+  }
+
+  function addChildTab() {
+    childCount++;
+    var n = childCount;
+    var bar = document.getElementById('childTabBar');
+    var addBtn = bar.querySelector('.add-tab-btn');
+
+    // New tab button
+    var tab = document.createElement('button');
+    tab.type = 'button';
+    tab.className = 'tab-btn';
+    tab.id = 'child-tab-' + n;
+    tab.textContent = 'Child ' + n;
+    tab.setAttribute('onclick', 'switchChildTab(' + n + ')');
+    bar.insertBefore(tab, addBtn);
+
+    // Remove button for this child
+    var removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'tab-btn remove-tab';
+    removeBtn.id = 'child-remove-' + n;
+    removeBtn.innerHTML = '&#215;';
+    removeBtn.title = 'Remove Child ' + n;
+    removeBtn.setAttribute('onclick', 'removeChildTab(' + n + ')');
+    bar.insertBefore(removeBtn, addBtn);
+
+    // New panel
+    var panel = document.createElement('div');
+    panel.className = 'tab-panel';
+    panel.id = 'child-panel-' + n;
+    panel.innerHTML =
+      '<div class="row">' +
+        '<div class="field half"><label>Child\'s Name</label><input type="text" id="child_' + n + '_name" placeholder="First and Last"></div>' +
+        '<div class="field half"><label>Date of Birth</label><input type="date" id="child_' + n + '_dob"></div>' +
+      '</div>' +
+      '<div class="row">' +
+        '<div class="field half"><label>Appointment For</label><select id="child_' + n + '_appointment"><option value="">Select...</option><option>Pediatric Dentist</option><option>Orthodontist</option><option>Hygienist</option></select></div>' +
+        '<div class="field half"><label>Preferred Date</label><input type="date" id="child_' + n + '_preferred_date"></div>' +
+      '</div>';
+
+    // Insert panel after last panel
+    var lastPanel = document.getElementById('child-panel-' + (n - 1));
+    lastPanel.parentNode.insertBefore(panel, lastPanel.nextSibling);
+
+    switchChildTab(n);
+  }
+
+  function removeChildTab(n) {
+    document.getElementById('child-tab-' + n).remove();
+    document.getElementById('child-remove-' + n).remove();
+    document.getElementById('child-panel-' + n).remove();
+    if (activeChildTab === n) switchChildTab(1);
+  }
+
+  // ── Insurance Tabs ──
+  function toggleInsurance(radio) {
+    patientType = radio.value;
+    document.getElementById('insuranceSection').style.display = radio.value === 'New Patient' ? 'block' : 'none';
+  }
+
+  function switchInsTab(n) {
+    for (var i = 1; i <= insTabCount; i++) {
+      var tab = document.getElementById('ins-tab-' + i);
+      var panel = document.getElementById('ins-panel-' + i);
+      if (tab) tab.classList.toggle('active', i === n);
+      if (panel) panel.classList.toggle('active', i === n);
+    }
+    activeInsTab = n;
+  }
+
+  function addInsTab() {
+    insTabCount = 2;
+    document.getElementById('ins-tab-2') && (document.getElementById('ins-tab-2').style.display = 'inline-block');
+
+    var bar = document.getElementById('insTabBar');
+    var addBtn = document.getElementById('addInsBtn');
+
+    // Create tab 2 button if not exists
+    if (!document.getElementById('ins-tab-2')) {
+      var tab = document.createElement('button');
+      tab.type = 'button';
+      tab.className = 'tab-btn';
+      tab.id = 'ins-tab-2';
+      tab.textContent = 'Secondary';
+      tab.setAttribute('onclick', 'switchInsTab(2)');
+      bar.insertBefore(tab, addBtn);
+
+      var removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.className = 'tab-btn remove-tab';
+      removeBtn.id = 'ins-remove-2';
+      removeBtn.innerHTML = '&#215;';
+      removeBtn.title = 'Remove Secondary';
+      removeBtn.setAttribute('onclick', 'removeInsTab()');
+      bar.insertBefore(removeBtn, addBtn);
+    }
+
+    addBtn.style.display = 'none';
+    document.getElementById('ins-panel-2').classList.add('active');
+    switchInsTab(2);
+  }
+
+  function removeInsTab() {
+    var tab = document.getElementById('ins-tab-2');
+    var removeBtn = document.getElementById('ins-remove-2');
+    if (tab) tab.remove();
+    if (removeBtn) removeBtn.remove();
+    document.getElementById('ins-panel-2').classList.remove('active');
+    document.getElementById('addInsBtn').style.display = 'inline-block';
+    insTabCount = 1;
+    switchInsTab(1);
+    // Clear fields
+    ['ins_2_provider','ins_2_member_id','ins_2_group_number','ins_2_subscriber','ins_2_dob'].forEach(function(id) {
+      document.getElementById(id).value = '';
+    });
+  }
+
+  // ── Validation & Submit ──
+  function showError(msg) {
+    var el = document.getElementById('errorMsg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function submitForm() {
+    var parentName = document.getElementById('parent_name').value.trim();
+    var phone = document.getElementById('phone').value.trim();
+    var email = document.getElementById('email').value.trim();
+    document.getElementById('errorMsg').style.display = 'none';
+
+    if (!patientType)  { showError('Please select New Patient or Current Patient.'); return; }
+    if (!parentName)   { showError('Please enter the parent or guardian name.'); return; }
+    if (!phone)        { showError('Please enter a phone number.'); return; }
+    if (!email)        { showError('Please enter an email address.'); return; }
+    if (!document.getElementById('child_1_name').value.trim()) { showError("Please enter the child's name."); return; }
+
+    var msg = '';
+    msg += 'PATIENT TYPE: ' + patientType + '\n\n';
+    msg += '--- PARENT / GUARDIAN ---\n';
+    msg += 'Name:  ' + parentName + '\n';
+    msg += 'Phone: ' + phone + '\n';
+    msg += 'Email: ' + email + '\n\n';
+
+    msg += '--- CHILDREN ---\n';
+    for (var i = 1; i <= childCount; i++) {
+      var nameEl = document.getElementById('child_' + i + '_name');
+      if (!nameEl) continue;
+      msg += 'Child ' + i + ': ' + (nameEl.value || '—') + '\n';
+      msg += '  DOB: ' + (document.getElementById('child_' + i + '_dob').value || '—') + '\n';
+      msg += '  Appointment: ' + (document.getElementById('child_' + i + '_appointment').value || '—') + '\n';
+      msg += '  Preferred Date: ' + (document.getElementById('child_' + i + '_preferred_date').value || '—') + '\n\n';
+    }
+
+    if (patientType === 'New Patient') {
+      msg += '--- PRIMARY INSURANCE ---\n';
+      msg += 'Provider:       ' + (document.getElementById('ins_1_provider').value || '—') + '\n';
+      msg += 'Subscriber ID:  ' + (document.getElementById('ins_1_member_id').value || '—') + '\n';
+      msg += 'Group Number:   ' + (document.getElementById('ins_1_group_number').value || '—') + '\n';
+      msg += 'Subscriber:     ' + (document.getElementById('ins_1_subscriber').value || '—') + '\n';
+      msg += 'Subscriber DOB: ' + (document.getElementById('ins_1_dob').value || '—') + '\n';
+
+      if (insTabCount === 2) {
+        msg += '\n--- SECONDARY INSURANCE ---\n';
+        msg += 'Provider:       ' + (document.getElementById('ins_2_provider').value || '—') + '\n';
+        msg += 'Subscriber ID:  ' + (document.getElementById('ins_2_member_id').value || '—') + '\n';
+        msg += 'Group Number:   ' + (document.getElementById('ins_2_group_number').value || '—') + '\n';
+        msg += 'Subscriber:     ' + (document.getElementById('ins_2_subscriber').value || '—') + '\n';
+        msg += 'Subscriber DOB: ' + (document.getElementById('ins_2_dob').value || '—') + '\n';
+      }
+      msg += '\n';
+    }
+
+    var notes = document.getElementById('notes').value.trim();
+    if (notes) { msg += '--- NOTES ---\n' + notes + '\n\n'; }
+    msg += 'SMS Consent: ' + (document.getElementById('sms_consent').checked ? 'Yes' : 'No');
+
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    emailjs.send('service_pdw5qgi', 'template_8n5c6cu', {
+      to_email:  'office@dentalcp.com',
+      from_name: parentName,
+      reply_to:  email,
+      cc:        patientType === 'New Patient' ? 'ins@dentalcp.com' : '',
+      message:   msg
+    }).then(function() {
+      document.getElementById('formContainer').style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    }, function(err) {
+      btn.disabled = false;
+      btn.textContent = 'Submit Request';
+      showError('Something went wrong. Please call us at (508) 830-1212.');
+      console.error('EmailJS error:', err);
+    });
+  }
+</script>
