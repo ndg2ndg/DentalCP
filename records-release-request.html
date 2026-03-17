@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Records Release Request – Dental Center Pediatrics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Source Sans 3',sans-serif;background:#f4f7fa;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px 60px}
+    .card{background:#fff;width:100%;max-width:680px;border-radius:4px;box-shadow:0 2px 24px rgba(0,0,0,.08);overflow:hidden}
+    .header{background:#fff;padding:28px 40px 0;border-bottom:2.5px solid #1a7abf}
+    .header-top{display:flex;flex-direction:column;align-items:flex-start;margin-bottom:18px}
+    .header-top img{height:80px;width:auto}
+    .tagline{font-size:11px;color:#888;letter-spacing:.04em;text-transform:uppercase;margin-top:4px}
+    .form-title{font-family:'Lora',serif;font-size:26px;font-weight:600;color:#1a2b3c;padding-bottom:20px}
+    .body{padding:32px 40px 36px}
+    .intro{font-size:15px;color:#444;line-height:1.6;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid #e8edf2}
+    .form-group{margin-bottom:22px}
+    .form-group label{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#1a7abf;margin-bottom:7px}
+    input[type=text],input[type=email],input[type=date]{width:100%;padding:10px 14px;border:1.5px solid #d0dae4;border-radius:3px;font-family:'Source Sans 3',sans-serif;font-size:15px;color:#1a2b3c;background:#fafcfe;outline:none;transition:border-color .18s,box-shadow .18s}
+    input[type=text]:focus,input[type=email]:focus,input[type=date]:focus{border-color:#1a7abf;box-shadow:0 0 0 3px rgba(26,122,191,.12);background:#fff}
+    .row{display:flex;gap:20px}
+    .row .form-group{flex:1}
+    .checkbox-group{margin-bottom:24px}
+    .group-label{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#1a7abf;margin-bottom:12px}
+    .checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .checkbox-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid #d0dae4;border-radius:3px;cursor:pointer;background:#fafcfe;transition:border-color .15s,background .15s}
+    .checkbox-item:hover{border-color:#1a7abf;background:#f0f7ff}
+    .checkbox-item input[type=checkbox]{display:none}
+    .box{width:18px;height:18px;border:2px solid #b0bec8;border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background .15s,border-color .15s}
+    .checkbox-item input:checked~.box{background:#1a7abf;border-color:#1a7abf}
+    .checkbox-item input:checked~.box::after{content:'';width:5px;height:9px;border:2px solid white;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);display:block}
+    .cb-label{font-size:14px;color:#2c3e50;user-select:none}
+    .checkbox-item:has(input:checked){border-color:#1a7abf;background:#f0f7ff}
+    .divider{border:none;border-top:1px solid #e8edf2;margin:28px 0}
+    .note{background:#f0f7ff;border-left:3px solid #1a7abf;padding:12px 16px;border-radius:0 3px 3px 0;font-size:13px;color:#4a6070;margin-bottom:24px;line-height:1.5}
+    .status{display:none;padding:10px 14px;border-radius:3px;font-size:14px;margin-bottom:12px}
+    .submit-btn{width:100%;padding:14px;background:linear-gradient(135deg,#1a7abf,#0d5a8e);color:white;border:none;border-radius:3px;font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:opacity .18s,transform .12s}
+    .submit-btn:hover{opacity:.92;transform:translateY(-1px)}
+    .submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .success-msg{display:none;text-align:center;padding:40px 20px}
+    .check-circle{width:64px;height:64px;background:#e8f5e9;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+    .check-circle svg{width:32px;height:32px;stroke:#2e7d32;fill:none;stroke-width:2.5}
+    .success-msg h3{font-family:'Lora',serif;font-size:20px;color:#1a2b3c;margin-bottom:8px}
+    .success-msg p{font-size:14px;color:#666;line-height:1.6}
+    .footer{background:#f4f7fa;border-top:1px solid #e0e8ef;padding:16px 40px;font-size:11.5px;color:#888;line-height:1.7;text-align:center}
+    .footer a{color:#1a7abf;text-decoration:none}
+    @media(max-width:520px){
+      .header,.body,.footer{padding-left:20px;padding-right:20px}
+      .row{flex-direction:column;gap:0}
+      .checkbox-grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="header">
+    <div class="header-top">
+      <img src="https://ndg2ndg.github.io/DentalCP/logo.png" alt="Dental Center Pediatrics"/>
+      <div class="tagline">Where Healthy Smiles Begin</div>
+    </div>
+    <div class="form-title">Records Release Request</div>
+  </div>
+
+  <div class="body">
+    <p class="intro">I hereby authorize release of dental records for my child. Please complete all fields below and allow at least <strong>2 (two) weeks</strong> for processing.</p>
+
+    <div id="form-wrap">
+      <div class="form-group">
+        <label>Child's Name(s) *</label>
+        <input type="text" id="child-name" placeholder="Please print child's full name(s)"/>
+      </div>
+
+      <div class="checkbox-group">
+        <span class="group-label">Dental Records Requested *</span>
+        <div class="checkbox-grid">
+          <label class="checkbox-item"><input type="checkbox" value="Bitewing x-rays"/><span class="box"></span><span class="cb-label">Bitewing X-rays</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="Other intraoral x-rays"/><span class="box"></span><span class="cb-label">Other Intraoral X-rays</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="Panoramic x-rays"/><span class="box"></span><span class="cb-label">Panoramic X-rays</span></label>
+          <label class="checkbox-item"><input type="checkbox" value="Chart"/><span class="box"></span><span class="cb-label">Chart</span></label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email to Send Records To *</label>
+        <input type="email" id="delivery-email" placeholder="patient@email.com"/>
+      </div>
+
+      <div class="form-group">
+        <label>Reason for Request *</label>
+        <input type="text" id="reason" placeholder="e.g. New dentist, moving, second opinion…"/>
+      </div>
+
+      <hr class="divider"/>
+
+      <div class="row">
+        <div class="form-group">
+          <label>Patient's Signature (type full name) *</label>
+          <input type="text" id="signature" placeholder="Full legal name"/>
+        </div>
+        <div class="form-group">
+          <label>Date *</label>
+          <input type="date" id="date"/>
+        </div>
+      </div>
+
+      <div class="note">Records will be emailed to the patient address provided above. Processing takes up to 2 weeks.</div>
+      <div class="status" id="status"></div>
+      <button type="button" class="submit-btn" id="submit-btn" onclick="submitForm()">Submit Request</button>
+    </div>
+
+    <div class="success-msg" id="success-msg">
+      <div class="check-circle"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h3>Request Submitted!</h3>
+      <p>Thank you. Your records release request has been received.<br/>Please allow up to 2 weeks for processing.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    45 Resnik Road, Suite 306, Plymouth MA 02360 &nbsp;·&nbsp; Tel: (508) 830-1212 &nbsp;·&nbsp; Fax: (508) 830-1215<br/>
+    <a href="http://www.DentalCenterPediatrics.com">www.DentalCenterPediatrics.com</a> &nbsp;·&nbsp;
+    <a href="mailto:office@dentalcp.com">office@dentalcp.com</a><br/><br/>
+    Massachusetts General Law Chapter 112, section 12CC and Board Regulation 234 CMR 2.01 require dental practitioners to provide copies (not the originals) of patient records upon written request.
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  emailjs.init('SNrO4xTAhqUxj7aQg');
+
+  var today = new Date();
+  var yyyy = today.getFullYear();
+  var mm = String(today.getMonth() + 1).padStart(2, '0');
+  var dd = String(today.getDate()).padStart(2, '0');
+  document.getElementById('date').value = yyyy + '-' + mm + '-' + dd;
+
+  function getChecked() {
+    var checked = [];
+    document.querySelectorAll('.checkbox-item input[type=checkbox]').forEach(function(cb) {
+      if (cb.checked) checked.push(cb.value);
+    });
+    return checked.length ? checked.join(', ') : 'None selected';
+  }
+
+  function showStatus(msg, type) {
+    var s = document.getElementById('status');
+    s.style.display = 'block';
+    s.style.background = type === 'error' ? '#f8d7da' : '#fff3cd';
+    s.style.color = type === 'error' ? '#721c24' : '#856404';
+    s.textContent = msg;
+  }
+
+  function submitForm() {
+    var childName   = document.getElementById('child-name').value.trim();
+    var delivEmail  = document.getElementById('delivery-email').value.trim();
+    var reason      = document.getElementById('reason').value.trim();
+    var signature   = document.getElementById('signature').value.trim();
+    var date        = document.getElementById('date').value;
+
+    if (!childName)  { showStatus('Please enter the child\'s name.', 'warn'); return; }
+    if (!delivEmail) { showStatus('Please enter the email to send records to.', 'warn'); return; }
+    if (!reason)     { showStatus('Please enter a reason for the request.', 'warn'); return; }
+    if (!signature)  { showStatus('Please enter the patient\'s signature.', 'warn'); return; }
+    if (!date)       { showStatus('Please enter the date.', 'warn'); return; }
+
+    var btn = document.getElementById('submit-btn');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    showStatus('Sending your request…', 'warn');
+
+    emailjs.send('service_tbjmhy8', 'template_zvl4wwl', {
+      to_email:          'office@dentalcp.com',
+      name:              signature,
+      email:             delivEmail,
+      reply_to:          delivEmail,
+      title:             'Records Release Request',
+      child_name:        childName,
+      records:           getChecked(),
+      delivery_email:    delivEmail,
+      reason:            reason,
+      patient_signature: signature,
+      date:              date
+    }).then(function() {
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('success-msg').style.display = 'block';
+    }, function(err) {
+      showStatus('Error: ' + (err.text || JSON.stringify(err)), 'error');
+      btn.textContent = 'Submit Request';
+      btn.disabled = false;
+    });
+  }
+</script>
+</body>
+</html>
