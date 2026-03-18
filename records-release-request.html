@@ -118,12 +118,12 @@
   <div class="footer">
     45 Resnik Road, Suite 306, Plymouth MA 02360 &nbsp;·&nbsp; Tel: (508) 830-1212 &nbsp;·&nbsp; Fax: (508) 830-1215<br/>
     <a href="http://www.DentalCenterPediatrics.com">www.DentalCenterPediatrics.com</a> &nbsp;·&nbsp;
-    <a href="mailto:office@dentalcp.com">office@dentalcp.com</a><br/><br/>
+    <a href="/cdn-cgi/l/email-protection#8ae5ecece3e9efcaeeefe4feebe6e9faa4e9e5e7"><span class="__cf_email__" data-cfemail="4e212828272d2b0e2a2b203a2f222d3e602d2123">[email&#160;protected]</span></a><br/><br/>
     Massachusetts General Law Chapter 112, section 12CC and Board Regulation 234 CMR 2.01 require dental practitioners to provide copies (not the originals) of patient records upon written request.
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
   emailjs.init('SNrO4xTAhqUxj7aQg');
 
@@ -167,7 +167,7 @@
     btn.disabled = true;
     showStatus('Sending your request…', 'warn');
 
-    emailjs.send('service_pdw5qgi', 'template_zvl4wwl', {
+    emailjs.send('service_tbjmhy8', 'template_zvl4wwl', {
       to_email:          'office@dentalcp.com',
       name:              signature,
       email:             delivEmail,
@@ -181,13 +181,4 @@
       date:              date
     }).then(function() {
       document.getElementById('form-wrap').style.display = 'none';
-      document.getElementById('success-msg').style.display = 'block';
-    }, function(err) {
-      showStatus('Error: ' + (err.text || JSON.stringify(err)), 'error');
-      btn.textContent = 'Submit Request';
-      btn.disabled = false;
-    });
-  }
-</script>
-</body>
-</html>
+      document.getElementById('s
