@@ -118,22 +118,22 @@
   <div class="footer">
     45 Resnik Road, Suite 306, Plymouth MA 02360 &nbsp;·&nbsp; Tel: (508) 830-1212 &nbsp;·&nbsp; Fax: (508) 830-1215<br/>
     <a href="http://www.DentalCenterPediatrics.com">www.DentalCenterPediatrics.com</a> &nbsp;·&nbsp;
-    <a href="/cdn-cgi/l/email-protection#8ae5ecece3e9efcaeeefe4feebe6e9faa4e9e5e7"><span class="__cf_email__" data-cfemail="4e212828272d2b0e2a2b203a2f222d3e602d2123">[email&#160;protected]</span></a><br/><br/>
+    <a href="mailto:office@dentalcp.com">office@dentalcp.com</a><br/><br/>
     Massachusetts General Law Chapter 112, section 12CC and Board Regulation 234 CMR 2.01 require dental practitioners to provide copies (not the originals) of patient records upon written request.
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
   emailjs.init('SNrO4xTAhqUxj7aQg');
 
-  document.addEventListener('DOMContentLoaded', function() {
+  window.onload = function() {
     var today = new Date();
     var yyyy = today.getFullYear();
     var mm = String(today.getMonth() + 1).padStart(2, '0');
     var dd = String(today.getDate()).padStart(2, '0');
     document.getElementById('date').value = yyyy + '-' + mm + '-' + dd;
-  });
+  };
 
   function getChecked() {
     var checked = [];
@@ -152,16 +152,16 @@
   }
 
   function submitForm() {
-    var childName   = document.getElementById('child-name').value.trim();
-    var delivEmail  = document.getElementById('delivery-email').value.trim();
-    var reason      = document.getElementById('reason').value.trim();
-    var signature   = document.getElementById('signature').value.trim();
-    var date        = document.getElementById('date').value;
+    var childName  = document.getElementById('child-name').value.trim();
+    var delivEmail = document.getElementById('delivery-email').value.trim();
+    var reason     = document.getElementById('reason').value.trim();
+    var signature  = document.getElementById('signature').value.trim();
+    var date       = document.getElementById('date').value;
 
-    if (!childName)  { showStatus('Please enter the child\'s name.', 'warn'); return; }
+    if (!childName)  { showStatus("Please enter the child's name.", 'warn'); return; }
     if (!delivEmail) { showStatus('Please enter the email to send records to.', 'warn'); return; }
     if (!reason)     { showStatus('Please enter a reason for the request.', 'warn'); return; }
-    if (!signature)  { showStatus('Please enter the patient\'s signature.', 'warn'); return; }
+    if (!signature)  { showStatus("Please enter the patient's signature.", 'warn'); return; }
     if (!date)       { showStatus('Please enter the date.', 'warn'); return; }
 
     var btn = document.getElementById('submit-btn');
@@ -183,4 +183,14 @@
       date:              date
     }).then(function() {
       document.getElementById('form-wrap').style.display = 'none';
-      document.getElementById('s
+      document.getElementById('success-msg').style.display = 'block';
+    }, function(err) {
+      var msg = err && err.text ? err.text : (err && err.status ? 'Status ' + err.status : JSON.stringify(err));
+      showStatus('Error: ' + msg, 'error');
+      btn.textContent = 'Submit Request';
+      btn.disabled = false;
+    });
+  }
+</script>
+</body>
+</html>
