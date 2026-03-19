@@ -47,6 +47,10 @@
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
+  /* Required asterisk shown dynamically for insurance fields */
+  .ins-req { display: none; color: #E24B4A; margin-left: 2px; }
+  .new-patient-active .ins-req { display: inline; }
+
   @media (max-width: 480px) { .row { grid-template-columns: 1fr; } }
 </style>
 
@@ -133,13 +137,13 @@
 
       <div id="ins-panel-1" class="tab-panel active">
         <div class="field">
-          <label>Insurance Provider</label>
-          <input type="text" id="ins_1_provider" placeholder="e.g. Delta Dental, Blue Cross Blue Shield">
+          <label>Insurance Provider <span class="req">*</span></label>
+          <input type="text" id="ins_1_provider" placeholder="e.g. Delta Dental, Blue Cross — or 'No insurance'">
         </div>
         <div class="row">
           <div class="field half">
-            <label>Subscriber / Insurance ID</label>
-            <input type="text" id="ins_1_member_id" placeholder="Subscriber ID number">
+            <label>Subscriber / Insurance ID <span class="req">*</span></label>
+            <input type="text" id="ins_1_member_id" placeholder="Subscriber ID — or 'N/A'">
           </div>
           <div class="field half">
             <label>Group Number <span class="opt">(optional)</span></label>
@@ -148,11 +152,11 @@
         </div>
         <div class="row">
           <div class="field half">
-            <label>Subscriber Name</label>
-            <input type="text" id="ins_1_subscriber" placeholder="Name on the insurance card">
+            <label>Subscriber Name <span class="req">*</span></label>
+            <input type="text" id="ins_1_subscriber" placeholder="Name on the insurance card — or 'N/A'">
           </div>
           <div class="field half">
-            <label>Subscriber Date of Birth</label>
+            <label>Subscriber Date of Birth <span class="req">*</span></label>
             <input type="date" id="ins_1_dob">
           </div>
         </div>
@@ -160,13 +164,13 @@
 
       <div id="ins-panel-2" class="tab-panel">
         <div class="field">
-          <label>Insurance Provider</label>
-          <input type="text" id="ins_2_provider" placeholder="e.g. Delta Dental, Blue Cross Blue Shield">
+          <label>Insurance Provider <span class="req">*</span></label>
+          <input type="text" id="ins_2_provider" placeholder="e.g. Delta Dental, Blue Cross — or 'No insurance'">
         </div>
         <div class="row">
           <div class="field half">
-            <label>Subscriber / Insurance ID</label>
-            <input type="text" id="ins_2_member_id" placeholder="Subscriber ID number">
+            <label>Subscriber / Insurance ID <span class="req">*</span></label>
+            <input type="text" id="ins_2_member_id" placeholder="Subscriber ID — or 'N/A'">
           </div>
           <div class="field half">
             <label>Group Number <span class="opt">(optional)</span></label>
@@ -175,11 +179,11 @@
         </div>
         <div class="row">
           <div class="field half">
-            <label>Subscriber Name</label>
-            <input type="text" id="ins_2_subscriber" placeholder="Name on the insurance card">
+            <label>Subscriber Name <span class="req">*</span></label>
+            <input type="text" id="ins_2_subscriber" placeholder="Name on the insurance card — or 'N/A'">
           </div>
           <div class="field half">
-            <label>Subscriber Date of Birth</label>
+            <label>Subscriber Date of Birth <span class="req">*</span></label>
             <input type="date" id="ins_2_dob">
           </div>
         </div>
@@ -206,6 +210,7 @@
     <h3>&#10003; Request Received!</h3>
     <p>Thank you! We'll be in touch within 1 business day to confirm your appointment.<br><br>
     Questions? Call us at <a href="tel:5088301212" style="color:#1e8a49; font-weight:700;">(508) 830-1212</a>.</p>
+    <p id="successRecipients" style="margin-top:12px; font-size:13px; color:#888;"></p>
   </div>
 </div>
 
@@ -237,7 +242,6 @@
     var bar = document.getElementById('childTabBar');
     var addBtn = bar.querySelector('.add-tab-btn');
 
-    // New tab button
     var tab = document.createElement('button');
     tab.type = 'button';
     tab.className = 'tab-btn';
@@ -246,7 +250,6 @@
     tab.setAttribute('onclick', 'switchChildTab(' + n + ')');
     bar.insertBefore(tab, addBtn);
 
-    // Remove button for this child
     var removeBtn = document.createElement('button');
     removeBtn.type = 'button';
     removeBtn.className = 'tab-btn remove-tab';
@@ -256,7 +259,6 @@
     removeBtn.setAttribute('onclick', 'removeChildTab(' + n + ')');
     bar.insertBefore(removeBtn, addBtn);
 
-    // New panel
     var panel = document.createElement('div');
     panel.className = 'tab-panel';
     panel.id = 'child-panel-' + n;
@@ -270,7 +272,6 @@
         '<div class="field half"><label>Preferred Date</label><input type="date" id="child_' + n + '_preferred_date"></div>' +
       '</div>';
 
-    // Insert panel after last panel
     var lastPanel = document.getElementById('child-panel-' + (n - 1));
     lastPanel.parentNode.insertBefore(panel, lastPanel.nextSibling);
 
@@ -302,12 +303,10 @@
 
   function addInsTab() {
     insTabCount = 2;
-    document.getElementById('ins-tab-2') && (document.getElementById('ins-tab-2').style.display = 'inline-block');
 
     var bar = document.getElementById('insTabBar');
     var addBtn = document.getElementById('addInsBtn');
 
-    // Create tab 2 button if not exists
     if (!document.getElementById('ins-tab-2')) {
       var tab = document.createElement('button');
       tab.type = 'button';
@@ -341,7 +340,6 @@
     document.getElementById('addInsBtn').style.display = 'inline-block';
     insTabCount = 1;
     switchInsTab(1);
-    // Clear fields
     ['ins_2_provider','ins_2_member_id','ins_2_group_number','ins_2_subscriber','ins_2_dob'].forEach(function(id) {
       document.getElementById(id).value = '';
     });
@@ -365,6 +363,46 @@
     if (!phone)        { showError('Please enter a phone number.'); return; }
     if (!email)        { showError('Please enter an email address.'); return; }
     if (!document.getElementById('child_1_name').value.trim()) { showError("Please enter the child's name."); return; }
+
+    // Insurance required fields for new patients
+    if (patientType === 'New Patient') {
+      if (!document.getElementById('ins_1_provider').value.trim()) {
+        switchInsTab(1);
+        showError('Please enter the insurance provider (or "No insurance" if uninsured).'); return;
+      }
+      if (!document.getElementById('ins_1_member_id').value.trim()) {
+        switchInsTab(1);
+        showError('Please enter the Subscriber / Insurance ID (or "N/A" if uninsured).'); return;
+      }
+      if (!document.getElementById('ins_1_subscriber').value.trim()) {
+        switchInsTab(1);
+        showError('Please enter the subscriber name (or "N/A" if uninsured).'); return;
+      }
+      if (!document.getElementById('ins_1_dob').value) {
+        switchInsTab(1);
+        showError('Please enter the subscriber date of birth (or select a placeholder date if uninsured).'); return;
+      }
+
+      // Secondary insurance validation (only if tab was added)
+      if (insTabCount === 2) {
+        if (!document.getElementById('ins_2_provider').value.trim()) {
+          switchInsTab(2);
+          showError('Please enter the secondary insurance provider (or remove the secondary tab).'); return;
+        }
+        if (!document.getElementById('ins_2_member_id').value.trim()) {
+          switchInsTab(2);
+          showError('Please enter the secondary subscriber / insurance ID.'); return;
+        }
+        if (!document.getElementById('ins_2_subscriber').value.trim()) {
+          switchInsTab(2);
+          showError('Please enter the secondary subscriber name.'); return;
+        }
+        if (!document.getElementById('ins_2_dob').value) {
+          switchInsTab(2);
+          showError('Please enter the secondary subscriber date of birth.'); return;
+        }
+      }
+    }
 
     var msg = '';
     msg += 'PATIENT TYPE: ' + patientType + '\n\n';
@@ -414,10 +452,15 @@
       to_email:  'office@dentalcp.com',
       from_name: parentName,
       reply_to:  email,
-      cc:        patientType === 'New Patient' ? 'ins@dentalcp.com' : '',
+      cc:        patientType === 'New Patient' ? 'ins@dentalcp.com, boffice@dentalcp.com' : '',
       message:   msg
     }).then(function() {
       document.getElementById('formContainer').style.display = 'none';
+      var recipientLine = 'Sent to <strong>office@dentalcp.com</strong>';
+      if (patientType === 'New Patient') {
+        recipientLine += ', <strong>ins@dentalcp.com</strong> (Insurance Coordinator) &amp; <strong>boffice@dentalcp.com</strong>';
+      }
+      document.getElementById('successRecipients').innerHTML = recipientLine;
       document.getElementById('successMsg').style.display = 'block';
     }, function(err) {
       btn.disabled = false;
