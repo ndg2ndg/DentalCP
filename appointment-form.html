@@ -1,3 +1,35 @@
+<!--
+  FILE:    appointment-form.html
+  REPO:    ndg2ndg/DentalCP
+  URL:     https://ndg2ndg.github.io/DentalCP/appointment-form.html
+  PURPOSE: Appointment request form embedded in Google Sites via iframe.
+           Collects parent/guardian info, child info, insurance info (new
+           patients only), and submits via EmailJS to HIPAA-compliant
+           Microsoft 365 Outlook account.
+
+  DEPENDENCIES:
+  - EmailJS Browser SDK v4         | cdn.jsdelivr.net
+  - iframeResizer v4.3.9           | cdn.jsdelivr.net
+  - Barlow Condensed font          | fonts.googleapis.com
+  - Birdeye chat widget            | birdeye.com (widget ID: 769501710)
+
+  EMAILJS CREDENTIALS:
+  - Public Key:   SNrO4xTAhqUxj7aQg
+  - Service ID:   service_tbjmhy8   (Outlook / Microsoft 365 - HIPAA account)
+  - Template ID:  template_8n5c6cu
+  - To:           office@dentalcp.com
+  - CC (new):     ins@dentalcp.com, boffice@dentalcp.com
+
+  CHANGE LOG:
+  ---------------------------------------------------------------
+  2026-03-01 | Initial creation                              | Claude
+  2026-04-01 | Changed EmailJS Service ID from               | Claude
+             | service_pdw5qgi to service_tbjmhy8            |
+             | Reason: switched to Outlook/Microsoft 365     |
+             | HIPAA-compliant account                       |
+  2026-04-01 | Added header comment block                    | Claude
+  ---------------------------------------------------------------
+-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;700&display=swap');
@@ -246,7 +278,6 @@
 <script src="https://cdn.jsdelivr.net/npm/iframe-resizer@4.3.9/js/iframeResizer.contentWindow.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-  // Show form once page is fully loaded
   window.addEventListener('load', function() {
     document.getElementById('loadingOverlay').style.display = 'none';
     document.getElementById('formContainer').style.display = 'block';
@@ -260,7 +291,6 @@
   var activeInsTab = 1;
   var patientType = '';
 
-  // ── Child Tabs ──
   function switchChildTab(n) {
     for (var i = 1; i <= childCount; i++) {
       var tab = document.getElementById('child-tab-' + i);
@@ -309,7 +339,6 @@
 
     var lastPanel = document.getElementById('child-panel-' + (n - 1));
     lastPanel.parentNode.insertBefore(panel, lastPanel.nextSibling);
-
     switchChildTab(n);
   }
 
@@ -320,7 +349,6 @@
     if (activeChildTab === n) switchChildTab(1);
   }
 
-  // ── Insurance Tabs ──
   function toggleInsurance(radio) {
     patientType = radio.value;
     document.getElementById('insuranceSection').style.display = radio.value === 'New Patient' ? 'block' : 'none';
@@ -338,7 +366,6 @@
 
   function addInsTab() {
     insTabCount = 2;
-
     var bar = document.getElementById('insTabBar');
     var addBtn = document.getElementById('addInsBtn');
 
@@ -380,7 +407,6 @@
     });
   }
 
-  // ── Validation & Submit ──
   function showError(msg) {
     var el = document.getElementById('errorMsg');
     el.textContent = msg;
@@ -481,7 +507,7 @@
     btn.disabled = true;
     btn.textContent = 'Sending...';
 
-    emailjs.send('service_pdw5qgi', 'template_8n5c6cu', {
+    emailjs.send('service_tbjmhy8', 'template_8n5c6cu', {
       to_email:  'office@dentalcp.com',
       from_name: parentName,
       reply_to:  email,
