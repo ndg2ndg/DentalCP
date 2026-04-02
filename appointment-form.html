@@ -28,6 +28,10 @@
              | Reason: switched to Outlook/Microsoft 365     |
              | HIPAA-compliant account                       |
   2026-04-01 | Added header comment block                    | Claude
+  2026-04-02 | Added reassurance paragraph below subtitle    | Lord
+             | Changed submit button text from               |
+             | "SUBMIT REQUEST" to "REQUEST YOUR CHILD'S     |
+             | VISIT"                                        |
   ---------------------------------------------------------------
 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,6 +43,7 @@
   .form-wrap { max-width: 560px; margin: 0 auto; padding: 1.5rem; }
   h2 { font-size: 22px; font-weight: 700; color: #222; margin: 0 0 4px; }
   .subtitle { font-size: 15px; color: #666; margin: 0 0 10px; }
+  .reassurance { font-size: 14px; color: #555; margin: 0 0 16px; line-height: 1.5; }
   .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
   .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
   .field.half { margin-bottom: 0; }
@@ -113,6 +118,7 @@
 <div class="form-wrap">
   <h2>Contact Us / Request Appointment</h2>
   <p class="subtitle">Dental Center Pediatrics &middot; <a href="tel:5088301212" style="color:#666; text-decoration:none;">(508) 830-1212</a></p>
+  <p class="reassurance">We'll help you schedule your child's visit at a time that works best and answer any questions along the way.</p>
 
   <!-- Loading Spinner -->
   <div id="loadingOverlay">
@@ -262,7 +268,7 @@
       <span>By submitting this form, I consent to receive texts from Dental Center Pediatrics.</span>
     </div>
 
-    <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">Submit Request</button>
+    <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">Request Your Child's Visit</button>
     <div class="error-msg" id="errorMsg"></div>
 
   </div>
@@ -523,7 +529,7 @@
       document.getElementById('successMsg').style.display = 'block';
     }, function(err) {
       btn.disabled = false;
-      btn.textContent = 'Submit Request';
+      btn.textContent = 'Request Your Child\'s Visit';
       showError('Something went wrong. Please call us at (508) 830-1212.');
       console.error('EmailJS error:', err);
     });
