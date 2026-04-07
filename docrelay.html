@@ -616,7 +616,8 @@ function renderLock(msg = '') {
              style="width:100%;margin-bottom:8px;"
              onkeydown="if(event.key==='Enter')handleLock()" />
       <button onclick="handleLock()" style="width:100%;padding:10px;font-size:13px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:9px;cursor:pointer;margin-bottom:6px;">Unlock</button>
-      <div style="font-size:12px;min-height:18px;text-align:center;" id="lock-msg">${msg}</div>`;
+      <div style="font-size:12px;min-height:18px;text-align:center;color:#dc2626;" id="lock-msg">${msg}</div>
+      ${msg ? `<span class="back-link" style="margin-top:4px;display:block;" onclick="_lockState='sync';renderLock()">Forgot password? Sync from GitHub →</span>` : ''}`;
     setTimeout(() => document.getElementById('lock-pw')?.focus(), 50);
   } else if (s === 'setup') {
     el.innerHTML = `
@@ -798,12 +799,13 @@ async function syncFromGitHub() {
 
 async function handleLock() {
   const stored = localStorage.getItem(LOCK_KEY);
-  const pw  = document.getElementById('lock-pw')?.value || '';
-  const pw2 = document.getElementById('lock-pw2')?.value || '';
+  const pw  = (document.getElementById('lock-pw')?.value  || '').trim();
+  const pw2 = (document.getElementById('lock-pw2')?.value || '').trim();
 
   if (!pw) { renderLock('Enter a password'); return; }
 
-  if (_lockState === 'setup') {
+  if (_lockState === 'setup' || !stored) {
+    if (!stored && _lockState !== 'setup') { _lockState = 'setup'; renderLock(); return; }
     if (pw !== pw2)    { renderLock("Passwords don't match"); return; }
     if (pw.length < 4) { renderLock('At least 4 characters'); return; }
     const hash = await sha256(pw);
@@ -1286,29 +1288,34 @@ function showDiff(original, proposed) {
   const newLines = proposed.split('\n');
   const ops = computeDiff(oldLines, newLines);
 
-  let adds = 0, removes = 0;
+  let adds_count = 0, removes_count = 0;
 
-  // Build aligned row pairs
+  // Build aligned rows — zip consecutive remove/add blocks
   const rows = [];
   let i = 0;
   while (i < ops.length) {
-    const op = ops[i];
-    if (op.type === 'equal') {
-      rows.push({ type: 'equal', left: op.old, right: op.new }); i++;
-    } else if (op.type === 'remove') {
-      if (i + 1 < ops.length && ops[i+1].type === 'add') {
-        // Paired change — show on same row
-        rows.push({ type: 'change', left: op.old, right: ops[i+1].new });
-        removes++; adds++; i += 2;
-      } else {
-        rows.push({ type: 'remove', left: op.old, right: null }); removes++; i++;
+    if (ops[i].type === 'equal') {
+      rows.push({ type: 'equal', left: ops[i].old, right: ops[i].new }); i++;
+    } else {
+      // Collect the full remove block then the full add block
+      const removes = [], addsList = [];
+      while (i < ops.length && ops[i].type === 'remove') { removes.push(ops[i].old); i++; }
+      while (i < ops.length && ops[i].type === 'add')    { addsList.push(ops[i].new); i++; }
+      // Zip them together row by row
+      const len = Math.max(removes.length, addsList.length);
+      for (let j = 0; j < len; j++) {
+        const l = removes[j]  !== undefined ? removes[j]  : null;
+        const r = addsList[j] !== undefined ? addsList[j] : null;
+        if (l !== null && r !== null) rows.push({ type: 'change', left: l, right: r });
+        else if (l !== null)          rows.push({ type: 'remove', left: l, right: null });
+        else                          rows.push({ type: 'add',    left: null, right: r });
       }
-    } else { // add
-      rows.push({ type: 'add', left: null, right: op.new }); adds++; i++;
+      removes_count += removes.length;
+      adds_count    += addsList.length;
     }
   }
 
-  const unchanged = adds === 0 && removes === 0;
+  const unchanged = adds_count === 0 && removes_count === 0;
   const tbody = document.getElementById('diff-tbody');
 
   if (unchanged) {
@@ -1334,11 +1341,11 @@ function showDiff(original, proposed) {
     }).join('');
   }
 
-  document.getElementById('remove-count').textContent = removes ? `−${removes}` : '';
-  document.getElementById('add-count').textContent    = adds    ? `+${adds}`    : '';
+  document.getElementById('remove-count').textContent = removes_count ? `−${removes_count}` : '';
+  document.getElementById('add-count').textContent    = adds_count    ? `+${adds_count}`    : '';
   const detail = document.getElementById('diff-summary-detail');
   if (unchanged) detail.innerHTML = 'No differences — content is identical.';
-  else detail.innerHTML = `<span class="adds">+${adds} added</span> &nbsp; <span class="removes">−${removes} removed</span>`;
+  else detail.innerHTML = `<span class="adds">+${adds_count} added</span> &nbsp; <span class="removes">−${removes_count} removed</span>`;
 
   document.getElementById('diff-card').style.display = '';
   document.getElementById('diff-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
