@@ -4,9 +4,41 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>DocRelay</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a1a; min-height: 100vh; padding: 2rem 1rem; }
+
+  /* Lock screen */
+  #lock-overlay { position: fixed; inset: 0; background: #f5f5f3; z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+  #lock-card { background: #fff; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 16px; padding: 2rem 2rem 1.75rem; width: 100%; max-width: 340px; box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
+  #lock-name { font-size: 20px; font-weight: 500; color: #1a1a1a; }
+  #lock-sub { font-size: 12px; color: #aaa; margin-top: 2px; margin-bottom: 1.5rem; }
+  #lock-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; margin-bottom: 8px; }
+  #lock-pw { width: 100%; font-size: 14px; padding: 9px 12px; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 9px; background: #f9f9f7; color: #1a1a1a; outline: none; margin-bottom: 10px; font-family: monospace; letter-spacing: 0.08em; }
+  #lock-pw:focus { border-color: rgba(0,0,0,0.4); background: #fff; }
+  #lock-pw2 { width: 100%; font-size: 14px; padding: 9px 12px; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 9px; background: #f9f9f7; color: #1a1a1a; outline: none; margin-bottom: 10px; font-family: monospace; letter-spacing: 0.08em; }
+  #lock-pw2:focus { border-color: rgba(0,0,0,0.4); background: #fff; }
+  #lock-btn { width: 100%; padding: 10px; font-size: 13px; font-weight: 500; background: #1a1a1a; color: #fff; border: none; border-radius: 9px; cursor: pointer; transition: background 0.15s; }
+  #lock-btn:hover { background: #333; }
+  #lock-msg { font-size: 12px; margin-top: 10px; min-height: 18px; text-align: center; }
+  #lock-msg.err { color: #dc2626; }
+  #lock-msg.ok { color: #16a34a; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }
+  .shake { animation: shake 0.35s ease; }
+
+  /* 2FA */
+  #lock-totp-page { display:none; }
+  .totp-input { width:100%; font-size:22px; font-family:monospace; letter-spacing:0.2em; text-align:center; padding:10px; border:0.5px solid rgba(0,0,0,0.2); border-radius:9px; background:#f9f9f7; outline:none; margin-bottom:10px; }
+  .totp-input:focus { border-color:rgba(0,0,0,0.4); background:#fff; }
+  .twofa-status { display:flex; align-items:center; gap:8px; font-size:12px; padding:8px 10px; border-radius:8px; margin-bottom:8px; }
+  .twofa-status.on  { background:#f0faf4; color:#166534; border:0.5px solid #bbf7d0; }
+  .twofa-status.off { background:#f9f9f7; color:#888;    border:0.5px solid rgba(0,0,0,0.1); }
+  #qr-wrap { display:flex; justify-content:center; margin:12px 0; }
+  #qr-wrap canvas, #qr-wrap img { border-radius:8px; }
+  .secret-code { font-family:monospace; font-size:11px; background:#f0f0ee; border:0.5px solid rgba(0,0,0,0.12); border-radius:6px; padding:6px 10px; word-break:break-all; color:#555; text-align:center; margin-bottom:10px; letter-spacing:0.05em; }
+  .back-link { font-size:12px; color:#aaa; cursor:pointer; text-align:center; margin-top:10px; display:block; }
+  .back-link:hover { color:#1a1a1a; }
   .app { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
   .card { background: #fff; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 12px; padding: 1rem 1.25rem; }
   .section-title { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
@@ -190,6 +222,37 @@
 </head>
 <body>
 
+<!-- Lock screen -->
+<div id="lock-overlay">
+  <div id="lock-card">
+    <div id="lock-name">DocRelay</div>
+    <div id="lock-sub">(GitHub ↔ AI)</div>
+
+    <!-- Page 1: Password -->
+    <div id="lock-pw-page">
+      <div class="drawer-label" id="lock-label" style="margin-bottom:8px;">Password</div>
+      <input type="password" id="lock-pw"  placeholder="Enter password"     autocomplete="current-password"
+             onkeydown="if(event.key==='Enter')handleLock()" />
+      <input type="password" id="lock-pw2" placeholder="Confirm password"   style="display:none;"
+             onkeydown="if(event.key==='Enter')handleLock()" />
+      <button id="lock-btn" onclick="handleLock()">Unlock</button>
+      <div id="lock-msg"></div>
+    </div>
+
+    <!-- Page 2: TOTP -->
+    <div id="lock-totp-page">
+      <div class="drawer-label" style="margin-bottom:8px;">Authenticator code</div>
+      <input type="text" id="lock-totp" class="totp-input" placeholder="000000" maxlength="6"
+             inputmode="numeric" autocomplete="one-time-code"
+             onkeydown="if(event.key==='Enter')verifyLockTOTP()" />
+      <button id="lock-totp-btn" class="btn primary" style="width:100%;padding:10px;" onclick="verifyLockTOTP()">Verify</button>
+      <div id="lock-totp-msg"></div>
+      <span class="back-link" onclick="showLockPage('pw')">← Back</span>
+    </div>
+
+  </div>
+</div>
+
 <!-- Settings Drawer -->
 <div class="drawer-backdrop" id="settings-backdrop" onclick="closeSettings()"></div>
 <div class="drawer" id="settings-drawer">
@@ -224,6 +287,53 @@
     <div class="drawer-note" style="line-height:1.65;">
       To create a PAT: <strong>github.com → Settings → Developer settings → Personal access tokens</strong>.<br/><br/>
       Required scope: <kbd class="kbd">repo</kbd> (read + write contents).
+    </div>
+
+    <hr class="drawer-divider" />
+
+    <div class="drawer-field">
+      <div class="drawer-label">Change Password</div>
+      <input type="password" id="chpw-current" placeholder="Current password" style="width:100%;margin-bottom:6px;" />
+      <input type="password" id="chpw-new"     placeholder="New password"     style="width:100%;margin-bottom:6px;" />
+      <input type="password" id="chpw-confirm" placeholder="Confirm new password" style="width:100%;margin-bottom:8px;" />
+      <button class="btn" style="width:100%;" onclick="changePassword()">Update password</button>
+      <div id="chpw-msg" class="status" style="margin-top:6px;min-height:16px;text-align:center;"></div>
+    </div>
+
+    <hr class="drawer-divider" />
+
+    <div class="drawer-field">
+      <div class="drawer-label">Two-Factor Authentication</div>
+
+      <!-- Status -->
+      <div class="twofa-status off" id="twofa-status-row">
+        <span id="twofa-status-dot">○</span>
+        <span id="twofa-status-text">Not enabled</span>
+      </div>
+
+      <!-- Enable flow -->
+      <div id="twofa-enable-area">
+        <button class="btn" style="width:100%;" onclick="beginEnable2FA()">Enable 2FA</button>
+      </div>
+
+      <!-- Setup: scan QR -->
+      <div id="twofa-setup-area" style="display:none;">
+        <div class="drawer-note" style="margin-bottom:8px;">Scan with your authenticator app (Google Authenticator, Authy, 1Password, Apple Passwords), then enter the 6-digit code to confirm.</div>
+        <div id="qr-wrap"></div>
+        <div class="secret-code" id="totp-secret-display"></div>
+        <input type="text" id="totp-setup-code" class="totp-input" placeholder="000000" maxlength="6" inputmode="numeric" />
+        <button class="btn primary" style="width:100%;margin-bottom:6px;" onclick="confirmEnable2FA()">Confirm &amp; activate</button>
+        <button class="btn" style="width:100%;" onclick="cancelSetup2FA()">Cancel</button>
+        <div id="twofa-setup-msg" class="status" style="margin-top:6px;text-align:center;min-height:16px;"></div>
+      </div>
+
+      <!-- Disable flow -->
+      <div id="twofa-disable-area" style="display:none;">
+        <input type="text" id="totp-disable-code" class="totp-input" placeholder="000000" maxlength="6" inputmode="numeric" style="margin-bottom:8px;" />
+        <button class="btn" style="width:100%;color:#dc2626;border-color:#fecaca;" onclick="disable2FA()">Disable 2FA</button>
+        <div id="twofa-disable-msg" class="status" style="margin-top:6px;text-align:center;min-height:16px;"></div>
+      </div>
+
     </div>
 
   </div>
@@ -433,6 +543,245 @@
 </div>
 
 <script>
+// ── Lock screen ──────────────────────────────────────────────────────────────
+const LOCK_KEY    = 'docrelay_pw_hash';
+const SESSION_KEY = 'docrelay_unlocked';
+const TOTP_KEY    = 'docrelay_totp_secret';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── TOTP engine (RFC 6238 / HMAC-SHA1) ──────────────────────────────────────
+const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+
+function base32Encode(bytes) {
+  let r = '', bits = 0, val = 0;
+  for (const b of bytes) {
+    val = (val << 8) | b; bits += 8;
+    while (bits >= 5) { r += B32[(val >>> (bits - 5)) & 31]; bits -= 5; }
+  }
+  if (bits > 0) r += B32[(val << (5 - bits)) & 31];
+  return r;
+}
+
+function base32Decode(s) {
+  s = s.toUpperCase().replace(/[^A-Z2-7]/g, '');
+  const out = []; let bits = 0, val = 0;
+  for (const c of s) {
+    val = (val << 5) | B32.indexOf(c); bits += 5;
+    if (bits >= 8) { out.push((val >>> (bits - 8)) & 255); bits -= 8; }
+  }
+  return new Uint8Array(out);
+}
+
+async function hmacSHA1(keyBytes, data) {
+  const key = await crypto.subtle.importKey('raw', keyBytes, { name:'HMAC', hash:'SHA-1' }, false, ['sign']);
+  return new Uint8Array(await crypto.subtle.sign('HMAC', key, data));
+}
+
+async function getTOTP(secret, time = Date.now()) {
+  const counter = Math.floor(time / 1000 / 30);
+  const cb = new Uint8Array(8);
+  let c = counter;
+  for (let i = 7; i >= 0; i--) { cb[i] = c & 0xff; c = Math.floor(c / 256); }
+  const hmac = await hmacSHA1(base32Decode(secret), cb);
+  const off  = hmac[19] & 0xf;
+  const code = ((hmac[off] & 0x7f) << 24) | (hmac[off+1] << 16) | (hmac[off+2] << 8) | hmac[off+3];
+  return String(code % 1_000_000).padStart(6, '0');
+}
+
+async function verifyTOTP(secret, token) {
+  const now = Date.now();
+  for (const d of [-1, 0, 1]) {
+    if (await getTOTP(secret, now + d * 30000) === token.trim()) return true;
+  }
+  return false;
+}
+
+function generateSecret() {
+  return base32Encode(crypto.getRandomValues(new Uint8Array(20)));
+}
+
+// ── Lock screen flow ─────────────────────────────────────────────────────────
+async function initLock() {
+  if (sessionStorage.getItem(SESSION_KEY)) { hideLock(); return; }
+  const stored = localStorage.getItem(LOCK_KEY);
+  if (!stored) {
+    document.getElementById('lock-label').textContent = 'Set a password for this device';
+    document.getElementById('lock-pw').placeholder    = 'Choose a password';
+    document.getElementById('lock-pw2').style.display = '';
+    document.getElementById('lock-btn').textContent   = 'Set password';
+  }
+  document.getElementById('lock-pw').focus();
+  refresh2FAStatus();
+}
+
+function showLockPage(page) {
+  document.getElementById('lock-pw-page').style.display   = page === 'pw'   ? '' : 'none';
+  document.getElementById('lock-totp-page').style.display = page === 'totp' ? '' : 'none';
+  if (page === 'totp') { document.getElementById('lock-totp').value = ''; document.getElementById('lock-totp').focus(); }
+  if (page === 'pw')   { document.getElementById('lock-pw').value   = ''; document.getElementById('lock-pw').focus(); }
+}
+
+async function handleLock() {
+  const stored = localStorage.getItem(LOCK_KEY);
+  const pw     = document.getElementById('lock-pw').value;
+  const pw2    = document.getElementById('lock-pw2').value;
+  const msg    = document.getElementById('lock-msg');
+
+  if (!pw) { showLockError('Enter a password'); return; }
+
+  if (!stored) {
+    if (pw !== pw2)   { showLockError("Passwords don't match"); return; }
+    if (pw.length < 4){ showLockError('At least 4 characters'); return; }
+    localStorage.setItem(LOCK_KEY, await sha256(pw));
+    msg.className = 'ok'; msg.textContent = 'Password saved — unlocking…';
+    setTimeout(hideLock, 700);
+  } else {
+    if (await sha256(pw) !== stored) { showLockError('Incorrect password'); return; }
+    if (localStorage.getItem(TOTP_KEY)) {
+      showLockPage('totp'); return;
+    }
+    sessionStorage.setItem(SESSION_KEY, '1');
+    hideLock();
+  }
+}
+
+async function verifyLockTOTP() {
+  const token  = document.getElementById('lock-totp').value.trim();
+  const secret = localStorage.getItem(TOTP_KEY);
+  const msg    = document.getElementById('lock-totp-msg');
+  if (token.length !== 6) { lockTOTPError('Enter the 6-digit code'); return; }
+  if (await verifyTOTP(secret, token)) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    hideLock();
+  } else {
+    lockTOTPError('Incorrect code — try again');
+  }
+}
+
+function lockTOTPError(text) {
+  const msg = document.getElementById('lock-totp-msg');
+  msg.className = 'err'; msg.textContent = text;
+  const card = document.getElementById('lock-card');
+  card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+  document.getElementById('lock-totp').value = '';
+  document.getElementById('lock-totp').focus();
+}
+
+function showLockError(text) {
+  const card = document.getElementById('lock-card');
+  const msg  = document.getElementById('lock-msg');
+  msg.className = 'err'; msg.textContent = text;
+  card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+  document.getElementById('lock-pw').value  = '';
+  document.getElementById('lock-pw2').value = '';
+  document.getElementById('lock-pw').focus();
+}
+
+function hideLock() { document.getElementById('lock-overlay').style.display = 'none'; }
+
+// Init immediately
+initLock();
+
+// ── 2FA settings flow ────────────────────────────────────────────────────────
+let _pendingSecret = null;
+
+function refresh2FAStatus() {
+  const enabled = !!localStorage.getItem(TOTP_KEY);
+  const row  = document.getElementById('twofa-status-row');
+  const dot  = document.getElementById('twofa-status-dot');
+  const text = document.getElementById('twofa-status-text');
+  const enArea  = document.getElementById('twofa-enable-area');
+  const disArea = document.getElementById('twofa-disable-area');
+  if (enabled) {
+    row.className = 'twofa-status on'; dot.textContent = '●'; text.textContent = 'Active';
+    enArea.style.display  = 'none';
+    disArea.style.display = '';
+  } else {
+    row.className = 'twofa-status off'; dot.textContent = '○'; text.textContent = 'Not enabled';
+    enArea.style.display  = '';
+    disArea.style.display = 'none';
+  }
+  document.getElementById('twofa-setup-area').style.display = 'none';
+}
+
+function beginEnable2FA() {
+  _pendingSecret = generateSecret();
+  const label = 'DocRelay';
+  const uri   = `otpauth://totp/${encodeURIComponent(label)}?secret=${_pendingSecret}&issuer=${encodeURIComponent(label)}`;
+
+  document.getElementById('twofa-enable-area').style.display = 'none';
+  document.getElementById('twofa-setup-area').style.display  = '';
+  document.getElementById('totp-secret-display').textContent = _pendingSecret;
+  document.getElementById('totp-setup-code').value = '';
+  document.getElementById('twofa-setup-msg').textContent = '';
+
+  const qrWrap = document.getElementById('qr-wrap');
+  qrWrap.innerHTML = '';
+  new QRCode(qrWrap, { text: uri, width: 160, height: 160, colorDark:'#1a1a1a', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.M });
+}
+
+async function confirmEnable2FA() {
+  const code = document.getElementById('totp-setup-code').value.trim();
+  const msg  = document.getElementById('twofa-setup-msg');
+  if (code.length !== 6) { msg.className = 'err'; msg.textContent = 'Enter the 6-digit code from your app.'; return; }
+  if (await verifyTOTP(_pendingSecret, code)) {
+    localStorage.setItem(TOTP_KEY, _pendingSecret);
+    _pendingSecret = null;
+    msg.className = 'ok'; msg.textContent = '✓ 2FA activated.';
+    setTimeout(refresh2FAStatus, 800);
+  } else {
+    msg.className = 'err'; msg.textContent = 'Code incorrect — check your app and try again.';
+    document.getElementById('totp-setup-code').value = '';
+  }
+}
+
+function cancelSetup2FA() { _pendingSecret = null; refresh2FAStatus(); }
+
+async function disable2FA() {
+  const code   = document.getElementById('totp-disable-code').value.trim();
+  const secret = localStorage.getItem(TOTP_KEY);
+  const msg    = document.getElementById('twofa-disable-msg');
+  if (code.length !== 6) { msg.className = 'err'; msg.textContent = 'Enter your current authenticator code.'; return; }
+  if (await verifyTOTP(secret, code)) {
+    localStorage.removeItem(TOTP_KEY);
+    msg.className = 'ok'; msg.textContent = '2FA disabled.';
+    document.getElementById('totp-disable-code').value = '';
+    setTimeout(refresh2FAStatus, 600);
+  } else {
+    msg.className = 'err'; msg.textContent = 'Incorrect code.';
+    document.getElementById('totp-disable-code').value = '';
+  }
+}
+
+async function changePassword() {
+  const current  = document.getElementById('chpw-current').value;
+  const newPw    = document.getElementById('chpw-new').value;
+  const confirm  = document.getElementById('chpw-confirm').value;
+  const msg      = document.getElementById('chpw-msg');
+  const stored   = localStorage.getItem(LOCK_KEY);
+
+  msg.className = ''; msg.textContent = '';
+
+  if (!current || !newPw || !confirm) { msg.className = 'err'; msg.textContent = 'All fields required.'; return; }
+  if (newPw !== confirm)              { msg.className = 'err'; msg.textContent = 'New passwords don\'t match.'; return; }
+  if (newPw.length < 4)               { msg.className = 'err'; msg.textContent = 'At least 4 characters.'; return; }
+
+  const currentHash = await sha256(current);
+  if (currentHash !== stored)         { msg.className = 'err'; msg.textContent = 'Current password incorrect.'; return; }
+
+  const newHash = await sha256(newPw);
+  localStorage.setItem(LOCK_KEY, newHash);
+  msg.className = 'ok'; msg.textContent = '✓ Password updated.';
+  document.getElementById('chpw-current').value = '';
+  document.getElementById('chpw-new').value     = '';
+  document.getElementById('chpw-confirm').value = '';
+}
+
+// ── App ──────────────────────────────────────────────────────────────────────
 const docs = {};
 let activeDoc = null;
 let currentMode = 'ai';
@@ -467,6 +816,7 @@ function openSettings() {
   document.getElementById('settings-drawer').classList.add('open');
   document.getElementById('settings-backdrop').classList.add('open');
   document.getElementById('settings-btn').classList.add('active');
+  refresh2FAStatus();
 }
 function closeSettings() {
   document.getElementById('settings-drawer').classList.remove('open');
