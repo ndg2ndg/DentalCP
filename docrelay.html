@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DocRelay</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a1a; min-height: 100vh; padding: 2rem 1rem; }
+  .app { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+  .card { background: #fff; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 12px; padding: 1rem 1.25rem; }
+  .section-title { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  label { font-size: 13px; color: #666; min-width: 80px; }
+  input[type=text], input[type=password] { font-size: 13px; padding: 7px 10px; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 8px; background: #f9f9f7; color: #1a1a1a; flex: 1; min-width: 140px; outline: none; }
+  input[type=text]:focus, input[type=password]:focus { border-color: rgba(0,0,0,0.4); background: #fff; }
+  input[type=password] { font-family: monospace; }
+  .btn { padding: 7px 16px; font-size: 13px; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 8px; background: transparent; color: #1a1a1a; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+  .btn:hover { background: #f0f0ee; }
+  .btn.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .btn.primary:hover { background: #333; }
+  .btn.green { background: #f0faf4; color: #166534; border-color: #bbf7d0; }
+  .btn.green:hover { background: #dcfce7; }
+  .btn.red-sm { padding: 3px 10px; font-size: 11px; color: #dc2626; border: 0.5px solid #fecaca; background: #fff5f5; border-radius: 6px; cursor: pointer; }
+  .btn.red-sm:hover { background: #fee2e2; }
+  .status { font-size: 12px; color: #888; }
+  .status.err { color: #dc2626; }
+  .status.ok { color: #16a34a; }
+
+  /* App header */
+  .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; gap: 10px; }
+  .app-header h1 { font-size: 18px; font-weight: 500; color: #1a1a1a; }
+  .header-right { display: flex; align-items: center; gap: 6px; }
+
+  /* Connection pill */
+  .conn-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; padding: 3px 10px 3px 7px; border-radius: 20px; border: 0.5px solid rgba(0,0,0,0.12); background: #f5f5f3; color: #888; cursor: pointer; transition: background 0.15s; user-select: none; white-space: nowrap; max-width: 180px; overflow: hidden; text-overflow: ellipsis; }
+  .conn-pill:hover { background: #ececea; }
+  .conn-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
+  .conn-pill.ok .dot { background: #16a34a; }
+  .conn-pill.ok { color: #166534; border-color: #bbf7d0; background: #f0faf4; }
+  .conn-pill.err .dot { background: #dc2626; }
+  .conn-pill.err { color: #dc2626; border-color: #fecaca; background: #fff5f5; }
+
+  /* Icon buttons */
+  .icon-btn { width: 28px; height: 28px; border-radius: 8px; border: 0.5px solid rgba(0,0,0,0.18); background: #fff; color: #555; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+  .icon-btn:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .icon-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+  /* Settings drawer */
+  .drawer-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.22); z-index: 900; }
+  .drawer-backdrop.open { display: block; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 300px; background: #fff; border-left: 0.5px solid rgba(0,0,0,0.12); box-shadow: -8px 0 32px rgba(0,0,0,0.1); z-index: 901; display: flex; flex-direction: column; transform: translateX(100%); transition: transform 0.22s cubic-bezier(0.4,0,0.2,1); }
+  .drawer.open { transform: translateX(0); }
+  .drawer-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem; border-bottom: 0.5px solid rgba(0,0,0,0.08); flex-shrink: 0; }
+  .drawer-title { font-size: 14px; font-weight: 600; color: #1a1a1a; }
+  .drawer-close { background: none; border: none; font-size: 17px; color: #aaa; cursor: pointer; padding: 2px 5px; border-radius: 5px; line-height: 1; }
+  .drawer-close:hover { background: #f0f0ee; color: #1a1a1a; }
+  .drawer-body { flex: 1; overflow-y: auto; padding: 1.25rem; display: flex; flex-direction: column; gap: 1.1rem; }
+  .drawer-footer { padding: 1rem 1.25rem; border-top: 0.5px solid rgba(0,0,0,0.08); flex-shrink: 0; }
+  .drawer-field { display: flex; flex-direction: column; gap: 5px; }
+  .drawer-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; }
+  .drawer-field input { width: 100%; }
+  .drawer-note { font-size: 11px; color: #aaa; line-height: 1.55; }
+  .drawer-divider { border: none; border-top: 0.5px solid rgba(0,0,0,0.08); }
+  .pat-ok { font-size: 11px; color: #16a34a; }
+  .kbd { display: inline-block; font-family: monospace; font-size: 11px; background: #f0f0ee; border: 1px solid rgba(0,0,0,0.15); border-radius: 4px; padding: 1px 5px; color: #333; }
+
+  /* File navigator */
+  .nav-breadcrumb { display: flex; align-items: center; gap: 3px; font-size: 12px; margin-bottom: 10px; flex-wrap: wrap; min-height: 20px; }
+  .nav-crumb { color: #aaa; cursor: pointer; padding: 1px 3px; border-radius: 4px; transition: color 0.12s; }
+  .nav-crumb:hover { color: #1a1a1a; background: #f0f0ee; }
+  .nav-crumb.active { color: #1a1a1a; font-weight: 500; cursor: default; }
+  .nav-crumb.active:hover { background: transparent; }
+  .nav-sep { color: #ddd; font-size: 11px; user-select: none; }
+  .nav-items { display: flex; flex-direction: column; gap: 1px; max-height: 264px; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  /* Desktop: thin unobtrusive scrollbar */
+  .nav-items::-webkit-scrollbar { width: 4px; }
+  .nav-items::-webkit-scrollbar-track { background: transparent; }
+  .nav-items::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.14); border-radius: 2px; }
+  .nav-items::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.28); }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 7px; cursor: pointer; transition: background 0.12s; user-select: none; }
+  .nav-item:hover { background: #f0f0ee; }
+  .nav-item-icon { font-size: 13px; flex-shrink: 0; }
+  .nav-item-name { flex: 1; font-size: 13px; color: #1a1a1a; }
+  .nav-item-meta { font-size: 11px; color: #bbb; }
+  .nav-item-arrow { font-size: 11px; color: #ccc; flex-shrink: 0; }
+  .nav-item.is-file .nav-item-name { color: #444; font-size: 12px; }
+  .nav-item.is-file:hover .nav-item-name { color: #1a1a1a; }
+  .nav-dot { width: 7px; height: 7px; border-radius: 50%; border: 1.5px solid #ccc; flex-shrink: 0; }
+  .nav-dot.loaded { background: #1a1a1a; border-color: #1a1a1a; }
+  .nav-empty { font-size: 12px; color: #bbb; padding: 8px 2px; }
+
+  /* Loaded docs */
+  .doc-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 8px; margin-bottom: 6px; cursor: pointer; transition: background 0.15s; }
+  .doc-row:hover { background: #f9f9f7; }
+  .doc-row.active { border-color: #1d4ed8; background: #eff6ff; }
+  .doc-name { font-size: 13px; font-weight: 500; }
+  .doc-meta { font-size: 11px; color: #999; margin-top: 2px; }
+  .badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
+  .badge.viewing { background: #dbeafe; color: #1d4ed8; }
+  .badge.unsaved { background: #fef3c7; color: #92400e; }
+  .badge.saved { background: #dcfce7; color: #166534; }
+
+  /* Editor */
+  textarea { width: 100%; min-height: 260px; font-size: 13px; font-family: 'Courier New', monospace; line-height: 1.6; border: 0.5px solid rgba(0,0,0,0.15); border-radius: 8px; background: #f9f9f7; color: #1a1a1a; padding: 10px; resize: vertical; outline: none; }
+  textarea:focus { border-color: rgba(0,0,0,0.3); }
+  .editor-header { display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+  .toggle-icon { font-size: 15px; color: #bbb; }
+  .step-label { font-size: 12px; font-weight: 500; color: #1a1a1a; margin-bottom: 6px; }
+
+  /* Workspace card */
+  .doc-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 8px; margin-bottom: 6px; cursor: pointer; transition: background 0.15s; }
+  .doc-row:hover { background: #f9f9f7; }
+  .doc-row.active { border-color: #1d4ed8; background: #eff6ff; }
+  .doc-name { font-size: 13px; font-weight: 500; }
+  .doc-meta { font-size: 11px; color: #999; margin-top: 2px; }
+  .doc-list-area { margin-bottom: 14px; }
+
+  /* Mode toggle */
+  .mode-toggle { display: flex; background: #f5f5f3; border-radius: 10px; padding: 3px; gap: 2px; margin-bottom: 14px; }
+  .mode-btn { flex: 1; padding: 7px 12px; font-size: 12px; font-weight: 500; border: none; border-radius: 8px; cursor: pointer; transition: all 0.15s; background: transparent; color: #888; }
+  .mode-btn:hover { color: #1a1a1a; }
+  .mode-btn.active { background: #fff; color: #1a1a1a; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+  /* AI steps */
+  .ai-steps { display: flex; flex-direction: column; gap: 10px; }
+  .ai-step { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 10px; background: #fafaf8; }
+  .ai-step-num { width: 22px; height: 22px; border-radius: 50%; background: #e5e5e3; color: #888; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .ai-step.ready .ai-step-num { background: #1a1a1a; color: #fff; }
+  .ai-step-body { flex: 1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .ai-step-label { font-size: 12px; color: #666; min-width: 130px; }
+  .ai-step.ready .ai-step-label { color: #1a1a1a; font-weight: 500; }
+
+  /* Manual panel */
+  .manual-meta { font-size: 11px; color: #999; margin-bottom: 8px; }
+
+  /* Help modal */
+  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-backdrop.open { display: flex; }
+  .modal { background: #fff; border-radius: 14px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.25rem 0.75rem; border-bottom: 0.5px solid rgba(0,0,0,0.1); }
+  .modal-title { font-size: 15px; font-weight: 600; color: #1a1a1a; }
+  .modal-close { background: none; border: none; font-size: 18px; color: #aaa; cursor: pointer; line-height: 1; padding: 2px 6px; border-radius: 6px; }
+  .modal-close:hover { background: #f0f0ee; color: #1a1a1a; }
+  .modal-body { padding: 1rem 1.25rem 1.25rem; }
+  .guide-section { margin-bottom: 1.1rem; }
+  .guide-section:last-child { margin-bottom: 0; }
+  .guide-section h3 { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; margin-bottom: 8px; }
+  .guide-step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 6px; }
+  .guide-step-num { width: 20px; height: 20px; border-radius: 50%; background: #1a1a1a; color: #fff; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+  .guide-step p { font-size: 13px; color: #444; line-height: 1.5; margin: 0; }
+  .guide-step p strong { color: #1a1a1a; }
+  .guide-note { font-size: 12px; color: #666; background: #f9f9f7; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 8px; padding: 8px 12px; line-height: 1.5; }
+  .guide-shortcuts { display: flex; flex-direction: column; gap: 6px; }
+  .guide-shortcut { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #444; }
+
+  /* Diff view */
+  .diff-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .diff-col-headers { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 8px 8px 0 0; overflow: hidden; }
+  .diff-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+  .diff-panel-header.current  { color: #92400e; background: #fffbeb; border-right: 0.5px solid rgba(0,0,0,0.1); }
+  .diff-panel-header.proposed { color: #166534; background: #f0faf4; }
+  .diff-count { font-size: 10px; font-weight: 500; padding: 1px 6px; border-radius: 8px; }
+  .diff-panel-header.current  .diff-count { background: #fef3c7; color: #92400e; }
+  .diff-panel-header.proposed .diff-count { background: #dcfce7; color: #166534; }
+  .diff-table-wrap { overflow-y: auto; max-height: 420px; border: 0.5px solid rgba(0,0,0,0.12); border-top: none; border-radius: 0 0 8px 8px; }
+  .diff-table { width: 100%; border-collapse: collapse; font-family: 'Courier New', monospace; font-size: 11.5px; line-height: 1.55; table-layout: fixed; }
+  .diff-table colgroup .col-ln   { width: 36px; }
+  .diff-table colgroup .col-text { width: calc(50% - 36px); }
+  .diff-cell-ln   { width: 36px; text-align: right; padding: 1px 6px 1px 4px; font-size: 10px; color: #ccc; user-select: none; border-right: 0.5px solid rgba(0,0,0,0.07); white-space: nowrap; vertical-align: top; }
+  .diff-cell-text { padding: 1px 8px; white-space: pre-wrap; word-break: break-word; vertical-align: top; }
+  .diff-cell-div  { width: 0; border-left: 1px solid rgba(0,0,0,0.08); }
+  tr.equal   .diff-cell-ln   { color: #ccc; background: #fff; }
+  tr.equal   .diff-cell-text { background: #fff; color: #1a1a1a; }
+  tr.remove  td               { background: #fff5f5; }
+  tr.remove  .diff-cell-ln   { background: #fee2e2; color: #f87171; }
+  tr.remove  .diff-cell-text { color: #991b1b; }
+  tr.add     td               { background: #f0fdf4; }
+  tr.add     .diff-cell-ln   { background: #dcfce7; color: #4ade80; }
+  tr.add     .diff-cell-text { color: #166534; }
+  tr.empty   td               { background: #fafafa; }
+  tr.empty   .diff-cell-ln   { color: transparent; background: #f5f5f3; }
+  tr.empty   .diff-cell-text { color: transparent; }
+  .diff-actions { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .diff-summary { font-size: 12px; color: #888; flex: 1; }
+  .diff-summary .adds    { color: #166534; font-weight: 600; }
+  .diff-summary .removes { color: #dc2626; font-weight: 600; }
+  .diff-unchanged { text-align: center; padding: 32px 16px; color: #aaa; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<!-- Settings Drawer -->
+<div class="drawer-backdrop" id="settings-backdrop" onclick="closeSettings()"></div>
+<div class="drawer" id="settings-drawer">
+  <div class="drawer-header">
+    <span class="drawer-title">⚙ GitHub Settings</span>
+    <button class="drawer-close" onclick="closeSettings()">✕</button>
+  </div>
+  <div class="drawer-body">
+
+    <div class="drawer-field">
+      <div class="drawer-label">PAT Token</div>
+      <input type="password" id="pat" placeholder="ghp_..." oninput="savePat()" />
+      <span id="pat-ok" class="pat-ok" style="display:none;">✓ Saved to localStorage</span>
+      <div class="drawer-note">Stored in this browser only — sent only to the GitHub API directly.</div>
+    </div>
+
+    <hr class="drawer-divider" />
+
+    <div class="drawer-field">
+      <div class="drawer-label">Repository</div>
+      <input type="text" id="repo" value="ndg2ndg/Docs" oninput="saveSettings()" />
+      <div class="drawer-note">Format: <kbd class="kbd">owner/repo</kbd></div>
+    </div>
+
+    <div class="drawer-field">
+      <div class="drawer-label">Branch</div>
+      <input type="text" id="branch" value="main" oninput="saveSettings()" />
+    </div>
+
+    <hr class="drawer-divider" />
+
+    <div class="drawer-note" style="line-height:1.65;">
+      To create a PAT: <strong>github.com → Settings → Developer settings → Personal access tokens</strong>.<br/><br/>
+      Required scope: <kbd class="kbd">repo</kbd> (read + write contents).
+    </div>
+
+  </div>
+  <div class="drawer-footer">
+    <button class="btn primary" style="width:100%;" onclick="applyAndConnect()">Connect &amp; list files</button>
+    <div id="drawer-conn-status" class="status" style="margin-top:8px;text-align:center;min-height:18px;"></div>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal-backdrop" id="help-modal" onclick="closeHelpBackdrop(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">📖 DocRelay — User Guide</span>
+      <button class="modal-close" onclick="toggleHelp()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <p style="font-size:13px;color:#555;line-height:1.6;margin-bottom:1.1rem;padding-bottom:1rem;border-bottom:0.5px solid rgba(0,0,0,0.08);">DocRelay is a browser-based relay tool <strong>(GitHub ↔ AI)</strong> — it loads files from any GitHub repo, packages them for any AI assistant, then captures the AI's response and saves it back to GitHub in one click.</p>
+
+      <div class="guide-section">
+        <h3>Workflow</h3>
+        <div class="guide-step">
+          <div class="guide-step-num">1</div>
+          <p><strong>Configure</strong> — Open Settings <kbd class="kbd">⚙</kbd> (or press <kbd class="kbd">,</kbd>), enter your PAT, repo, and branch, then click <strong>Connect &amp; list files</strong>.</p>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">2</div>
+          <p><strong>Load docs</strong> — Navigate the folder tree, click a file to load it. A filled dot ● means it's loaded. Click again to unload. Load as many files as you need.</p>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">3</div>
+          <p><strong>Send to AI</strong> — Click <strong>Copy all docs ↗</strong> (Step 1 in the workspace), then paste into any AI assistant (Claude, ChatGPT, Gemini, etc.) and ask for updates.</p>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">4</div>
+          <p><strong>Review &amp; save</strong> — Copy the AI's full response, then click <strong>📋 Paste response</strong> (Step 2). A split diff view appears — review <em>Current</em> vs <em>Proposed</em>, then click <strong>↑ Confirm &amp; save to GitHub</strong> or <strong>✕ Discard</strong>.</p>
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h3>Manual editing</h3>
+        <p style="font-size:13px;color:#444;line-height:1.5;margin-bottom:6px;">Switch to <strong>✎ Edit manually</strong> in the workspace toggle to edit the active doc directly. Use <strong>↑ Save to GitHub</strong> to commit. The <em>unsaved</em> badge appears whenever there are local changes not yet pushed.</p>
+      </div>
+
+      <div class="guide-section">
+        <h3>Settings &amp; PAT Token</h3>
+        <p class="guide-note">Your PAT, repo, and branch are stored in <strong>localStorage</strong> — they persist between sessions and are never sent anywhere except the GitHub API. All fields auto-save as you type.</p>
+      </div>
+
+      <div class="guide-section">
+        <h3>Using DocRelay across devices</h3>
+
+        <p style="font-size:13px;color:#444;line-height:1.6;margin-bottom:10px;"><strong>Step 1 — Host it once on GitHub Pages.</strong> Push <code style="font-size:11px;background:#f0f0ee;padding:1px 5px;border-radius:4px;">docrelay.html</code> to any GitHub Pages repo (e.g. <code style="font-size:11px;background:#f0f0ee;padding:1px 5px;border-radius:4px;">ndg2ndg/DentalCP</code>). It becomes permanently available at a single URL — <code style="font-size:11px;background:#f0f0ee;padding:1px 5px;border-radius:4px;">https://ndg2ndg.github.io/DentalCP/docrelay.html</code> — on every device, no installation required.</p>
+
+        <p style="font-size:13px;color:#444;line-height:1.6;margin-bottom:10px;"><strong>Step 2 — Add to home screen on each device.</strong></p>
+        <div class="guide-note" style="margin-bottom:8px;">
+          <strong>iPhone / iPad (Safari)</strong><br/>
+          Open the URL → tap the <strong>Share</strong> button (box with arrow) → <strong>Add to Home Screen</strong>. DocRelay appears as an icon and opens full-screen like a native app.
+        </div>
+        <div class="guide-note" style="margin-bottom:8px;">
+          <strong>Mac / Windows (Chrome or Edge)</strong><br/>
+          Open the URL → click the <strong>install icon</strong> in the address bar (or browser menu → <em>Install DocRelay</em>). It opens in its own window, no browser chrome.
+        </div>
+        <div class="guide-note">
+          <strong>Android (Chrome)</strong><br/>
+          Open the URL → tap the three-dot menu → <strong>Add to Home screen</strong>.
+        </div>
+
+        <p style="font-size:13px;color:#444;line-height:1.6;margin-top:10px;"><strong>Step 3 — Enter your PAT once per device.</strong> Settings are stored in that browser's localStorage. The first time you open DocRelay on a new device, open <kbd class="kbd">⚙</kbd> Settings and enter your PAT, repo, and branch — they'll be remembered from then on.</p>
+
+        <p style="font-size:13px;color:#1a1a1a;font-weight:500;line-height:1.6;margin-top:10px;border-top:0.5px solid rgba(0,0,0,0.08);padding-top:10px;">Picking up where you left off on another device</p>
+        <p style="font-size:13px;color:#444;line-height:1.6;">Because your files live in GitHub, they're always current. Open DocRelay on your iPhone, connect to the same repo, navigate to the same file and load it — you're looking at whatever was last saved to GitHub. If you left mid-session with <em>unsaved</em> changes on the other device, save them to GitHub first before switching.</p>
+      </div>
+
+      <div class="guide-section">
+        <h3>How clipboard extraction works</h3>
+        <p class="guide-note">The <strong>&lt;&lt;&lt;DOC_START&gt;&gt;&gt;</strong> / <strong>&lt;&lt;&lt;DOC_END&gt;&gt;&gt;</strong> markers are injected into the copy payload automatically. Any AI that follows the instruction to wrap its output in these markers will work — the app extracts just the doc content and shows the diff before saving anything.</p>
+      </div>
+
+      <div class="guide-section">
+        <h3>Badges</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:12px;align-items:center;line-height:2;">
+          <span class="badge viewing" style="padding:3px 10px;">viewing</span><span style="font-size:12px;color:#555;">active doc — only shown when multiple docs are loaded</span><br/>
+          <span class="badge unsaved" style="padding:3px 10px;">unsaved</span><span style="font-size:12px;color:#555;">local changes not yet saved to GitHub</span>
+        </div>
+      </div>
+
+      <div class="guide-section">
+        <h3>Keyboard Shortcuts</h3>
+        <div class="guide-shortcuts">
+          <div class="guide-shortcut"><kbd class="kbd">,</kbd> <span>Open / close Settings</span></div>
+          <div class="guide-shortcut"><kbd class="kbd">?</kbd> <span>Open / close this guide</span></div>
+          <div class="guide-shortcut"><kbd class="kbd">Esc</kbd> <span>Close any open panel</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div class="app">
+  <div class="app-header">
+    <h1>DocRelay <span style="font-size:13px;font-weight:400;color:#aaa;margin-left:4px;">(GitHub ↔ AI)</span></h1>
+    <div class="header-right">
+      <div class="conn-pill" id="conn-pill" onclick="openSettings()" title="GitHub connection — click to open settings">
+        <div class="dot"></div>
+        <span id="conn-pill-text">not connected</span>
+      </div>
+      <button class="icon-btn" id="settings-btn" onclick="openSettings()" title="Settings (,)">⚙</button>
+      <button class="icon-btn" onclick="toggleHelp()" title="User guide (?)">?</button>
+    </div>
+  </div>
+
+  <!-- BROWSE -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div class="section-title" style="margin-bottom:0;">files</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="btn" onclick="listFiles()">↺ Refresh</button>
+        <span id="conn-status" class="status"></span>
+      </div>
+    </div>
+    <div id="browse-prompt" style="color:#bbb;font-size:12px;">Open Settings ⚙ to connect and browse your repo</div>
+    <div id="nav-root" style="display:none;">
+      <div class="nav-breadcrumb" id="nav-breadcrumb"></div>
+      <div class="nav-items" id="nav-items"></div>
+    </div>
+  </div>
+
+  <!-- WORKSPACE -->
+  <div class="card" id="workspace-card" style="display:none;">
+
+    <!-- Doc list -->
+    <div class="doc-list-area" id="doc-list"></div>
+
+    <!-- Mode toggle -->
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-ai-btn"     onclick="setMode('ai')">↗ Send to AI</button>
+      <button class="mode-btn"        id="mode-manual-btn" onclick="setMode('manual')">✎ Edit manually</button>
+    </div>
+
+    <!-- AI panel -->
+    <div id="ai-panel">
+      <div class="ai-steps">
+        <div class="ai-step ready" id="step1">
+          <div class="ai-step-num">1</div>
+          <div class="ai-step-body">
+            <span class="ai-step-label">Copy docs to clipboard</span>
+            <button class="btn primary" onclick="copyAllToChat()">Copy all docs ↗</button>
+            <span id="copy-status" class="status"></span>
+          </div>
+        </div>
+        <div class="ai-step" id="step2">
+          <div class="ai-step-num">2</div>
+          <div class="ai-step-body">
+            <span class="ai-step-label">Paste AI response</span>
+            <button class="btn primary" onclick="captureAndSave()">📋 Paste response</button>
+            <span id="capture-status" class="status"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manual panel -->
+    <div id="manual-panel" style="display:none;">
+      <div class="manual-meta">
+        <span id="editor-filename" style="font-weight:500;"></span>
+        <span id="editor-meta" style="margin-left:8px;"></span>
+      </div>
+      <textarea id="doc-area" spellcheck="false"></textarea>
+      <div style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+        <button class="btn green" onclick="saveActive()" style="flex:1;">↑ Save to GitHub</button>
+        <span id="save-status" class="status"></span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DIFF VIEW -->
+  <div class="card" id="diff-card" style="display:none;">
+    <div class="diff-header-row">
+      <div class="section-title" style="margin-bottom:0;">review changes</div>
+      <span id="diff-summary" class="diff-summary"></span>
+    </div>
+    <div class="diff-col-headers">
+      <div class="diff-panel-header current">Current <span class="diff-count" id="remove-count"></span></div>
+      <div class="diff-panel-header proposed">Proposed <span class="diff-count" id="add-count"></span></div>
+    </div>
+    <div class="diff-table-wrap" id="diff-table-wrap">
+      <table class="diff-table">
+        <colgroup>
+          <col class="col-ln"><col class="col-text"><col style="width:1px"><col class="col-ln"><col class="col-text">
+        </colgroup>
+        <tbody id="diff-tbody"></tbody>
+      </table>
+    </div>
+    <div class="diff-actions">
+      <div class="diff-summary" id="diff-summary-detail"></div>
+      <button class="btn" onclick="discardDiff()">✕ Discard</button>
+      <button class="btn green" onclick="confirmSave()" style="min-width:160px;">↑ Confirm &amp; save to GitHub</button>
+    </div>
+    <div id="diff-save-status" class="status" style="margin-top:6px;"></div>
+  </div>
+
+</div>
+
+<script>
+const docs = {};
+let activeDoc = null;
+let currentMode = 'ai';
+
+// Restore saved settings on load
+window.addEventListener('load', () => {
+  const p = localStorage.getItem('gh_pat');
+  const r = localStorage.getItem('gh_repo');
+  const b = localStorage.getItem('gh_branch');
+  if (p) { document.getElementById('pat').value = p; document.getElementById('pat-ok').style.display = ''; }
+  if (r) document.getElementById('repo').value = r;
+  if (b) document.getElementById('branch').value = b;
+  // Show repo name in pill if configured
+  if (r) updateConnPill('idle');
+});
+
+function savePat() {
+  const v = document.getElementById('pat').value.trim();
+  if (v.length > 10) { localStorage.setItem('gh_pat', v); document.getElementById('pat-ok').style.display = ''; }
+}
+
+function saveSettings() {
+  const r = document.getElementById('repo').value.trim();
+  const b = document.getElementById('branch').value.trim();
+  if (r) localStorage.setItem('gh_repo', r);
+  if (b) localStorage.setItem('gh_branch', b);
+  updateConnPill('idle');
+}
+
+// Settings drawer
+function openSettings() {
+  document.getElementById('settings-drawer').classList.add('open');
+  document.getElementById('settings-backdrop').classList.add('open');
+  document.getElementById('settings-btn').classList.add('active');
+}
+function closeSettings() {
+  document.getElementById('settings-drawer').classList.remove('open');
+  document.getElementById('settings-backdrop').classList.remove('open');
+  document.getElementById('settings-btn').classList.remove('active');
+}
+function applyAndConnect() {
+  saveSettings();
+  closeSettings();
+  listFiles();
+}
+
+// Connection pill
+function updateConnPill(state, text) {
+  const pill = document.getElementById('conn-pill');
+  const label = document.getElementById('conn-pill-text');
+  const repo = document.getElementById('repo').value.trim();
+  pill.className = 'conn-pill';
+  if (state === 'ok') {
+    pill.classList.add('ok');
+    label.textContent = repo || 'connected';
+  } else if (state === 'err') {
+    pill.classList.add('err');
+    label.textContent = text || 'error';
+  } else {
+    label.textContent = repo || 'not connected';
+  }
+}
+
+// GitHub API helper
+function gh(path, opts={}) {
+  return fetch(`https://api.github.com/repos/${document.getElementById('repo').value.trim()}/${path}`, {
+    ...opts,
+    headers: { Authorization: `Bearer ${document.getElementById('pat').value.trim()}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json', ...opts.headers }
+  });
+}
+
+async function listFiles() {
+  const st = document.getElementById('conn-status');
+  const prompt = document.getElementById('browse-prompt');
+  st.className = 'status'; st.textContent = 'Fetching...';
+  try {
+    const r = await gh(`git/trees/${document.getElementById('branch').value.trim()}?recursive=1`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    const files = data.tree.filter(f => f.type === 'blob' && /\.(md|txt|html|json|js|css)$/.test(f.path));
+    st.className = 'status ok'; st.textContent = `${files.length} files`;
+    buildNavigator(files.map(f => f.path));
+    updateConnPill('ok');
+    const dSt = document.getElementById('drawer-conn-status');
+    dSt.className = 'status ok'; dSt.textContent = `✓ Connected — ${files.length} files found`;
+  } catch(e) {
+    st.className = 'status err'; st.textContent = e.message;
+    updateConnPill('err', e.message);
+    const dSt = document.getElementById('drawer-conn-status');
+    dSt.className = 'status err'; dSt.textContent = e.message;
+  }
+}
+
+// ── File navigator ───────────────────────────────────────────────────────────
+let fsTree = {};   // folderKey → { folders: Set<folderKey>, files: [{name,path}] }
+let navCurrent = '__root__';
+
+function buildNavigator(paths) {
+  fsTree = {};
+
+  paths.forEach(path => {
+    const parts = path.split('/');
+    for (let depth = 0; depth <= parts.length - 1; depth++) {
+      const folderKey = depth === 0 ? '__root__' : parts.slice(0, depth).join('/');
+      if (!fsTree[folderKey]) fsTree[folderKey] = { folders: new Set(), files: [] };
+      if (depth === parts.length - 1) {
+        fsTree[folderKey].files.push({ name: parts[depth], path });
+      } else {
+        const subKey = parts.slice(0, depth + 1).join('/');
+        fsTree[folderKey].folders.add(subKey);
+      }
+    }
+  });
+
+  navCurrent = '__root__';
+  document.getElementById('browse-prompt').style.display = 'none';
+  document.getElementById('nav-root').style.display = '';
+  renderNavigator();
+}
+
+function navigateTo(folderKey) {
+  navCurrent = folderKey;
+  renderNavigator();
+}
+
+function renderNavigator() {
+  const node = fsTree[navCurrent] || { folders: new Set(), files: [] };
+
+  // Breadcrumb
+  const bc = document.getElementById('nav-breadcrumb');
+  const crumbs = navCurrent === '__root__' ? [] : navCurrent.split('/');
+  let bcHTML = `<span class="nav-crumb ${navCurrent === '__root__' ? 'active' : ''}" onclick="navigateTo('__root__')">root</span>`;
+  crumbs.forEach((seg, i) => {
+    const key = crumbs.slice(0, i + 1).join('/');
+    const isLast = i === crumbs.length - 1;
+    bcHTML += `<span class="nav-sep">›</span><span class="nav-crumb ${isLast ? 'active' : ''}" onclick="navigateTo('${key}')">${seg}</span>`;
+  });
+  bc.innerHTML = bcHTML;
+
+  // Items
+  const items = document.getElementById('nav-items');
+  const folders = [...node.folders].sort((a, b) => a.split('/').pop().localeCompare(b.split('/').pop()));
+  const files = [...node.files].sort((a, b) => a.name.localeCompare(b.name));
+
+  if (folders.length === 0 && files.length === 0) {
+    items.innerHTML = '<div class="nav-empty">Empty folder</div>';
+    return;
+  }
+
+  let html = '';
+  folders.forEach(key => {
+    const name = key.split('/').pop();
+    const childNode = fsTree[key] || { folders: new Set(), files: [] };
+    const count = childNode.folders.size + childNode.files.length;
+    html += `<div class="nav-item is-folder" onclick="navigateTo('${key}')">
+      <span class="nav-item-icon">📁</span>
+      <span class="nav-item-name">${name}</span>
+      <span class="nav-item-meta">${count}</span>
+      <span class="nav-item-arrow">›</span>
+    </div>`;
+  });
+
+  files.forEach(({ name, path }) => {
+    const loaded = !!docs[path];
+    const dotClass = loaded ? 'nav-dot loaded' : 'nav-dot';
+    html += `<div class="nav-item is-file" onclick="toggleDoc('${path}', this)" data-path="${path}">
+      <span class="${dotClass}" id="navdot_${path.replace(/\W/g,'_')}"></span>
+      <span class="nav-item-name">${name}</span>
+      <span class="nav-item-meta">${path.includes('/') ? path.split('/').slice(0,-1).join('/') : ''}</span>
+    </div>`;
+  });
+
+  items.innerHTML = html;
+}
+
+async function toggleDoc(path) {
+  if (docs[path]) { unloadDoc(path); return; }
+  const st = document.getElementById('conn-status');
+  st.className = 'status'; st.textContent = 'Loading...';
+  try {
+    const r = await gh(`contents/${path}`);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const data = await r.json();
+    const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+    docs[path] = { sha: data.sha, content, saved: true };
+    st.className = 'status ok'; st.textContent = `${Object.keys(docs).length} doc(s) loaded`;
+    document.getElementById('step1').querySelector('.ai-step-num').textContent = '1';
+    document.getElementById('capture-status').textContent = '';
+    document.getElementById('copy-status').textContent = '';
+    renderDocList();
+    setActive(path);
+    document.getElementById('workspace-card').style.display = '';
+    renderNavigator();
+  } catch(e) { st.className = 'status err'; st.textContent = e.message; }
+}
+
+function unloadDoc(path) {
+  delete docs[path];
+  const remaining = Object.keys(docs);
+  if (remaining.length) setActive(remaining[0]);
+  else {
+    activeDoc = null;
+    document.getElementById('workspace-card').style.display = 'none';
+    document.getElementById('diff-card').style.display = 'none';
+  }
+  renderDocList();
+  renderNavigator();
+}
+
+function renderDocList() {
+  const list = document.getElementById('doc-list');
+  list.innerHTML = '';
+  Object.keys(docs).forEach(path => {
+    const d = docs[path];
+    const isActive = path === activeDoc;
+    const row = document.createElement('div');
+    row.className = 'doc-row' + (isActive ? ' active' : '');
+    row.onclick = () => setActive(path);
+
+    const info = document.createElement('div');
+    const shortName = path.split('/').pop();
+    const folder = path.includes('/') ? path.split('/').slice(0,-1).join('/') : '';
+    info.innerHTML = `
+      <div class="doc-name">${shortName}
+        ${isActive && Object.keys(docs).length > 1 ? '<span class="badge viewing">viewing</span>' : ''}
+        ${!d.saved ? '<span class="badge unsaved">unsaved</span>' : ''}
+      </div>
+      <div class="doc-meta">${folder ? folder + ' · ' : ''}${d.content.split('\n').length} lines · ${d.content.length} chars</div>`;
+
+    const actions = document.createElement('div');
+    actions.style.cssText = 'display:flex;gap:6px;flex-shrink:0;';
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'btn red-sm';
+    removeBtn.textContent = '✕';
+    removeBtn.onclick = e => { e.stopPropagation(); unloadDoc(path); };
+
+    actions.appendChild(removeBtn);
+    row.appendChild(info);
+    row.appendChild(actions);
+    list.appendChild(row);
+  });
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('ai-panel').style.display     = mode === 'ai'     ? '' : 'none';
+  document.getElementById('manual-panel').style.display = mode === 'manual' ? '' : 'none';
+  document.getElementById('mode-ai-btn').classList.toggle('active',     mode === 'ai');
+  document.getElementById('mode-manual-btn').classList.toggle('active', mode === 'manual');
+  // Populate editor when switching to manual
+  if (mode === 'manual' && activeDoc) {
+    document.getElementById('doc-area').value = docs[activeDoc].content;
+  }
+}
+
+function setActive(path) {
+  activeDoc = path;
+  document.getElementById('editor-filename').textContent = path.split('/').pop();
+  document.getElementById('editor-meta').textContent = `${docs[path].content.split('\n').length} lines · ${docs[path].content.length} chars`;
+  if (currentMode === 'manual') document.getElementById('doc-area').value = docs[path].content;
+  document.getElementById('save-status').textContent = '';
+  document.getElementById('diff-card').style.display = 'none';
+  pendingContent = null;
+  renderDocList();
+  // Light up step 2 now that docs are loaded
+  document.getElementById('step2').classList.add('ready');
+}
+
+async function saveDoc(path) {
+  const d = docs[path];
+  if (!d) return;
+  const st = document.getElementById('save-status');
+  try {
+    const encoded = btoa(unescape(encodeURIComponent(d.content)));
+    const r = await gh(`contents/${path}`, { method: 'PUT', body: JSON.stringify({ message: `Update ${path}`, content: encoded, sha: d.sha, branch: document.getElementById('branch').value.trim() }) });
+    if (!r.ok) { const j = await r.json(); throw new Error(j.message); }
+    const data = await r.json();
+    docs[path].sha = data.content.sha;
+    docs[path].saved = true;
+    renderDocList();
+    if (path === activeDoc) { st.className = 'status ok'; st.textContent = `Saved at ${new Date().toLocaleTimeString()}`; }
+  } catch(e) { st.className = 'status err'; st.textContent = e.message; }
+}
+
+async function saveActive() { if (activeDoc) await saveDoc(activeDoc); }
+
+async function captureAndSave() {
+  const st = document.getElementById('capture-status');
+  if (!activeDoc) { st.className = 'status err'; st.textContent = 'No doc selected.'; return; }
+  try {
+    st.className = 'status'; st.textContent = 'Reading clipboard...';
+    const text = await navigator.clipboard.readText();
+    const start = text.indexOf('<<<DOC_START>>>');
+    const end   = text.indexOf('<<<DOC_END>>>');
+    if (start === -1 || end === -1) { st.className = 'status err'; st.textContent = 'Markers not found — ask the AI to wrap its response in <<<DOC_START>>> / <<<DOC_END>>>.'; return; }
+    const proposed = text.slice(start + 15, end).trim();
+    st.className = 'status ok'; st.textContent = 'Review the diff below before saving.';
+    showDiff(docs[activeDoc].content, proposed);
+  } catch(e) { st.className = 'status err'; st.textContent = 'Clipboard access denied.'; }
+}
+
+// LCS-based line diff
+function computeDiff(oldLines, newLines) {
+  const m = oldLines.length, n = newLines.length;
+  // For very large files, skip LCS and just show side-by-side
+  if (m * n > 200000) {
+    const ops = [];
+    const len = Math.max(m, n);
+    for (let i = 0; i < len; i++) {
+      if (i < m && i < n) {
+        if (oldLines[i] === newLines[i]) ops.push({ type: 'equal', old: oldLines[i], new: newLines[i] });
+        else { ops.push({ type: 'remove', old: oldLines[i] }); ops.push({ type: 'add', new: newLines[i] }); }
+      } else if (i < m) ops.push({ type: 'remove', old: oldLines[i] });
+      else ops.push({ type: 'add', new: newLines[i] });
+    }
+    return ops;
+  }
+  const dp = Array.from({ length: m + 1 }, () => new Int32Array(n + 1));
+  for (let i = m - 1; i >= 0; i--)
+    for (let j = n - 1; j >= 0; j--)
+      dp[i][j] = oldLines[i] === newLines[j] ? dp[i+1][j+1] + 1 : Math.max(dp[i+1][j], dp[i][j+1]);
+  const ops = [];
+  let i = 0, j = 0;
+  while (i < m || j < n) {
+    if (i < m && j < n && oldLines[i] === newLines[j]) {
+      ops.push({ type: 'equal', old: oldLines[i], new: newLines[j] }); i++; j++;
+    } else if (j < n && (i >= m || dp[i][j+1] >= dp[i+1][j])) {
+      ops.push({ type: 'add', new: newLines[j] }); j++;
+    } else {
+      ops.push({ type: 'remove', old: oldLines[i] }); i++;
+    }
+  }
+  return ops;
+}
+
+let pendingContent = null;
+
+function showDiff(original, proposed) {
+  pendingContent = proposed;
+  const oldLines = original.split('\n');
+  const newLines = proposed.split('\n');
+  const ops = computeDiff(oldLines, newLines);
+
+  let adds = 0, removes = 0;
+
+  // Build aligned row pairs
+  const rows = [];
+  let i = 0;
+  while (i < ops.length) {
+    const op = ops[i];
+    if (op.type === 'equal') {
+      rows.push({ type: 'equal', left: op.old, right: op.new }); i++;
+    } else if (op.type === 'remove') {
+      if (i + 1 < ops.length && ops[i+1].type === 'add') {
+        // Paired change — show on same row
+        rows.push({ type: 'change', left: op.old, right: ops[i+1].new });
+        removes++; adds++; i += 2;
+      } else {
+        rows.push({ type: 'remove', left: op.old, right: null }); removes++; i++;
+      }
+    } else { // add
+      rows.push({ type: 'add', left: null, right: op.new }); adds++; i++;
+    }
+  }
+
+  const unchanged = adds === 0 && removes === 0;
+  const tbody = document.getElementById('diff-tbody');
+
+  if (unchanged) {
+    tbody.innerHTML = `<tr><td colspan="5" class="diff-unchanged">No differences — content is identical.</td></tr>`;
+  } else {
+    let leftLn = 1, rightLn = 1;
+    tbody.innerHTML = rows.map(row => {
+      let tr = '';
+      if (row.type === 'equal') {
+        tr = buildRow('equal', leftLn, row.left, ' ', rightLn, row.right, ' ');
+        leftLn++; rightLn++;
+      } else if (row.type === 'remove') {
+        tr = buildRow('remove', leftLn, row.left, '−', null, null, '');
+        leftLn++;
+      } else if (row.type === 'add') {
+        tr = buildRow('add', null, null, '', rightLn, row.right, '+');
+        rightLn++;
+      } else { // change
+        tr = buildRow('change', leftLn, row.left, '−', rightLn, row.right, '+');
+        leftLn++; rightLn++;
+      }
+      return tr;
+    }).join('');
+  }
+
+  document.getElementById('remove-count').textContent = removes ? `−${removes}` : '';
+  document.getElementById('add-count').textContent    = adds    ? `+${adds}`    : '';
+  const detail = document.getElementById('diff-summary-detail');
+  if (unchanged) detail.innerHTML = 'No differences — content is identical.';
+  else detail.innerHTML = `<span class="adds">+${adds} added</span> &nbsp; <span class="removes">−${removes} removed</span>`;
+
+  document.getElementById('diff-card').style.display = '';
+  document.getElementById('diff-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function buildRow(type, leftLn, leftText, leftPrefix, rightLn, rightText, rightPrefix) {
+  const leftLnCell  = leftLn  !== null ? `<td class="diff-cell-ln">${leftLn}</td>`  : `<td class="diff-cell-ln"></td>`;
+  const rightLnCell = rightLn !== null ? `<td class="diff-cell-ln">${rightLn}</td>` : `<td class="diff-cell-ln"></td>`;
+
+  const leftBg  = type === 'remove' || type === 'change' ? 'background:#fff5f5;' : type === 'equal' ? 'background:#fff;' : 'background:#fafafa;';
+  const rightBg = type === 'add'    || type === 'change' ? 'background:#f0fdf4;' : type === 'equal' ? 'background:#fff;' : 'background:#fafafa;';
+  const leftColor  = type === 'remove' || type === 'change' ? 'color:#991b1b;' : 'color:#1a1a1a;';
+  const rightColor = type === 'add'    || type === 'change' ? 'color:#166534;' : 'color:#1a1a1a;';
+
+  const leftContent  = leftText  !== null ? `${leftPrefix} ${escHtml(leftText)}`  : '';
+  const rightContent = rightText !== null ? `${rightPrefix} ${escHtml(rightText)}` : '';
+
+  const leftLnBg  = type === 'remove' || type === 'change' ? 'background:#fee2e2;color:#f87171;' : type === 'add' ? 'background:#fafafa;color:transparent;' : '';
+  const rightLnBg = type === 'add'    || type === 'change' ? 'background:#dcfce7;color:#4ade80;' : type === 'remove' ? 'background:#fafafa;color:transparent;' : '';
+
+  return `<tr>` +
+    `<td class="diff-cell-ln" style="${leftLnBg}">${leftLn ?? ''}</td>` +
+    `<td class="diff-cell-text" style="${leftBg}${leftColor}">${leftContent}</td>` +
+    `<td class="diff-cell-div"></td>` +
+    `<td class="diff-cell-ln" style="${rightLnBg}">${rightLn ?? ''}</td>` +
+    `<td class="diff-cell-text" style="${rightBg}${rightColor}">${rightContent}</td>` +
+    `</tr>`;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function discardDiff() {
+  pendingContent = null;
+  document.getElementById('diff-card').style.display = 'none';
+  document.getElementById('capture-status').textContent = '';
+  document.getElementById('diff-save-status').textContent = '';
+}
+
+async function confirmSave() {
+  if (!activeDoc || pendingContent === null) return;
+  docs[activeDoc].content = pendingContent;
+  docs[activeDoc].saved = false;
+  document.getElementById('doc-area').value = pendingContent;
+  document.getElementById('editor-meta').textContent = `${pendingContent.split('\n').length} lines`;
+  renderDocList();
+  const st = document.getElementById('diff-save-status');
+  st.className = 'status'; st.textContent = 'Saving...';
+  await saveDoc(activeDoc);
+  st.className = 'status ok'; st.textContent = `Saved at ${new Date().toLocaleTimeString()}`;
+  pendingContent = null;
+}
+
+async function copyAllToChat() {
+  const keys = Object.keys(docs);
+  if (!keys.length) return;
+  let msg = keys.length === 1
+    ? `I've loaded "${keys[0]}" from my GitHub repo:\n\n---\n${docs[keys[0]].content}\n---\n\n`
+    : `I have ${keys.length} docs loaded:\n\n` + keys.map(p => `=== ${p} ===\n${docs[p].content}`).join('\n\n') + '\n\n';
+  msg += `When you return an updated doc, wrap it like this:\n\n<<<DOC_START>>>\n[full doc here]\n<<<DOC_END>>>\n\nI will paste your response back and save it to GitHub in one click.`;
+  await navigator.clipboard.writeText(msg);
+  const st = document.getElementById('copy-status');
+  st.className = 'status ok'; st.textContent = 'Copied — paste into your AI';
+  document.getElementById('step1').querySelector('.ai-step-num').textContent = '✓';
+}
+
+// Help modal
+function toggleHelp() {
+  document.getElementById('help-modal').classList.toggle('open');
+}
+function closeHelpBackdrop(e) {
+  if (e.target === document.getElementById('help-modal')) toggleHelp();
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  const tag = document.activeElement.tagName;
+  const typing = tag === 'INPUT' || tag === 'TEXTAREA';
+  const helpOpen   = document.getElementById('help-modal').classList.contains('open');
+  const drawerOpen = document.getElementById('settings-drawer').classList.contains('open');
+
+  if (e.key === 'Escape') {
+    if (helpOpen)   { document.getElementById('help-modal').classList.remove('open'); return; }
+    if (drawerOpen) { closeSettings(); return; }
+  }
+  if (typing) return;
+  if (e.key === '?') { e.preventDefault(); toggleHelp(); }
+  if (e.key === ',') { e.preventDefault(); drawerOpen ? closeSettings() : openSettings(); }
+});
+
+document.addEventListener('input', e => {
+  if (e.target.id === 'doc-area' && activeDoc && docs[activeDoc]) {
+    docs[activeDoc].content = e.target.value;
+    docs[activeDoc].saved = false;
+    document.getElementById('editor-meta').textContent = `${e.target.value.split('\n').length} lines · ${e.target.value.length} chars`;
+    renderDocList();
+  }
+});
+</script>
+</body>
+</html>
