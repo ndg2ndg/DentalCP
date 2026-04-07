@@ -261,6 +261,13 @@
       <span class="back-link" onclick="showLockPage('pw')">← Back</span>
     </div>
 
+    <!-- Page 3: Logoff confirm -->
+    <div id="lock-logoff-page" style="display:none;">
+      <div style="font-size:13px;color:#444;line-height:1.6;margin-bottom:16px;">This will clear your session on this device. Your PAT, password, and settings will be removed from this browser.<br/><br/>Your files and config in GitHub are not affected.</div>
+      <button class="btn" style="width:100%;margin-bottom:8px;color:#dc2626;border-color:#fecaca;padding:10px;" onclick="executeLogoff()">↩ Yes, log off this device</button>
+      <button class="btn" style="width:100%;" onclick="lockSession()">← Cancel</button>
+    </div>
+
   </div>
 </div>
 
@@ -351,6 +358,24 @@
   <div class="drawer-footer">
     <button class="btn primary" style="width:100%;" onclick="applyAndConnect()">Connect &amp; list files</button>
     <div id="drawer-conn-status" class="status" style="margin-top:8px;text-align:center;min-height:18px;"></div>
+    <hr class="drawer-divider" style="margin:12px 0;" />
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+      <div>
+        <div class="drawer-label" style="margin-bottom:2px;">Auto-lock</div>
+        <div class="drawer-note">Lock after inactivity</div>
+      </div>
+      <select id="autolock-select" onchange="saveAutoLock()" style="font-size:12px;padding:5px 8px;border:0.5px solid rgba(0,0,0,0.2);border-radius:7px;background:#f9f9f7;color:#1a1a1a;cursor:pointer;outline:none;">
+        <option value="0">Never</option>
+        <option value="5">5 min</option>
+        <option value="15" selected>15 min</option>
+        <option value="30">30 min</option>
+        <option value="60">1 hour</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn" style="flex:1;" onclick="lockSession()">🔒 Lock</button>
+      <button class="btn" style="flex:1;color:#dc2626;border-color:#fecaca;" onclick="confirmLogoff()">↩ Log off</button>
+    </div>
   </div>
 </div>
 
@@ -437,6 +462,7 @@
         <h3>Keyboard Shortcuts</h3>
         <div class="guide-shortcuts">
           <div class="guide-shortcut"><kbd class="kbd">,</kbd> <span>Open / close Settings</span></div>
+          <div class="guide-shortcut"><kbd class="kbd">L</kbd> <span>Lock session</span></div>
           <div class="guide-shortcut"><kbd class="kbd">?</kbd> <span>Open / close this guide</span></div>
           <div class="guide-shortcut"><kbd class="kbd">Esc</kbd> <span>Close any open panel</span></div>
         </div>
@@ -456,6 +482,7 @@
         <span id="conn-pill-text">not connected</span>
       </div>
       <button class="icon-btn" id="settings-btn" onclick="openSettings()" title="Settings (,)">⚙</button>
+      <button class="icon-btn" onclick="lockSession()" title="Lock (L)">🔒</button>
       <button class="icon-btn" onclick="toggleHelp()" title="User guide (?)">?</button>
     </div>
   </div>
@@ -684,12 +711,16 @@ async function saveConfigToGitHub(patch) {
 }
 
 function showLockPage(page) {
-  ['lock-sync-page','lock-pw-page','lock-totp-page'].forEach(id => {
+  ['lock-sync-page','lock-pw-page','lock-totp-page','lock-logoff-page'].forEach(id => {
     document.getElementById(id).style.display = 'none';
   });
   if (page === 'sync')  { document.getElementById('lock-sync-page').style.display  = ''; document.getElementById('sync-pat').focus(); }
   if (page === 'pw')    {
     document.getElementById('lock-pw-page').style.display = '';
+    document.getElementById('lock-label').textContent = 'Password';
+    document.getElementById('lock-pw').placeholder    = 'Enter password';
+    document.getElementById('lock-pw2').style.display = 'none';
+    document.getElementById('lock-btn').textContent   = 'Unlock';
     document.getElementById('lock-pw').value = '';
     document.getElementById('lock-pw').focus();
   }
@@ -701,8 +732,61 @@ function showLockPage(page) {
     document.getElementById('lock-btn').textContent   = 'Set password';
     document.getElementById('lock-pw').focus();
   }
-  if (page === 'totp')  { document.getElementById('lock-totp-page').style.display = ''; document.getElementById('lock-totp').value = ''; document.getElementById('lock-totp').focus(); }
+  if (page === 'totp')   { document.getElementById('lock-totp-page').style.display   = ''; document.getElementById('lock-totp').value = ''; document.getElementById('lock-totp').focus(); }
+  if (page === 'logoff') { document.getElementById('lock-logoff-page').style.display = ''; }
 }
+
+// ── Session management ───────────────────────────────────────────────────────
+const AUTOLOCK_KEY = 'docrelay_autolock';
+let _autolockTimer = null;
+
+function lockSession() {
+  closeSettings();
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('lock-overlay').style.display = '';
+  document.getElementById('lock-msg').textContent = '';
+  showLockPage('pw');
+  resetAutolockTimer();
+}
+
+function confirmLogoff() {
+  closeSettings();
+  document.getElementById('lock-overlay').style.display = '';
+  showLockPage('logoff');
+}
+
+function executeLogoff() {
+  // Clear everything device-local
+  sessionStorage.clear();
+  localStorage.removeItem(LOCK_KEY);
+  localStorage.removeItem(TOTP_KEY);
+  localStorage.removeItem('gh_pat');
+  localStorage.removeItem('gh_repo');
+  localStorage.removeItem('gh_branch');
+  localStorage.removeItem(AUTOLOCK_KEY);
+  // Reload to fresh state
+  location.reload();
+}
+
+function saveAutoLock() {
+  const val = document.getElementById('autolock-select').value;
+  localStorage.setItem(AUTOLOCK_KEY, val);
+  resetAutolockTimer();
+}
+
+function resetAutolockTimer() {
+  clearTimeout(_autolockTimer);
+  const mins = parseInt(localStorage.getItem(AUTOLOCK_KEY) || '15');
+  if (mins === 0) return;
+  _autolockTimer = setTimeout(() => {
+    if (sessionStorage.getItem(SESSION_KEY)) lockSession();
+  }, mins * 60 * 1000);
+}
+
+// Reset timer on any user activity
+['mousemove','keydown','touchstart','click'].forEach(ev => {
+  document.addEventListener(ev, resetAutolockTimer, { passive: true });
+});
 
 async function syncFromGitHub() {
   const pat  = document.getElementById('sync-pat').value.trim();
@@ -898,6 +982,10 @@ window.addEventListener('load', () => {
   if (b) document.getElementById('branch').value = b;
   // Show repo name in pill if configured
   if (r) updateConnPill('idle');
+  // Restore auto-lock preference
+  const al = localStorage.getItem(AUTOLOCK_KEY);
+  if (al) document.getElementById('autolock-select').value = al;
+  resetAutolockTimer();
 });
 
 function savePat() {
@@ -1371,6 +1459,7 @@ document.addEventListener('keydown', e => {
   if (typing) return;
   if (e.key === '?') { e.preventDefault(); toggleHelp(); }
   if (e.key === ',') { e.preventDefault(); drawerOpen ? closeSettings() : openSettings(); }
+  if (e.key === 'l' || e.key === 'L') { e.preventDefault(); lockSession(); }
 });
 
 document.addEventListener('input', e => {
