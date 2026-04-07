@@ -228,19 +228,30 @@
     <div id="lock-name">DocRelay</div>
     <div id="lock-sub">(GitHub ↔ AI)</div>
 
+    <!-- Page 0: First-time sync (new device, no local config) -->
+    <div id="lock-sync-page" style="display:none;">
+      <div class="drawer-label" style="margin-bottom:6px;">New device detected</div>
+      <div style="font-size:12px;color:#888;margin-bottom:12px;line-height:1.55;">Enter your PAT and repo to sync your password from GitHub.</div>
+      <input type="password" id="sync-pat"  placeholder="PAT token (ghp_...)" style="width:100%;margin-bottom:6px;" autocomplete="off" />
+      <input type="text"     id="sync-repo" placeholder="owner/repo (e.g. ndg2ndg/Docs)" style="width:100%;margin-bottom:10px;" autocomplete="off" />
+      <button class="btn primary" style="width:100%;padding:10px;" onclick="syncFromGitHub()">Sync &amp; continue</button>
+      <div id="sync-msg" class="status" style="margin-top:8px;text-align:center;min-height:16px;"></div>
+      <span class="back-link" onclick="showLockPage('setup')">← Set up a new password instead</span>
+    </div>
+
     <!-- Page 1: Password -->
-    <div id="lock-pw-page">
+    <div id="lock-pw-page" style="display:none;">
       <div class="drawer-label" id="lock-label" style="margin-bottom:8px;">Password</div>
-      <input type="password" id="lock-pw"  placeholder="Enter password"     autocomplete="current-password"
+      <input type="password" id="lock-pw"  placeholder="Enter password" autocomplete="current-password"
              onkeydown="if(event.key==='Enter')handleLock()" />
-      <input type="password" id="lock-pw2" placeholder="Confirm password"   style="display:none;"
+      <input type="password" id="lock-pw2" placeholder="Confirm password" style="display:none;"
              onkeydown="if(event.key==='Enter')handleLock()" />
       <button id="lock-btn" onclick="handleLock()">Unlock</button>
       <div id="lock-msg"></div>
     </div>
 
     <!-- Page 2: TOTP -->
-    <div id="lock-totp-page">
+    <div id="lock-totp-page" style="display:none;">
       <div class="drawer-label" style="margin-bottom:8px;">Authenticator code</div>
       <input type="text" id="lock-totp" class="totp-input" placeholder="000000" maxlength="6"
              inputmode="numeric" autocomplete="one-time-code"
@@ -605,24 +616,111 @@ function generateSecret() {
 }
 
 // ── Lock screen flow ─────────────────────────────────────────────────────────
+const CONFIG_FILE = '.docrelay.json';
+
 async function initLock() {
   if (sessionStorage.getItem(SESSION_KEY)) { hideLock(); return; }
   const stored = localStorage.getItem(LOCK_KEY);
-  if (!stored) {
-    document.getElementById('lock-label').textContent = 'Set a password for this device';
-    document.getElementById('lock-pw').placeholder    = 'Choose a password';
-    document.getElementById('lock-pw2').style.display = '';
-    document.getElementById('lock-btn').textContent   = 'Set password';
+  if (stored) {
+    // Known device — just ask for password
+    showLockPage('pw');
+  } else {
+    // New device — check if a PAT + repo are already saved (returning user, new browser)
+    const pat  = localStorage.getItem('gh_pat');
+    const repo = localStorage.getItem('gh_repo');
+    if (pat && repo) {
+      // Try to silently sync config
+      const synced = await trySyncConfig(pat, repo);
+      if (synced) { showLockPage('pw'); return; }
+    }
+    // No config synced — offer sync or setup
+    showLockPage('sync');
   }
-  document.getElementById('lock-pw').focus();
   refresh2FAStatus();
 }
 
+async function trySyncConfig(pat, repo) {
+  try {
+    const r = await fetch(`https://api.github.com/repos/${repo}/contents/${CONFIG_FILE}`, {
+      headers: { Authorization: `Bearer ${pat}`, Accept: 'application/vnd.github+json' }
+    });
+    if (!r.ok) return false;
+    const data = await r.json();
+    const config = JSON.parse(atob(data.content.replace(/\n/g,'')));
+    if (config.pw_hash) {
+      localStorage.setItem(LOCK_KEY, config.pw_hash);
+      if (config.totp_secret) localStorage.setItem(TOTP_KEY, config.totp_secret);
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+
+async function saveConfigToGitHub(patch) {
+  const pat  = localStorage.getItem('gh_pat')  || document.getElementById('pat')?.value?.trim();
+  const repo = localStorage.getItem('gh_repo') || document.getElementById('repo')?.value?.trim();
+  const branch = localStorage.getItem('gh_branch') || 'main';
+  if (!pat || !repo) return;
+  try {
+    // Read existing or start fresh
+    let sha = null, existing = {};
+    const r = await fetch(`https://api.github.com/repos/${repo}/contents/${CONFIG_FILE}`, {
+      headers: { Authorization: `Bearer ${pat}`, Accept: 'application/vnd.github+json' }
+    });
+    if (r.ok) {
+      const d = await r.json();
+      sha = d.sha;
+      try { existing = JSON.parse(atob(d.content.replace(/\n/g,''))); } catch(e) {}
+    }
+    const updated = { ...existing, ...patch };
+    const body = { message: 'DocRelay: update config', content: btoa(JSON.stringify(updated)), branch };
+    if (sha) body.sha = sha;
+    await fetch(`https://api.github.com/repos/${repo}/contents/${CONFIG_FILE}`, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${pat}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
+      body: JSON.stringify(body)
+    });
+  } catch(e) {}
+}
+
 function showLockPage(page) {
-  document.getElementById('lock-pw-page').style.display   = page === 'pw'   ? '' : 'none';
-  document.getElementById('lock-totp-page').style.display = page === 'totp' ? '' : 'none';
-  if (page === 'totp') { document.getElementById('lock-totp').value = ''; document.getElementById('lock-totp').focus(); }
-  if (page === 'pw')   { document.getElementById('lock-pw').value   = ''; document.getElementById('lock-pw').focus(); }
+  ['lock-sync-page','lock-pw-page','lock-totp-page'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  if (page === 'sync')  { document.getElementById('lock-sync-page').style.display  = ''; document.getElementById('sync-pat').focus(); }
+  if (page === 'pw')    {
+    document.getElementById('lock-pw-page').style.display = '';
+    document.getElementById('lock-pw').value = '';
+    document.getElementById('lock-pw').focus();
+  }
+  if (page === 'setup') {
+    document.getElementById('lock-pw-page').style.display  = '';
+    document.getElementById('lock-label').textContent = 'Set a password';
+    document.getElementById('lock-pw').placeholder    = 'Choose a password';
+    document.getElementById('lock-pw2').style.display = '';
+    document.getElementById('lock-btn').textContent   = 'Set password';
+    document.getElementById('lock-pw').focus();
+  }
+  if (page === 'totp')  { document.getElementById('lock-totp-page').style.display = ''; document.getElementById('lock-totp').value = ''; document.getElementById('lock-totp').focus(); }
+}
+
+async function syncFromGitHub() {
+  const pat  = document.getElementById('sync-pat').value.trim();
+  const repo = document.getElementById('sync-repo').value.trim();
+  const msg  = document.getElementById('sync-msg');
+  if (!pat || !repo) { msg.className = 'err'; msg.textContent = 'Both fields required.'; return; }
+  msg.className = ''; msg.textContent = 'Syncing…';
+  // Save for later use
+  localStorage.setItem('gh_pat', pat);
+  localStorage.setItem('gh_repo', repo);
+  const synced = await trySyncConfig(pat, repo);
+  if (synced) {
+    msg.className = 'ok'; msg.textContent = '✓ Config synced — enter your password.';
+    setTimeout(() => showLockPage('pw'), 600);
+  } else {
+    msg.className = 'err'; msg.textContent = 'No config found — set up a new password below.';
+    setTimeout(() => showLockPage('setup'), 1000);
+  }
 }
 
 async function handleLock() {
@@ -634,16 +732,17 @@ async function handleLock() {
   if (!pw) { showLockError('Enter a password'); return; }
 
   if (!stored) {
-    if (pw !== pw2)   { showLockError("Passwords don't match"); return; }
-    if (pw.length < 4){ showLockError('At least 4 characters'); return; }
-    localStorage.setItem(LOCK_KEY, await sha256(pw));
+    // First-time setup
+    if (pw !== pw2)    { showLockError("Passwords don't match"); return; }
+    if (pw.length < 4) { showLockError('At least 4 characters'); return; }
+    const hash = await sha256(pw);
+    localStorage.setItem(LOCK_KEY, hash);
+    await saveConfigToGitHub({ pw_hash: hash });
     msg.className = 'ok'; msg.textContent = 'Password saved — unlocking…';
     setTimeout(hideLock, 700);
   } else {
     if (await sha256(pw) !== stored) { showLockError('Incorrect password'); return; }
-    if (localStorage.getItem(TOTP_KEY)) {
-      showLockPage('totp'); return;
-    }
+    if (localStorage.getItem(TOTP_KEY)) { showLockPage('totp'); return; }
     sessionStorage.setItem(SESSION_KEY, '1');
     hideLock();
   }
@@ -730,6 +829,7 @@ async function confirmEnable2FA() {
   if (code.length !== 6) { msg.className = 'err'; msg.textContent = 'Enter the 6-digit code from your app.'; return; }
   if (await verifyTOTP(_pendingSecret, code)) {
     localStorage.setItem(TOTP_KEY, _pendingSecret);
+    await saveConfigToGitHub({ totp_secret: _pendingSecret });
     _pendingSecret = null;
     msg.className = 'ok'; msg.textContent = '✓ 2FA activated.';
     setTimeout(refresh2FAStatus, 800);
@@ -748,6 +848,7 @@ async function disable2FA() {
   if (code.length !== 6) { msg.className = 'err'; msg.textContent = 'Enter your current authenticator code.'; return; }
   if (await verifyTOTP(secret, code)) {
     localStorage.removeItem(TOTP_KEY);
+    await saveConfigToGitHub({ totp_secret: null });
     msg.className = 'ok'; msg.textContent = '2FA disabled.';
     document.getElementById('totp-disable-code').value = '';
     setTimeout(refresh2FAStatus, 600);
@@ -775,7 +876,8 @@ async function changePassword() {
 
   const newHash = await sha256(newPw);
   localStorage.setItem(LOCK_KEY, newHash);
-  msg.className = 'ok'; msg.textContent = '✓ Password updated.';
+  await saveConfigToGitHub({ pw_hash: newHash });
+  msg.className = 'ok'; msg.textContent = '✓ Password updated & synced.';
   document.getElementById('chpw-current').value = '';
   document.getElementById('chpw-new').value     = '';
   document.getElementById('chpw-confirm').value = '';
