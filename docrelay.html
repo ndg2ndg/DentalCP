@@ -712,28 +712,37 @@ async function saveConfigToGitHub(patch) {
 
 function showLockPage(page) {
   ['lock-sync-page','lock-pw-page','lock-totp-page','lock-logoff-page'].forEach(id => {
-    document.getElementById(id).style.display = 'none';
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
   });
-  if (page === 'sync')  { document.getElementById('lock-sync-page').style.display  = ''; document.getElementById('sync-pat').focus(); }
-  if (page === 'pw')    {
-    document.getElementById('lock-pw-page').style.display = '';
-    document.getElementById('lock-label').textContent = 'Password';
-    document.getElementById('lock-pw').placeholder    = 'Enter password';
-    document.getElementById('lock-pw2').style.display = 'none';
-    document.getElementById('lock-btn').textContent   = 'Unlock';
+  if (page === 'sync') {
+    document.getElementById('lock-sync-page').style.display = 'block';
+    document.getElementById('sync-pat').focus();
+  }
+  if (page === 'pw' || page === 'setup') {
+    document.getElementById('lock-pw-page').style.display = 'block';
+    if (page === 'setup') {
+      document.getElementById('lock-label').textContent = 'Set a password';
+      document.getElementById('lock-pw').placeholder    = 'Choose a password';
+      document.getElementById('lock-pw2').style.display = 'block';
+      document.getElementById('lock-btn').textContent   = 'Set password';
+    } else {
+      document.getElementById('lock-label').textContent = 'Password';
+      document.getElementById('lock-pw').placeholder    = 'Enter password';
+      document.getElementById('lock-pw2').style.display = 'none';
+      document.getElementById('lock-btn').textContent   = 'Unlock';
+    }
     document.getElementById('lock-pw').value = '';
     document.getElementById('lock-pw').focus();
   }
-  if (page === 'setup') {
-    document.getElementById('lock-pw-page').style.display  = '';
-    document.getElementById('lock-label').textContent = 'Set a password';
-    document.getElementById('lock-pw').placeholder    = 'Choose a password';
-    document.getElementById('lock-pw2').style.display = '';
-    document.getElementById('lock-btn').textContent   = 'Set password';
-    document.getElementById('lock-pw').focus();
+  if (page === 'totp') {
+    document.getElementById('lock-totp-page').style.display = 'block';
+    document.getElementById('lock-totp').value = '';
+    document.getElementById('lock-totp').focus();
   }
-  if (page === 'totp')   { document.getElementById('lock-totp-page').style.display   = ''; document.getElementById('lock-totp').value = ''; document.getElementById('lock-totp').focus(); }
-  if (page === 'logoff') { document.getElementById('lock-logoff-page').style.display = ''; }
+  if (page === 'logoff') {
+    document.getElementById('lock-logoff-page').style.display = 'block';
+  }
 }
 
 // ── Session management ───────────────────────────────────────────────────────
