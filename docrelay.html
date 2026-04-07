@@ -1127,7 +1127,7 @@ async function toggleDoc(path) {
     const r = await gh(`contents/${path}`);
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const data = await r.json();
-    const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+    const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g, '')))).replace(/\r\n/g, '\n').replace(/\r/g, '\n');
     docs[path] = { sha: data.sha, content, saved: true };
     st.className = 'status ok'; st.textContent = `${Object.keys(docs).length} doc(s) loaded`;
     document.getElementById('step1').querySelector('.ai-step-num').textContent = '1';
@@ -1284,8 +1284,8 @@ let pendingContent = null;
 
 function showDiff(original, proposed) {
   pendingContent = proposed;
-  const oldLines = original.split('\n');
-  const newLines = proposed.split('\n');
+  const oldLines = original.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  const newLines = proposed.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
   const ops = computeDiff(oldLines, newLines);
 
   let adds_count = 0, removes_count = 0;
