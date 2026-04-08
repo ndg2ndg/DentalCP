@@ -218,6 +218,8 @@
   .diff-summary .adds    { color: #166534; font-weight: 600; }
   .diff-summary .removes { color: #dc2626; font-weight: 600; }
   .diff-unchanged { text-align: center; padding: 32px 16px; color: #aaa; font-size: 13px; }
+  .btn-popout { padding: 3px 8px; font-size: 11px; color: #1d4ed8; border: 0.5px solid #bfdbfe; background: #eff6ff; border-radius: 6px; cursor: pointer; white-space: nowrap; transition: background 0.12s; }
+  .btn-popout:hover { background: #dbeafe; }
 </style>
 </head>
 <body>
@@ -372,7 +374,8 @@
 
       <div class="guide-section">
         <h3>Manual editing</h3>
-        <p style="font-size:13px;color:#444;line-height:1.5;margin-bottom:6px;">Switch to <strong>✎ Edit manually</strong> in the workspace toggle to edit the active doc directly. Use <strong>↑ Save to GitHub</strong> to commit. The <em>unsaved</em> badge appears whenever there are local changes not yet pushed.</p>
+        <p style="font-size:13px;color:#444;line-height:1.5;margin-bottom:6px;">Switch to <strong>✎ Edit manually</strong> in the workspace toggle to edit the active doc inline. Use <strong>↑ Save to GitHub</strong> to commit.</p>
+        <p style="font-size:13px;color:#444;line-height:1.5;">For a full-screen editing experience, click the <strong>⤢</strong> button on any loaded doc row to open it in a separate window. Edit freely, then click <strong>✓ Done — send back</strong> (or <kbd style="font-family:monospace;font-size:11px;background:#f0f0ee;border:1px solid rgba(0,0,0,0.15);border-radius:4px;padding:1px 5px;">⌘S</kbd> / <kbd style="font-family:monospace;font-size:11px;background:#f0f0ee;border:1px solid rgba(0,0,0,0.15);border-radius:4px;padding:1px 5px;">Ctrl+S</kbd>) — the content is sent back to DocRelay automatically, marked as unsaved, ready to review in the diff view.</p>
       </div>
 
       <div class="guide-section">
@@ -1176,11 +1179,18 @@ function renderDocList() {
     const actions = document.createElement('div');
     actions.style.cssText = 'display:flex;gap:6px;flex-shrink:0;';
 
+    const popBtn = document.createElement('button');
+    popBtn.className = 'btn-popout';
+    popBtn.textContent = '⤢';
+    popBtn.title = 'Open in separate window';
+    popBtn.onclick = e => { e.stopPropagation(); popOutDoc(path); };
+
     const removeBtn = document.createElement('button');
     removeBtn.className = 'btn red-sm';
     removeBtn.textContent = '✕';
     removeBtn.onclick = e => { e.stopPropagation(); unloadDoc(path); };
 
+    actions.appendChild(popBtn);
     actions.appendChild(removeBtn);
     row.appendChild(info);
     row.appendChild(actions);
@@ -1421,7 +1431,96 @@ function closeHelpBackdrop(e) {
   if (e.target === document.getElementById('help-modal')) toggleHelp();
 }
 
-// Keyboard shortcuts
+// ── Pop-out editor ───────────────────────────────────────────────────────────
+function popOutDoc(path) {
+  const d = docs[path];
+  if (!d) return;
+  const shortName = path.split('/').pop();
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>${shortName} — DocRelay</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;display:flex;flex-direction:column;height:100vh;overflow:hidden;}
+  #toolbar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#fff;border-bottom:0.5px solid rgba(0,0,0,0.1);flex-shrink:0;}
+  #toolbar h1{font-size:14px;font-weight:500;color:#1a1a1a;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  #meta{font-size:11px;color:#aaa;flex-shrink:0;}
+  #done-btn{padding:7px 18px;font-size:13px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:8px;cursor:pointer;}
+  #done-btn:hover{background:#333;}
+  #cancel-btn{padding:7px 14px;font-size:13px;border:0.5px solid rgba(0,0,0,0.2);border-radius:8px;background:transparent;cursor:pointer;}
+  #cancel-btn:hover{background:#f0f0ee;}
+  #editor{flex:1;width:100%;padding:16px 20px;font-size:13px;font-family:'Courier New',monospace;line-height:1.65;border:none;background:#fff;color:#1a1a1a;resize:none;outline:none;}
+  #status{font-size:11px;color:#16a34a;padding:0 16px 8px;background:#fff;flex-shrink:0;min-height:20px;}
+</style>
+</head>
+<body>
+<div id="toolbar">
+  <h1>${shortName}</h1>
+  <span id="meta"></span>
+  <button id="cancel-btn" onclick="window.close()">Cancel</button>
+  <button id="done-btn" onclick="sendBack()">✓ Done — send back</button>
+</div>
+<textarea id="editor" spellcheck="false"></textarea>
+<div id="status"></div>
+<script>
+  const content = ${JSON.stringify(d.content)};
+  const path    = ${JSON.stringify(path)};
+  const ta = document.getElementById('editor');
+  ta.value = content;
+  updateMeta();
+
+  ta.addEventListener('input', updateMeta);
+
+  function updateMeta() {
+    const lines = ta.value.split('\\n').length;
+    const chars = ta.value.length;
+    document.getElementById('meta').textContent = lines + ' lines · ' + chars + ' chars';
+  }
+
+  function sendBack() {
+    window.opener.postMessage({ type: 'docrelay_update', path, content: ta.value }, '*');
+    document.getElementById('status').textContent = '✓ Sent back to DocRelay — you can close this window.';
+    document.getElementById('done-btn').disabled = true;
+    document.getElementById('done-btn').textContent = '✓ Sent';
+  }
+
+  // Cmd/Ctrl+S = send back
+  document.addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); sendBack(); }
+  });
+<\/script>
+</body>
+</html>`;
+
+  const w = window.open('', `docrelay_${path}`, 'width=900,height=700,menubar=no,toolbar=no,location=no,status=no');
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+}
+
+// Listen for content sent back from pop-out windows
+window.addEventListener('message', e => {
+  if (e.data?.type !== 'docrelay_update') return;
+  const { path, content } = e.data;
+  if (!docs[path]) return;
+  docs[path].content = content;
+  docs[path].saved   = false;
+  if (path === activeDoc) {
+    document.getElementById('doc-area').value = content;
+    document.getElementById('editor-meta').textContent = `${content.split('\n').length} lines · ${content.length} chars`;
+  }
+  renderDocList();
+  // Notification in conn-status
+  const st = document.getElementById('conn-status');
+  st.className = 'status ok'; st.textContent = `${path.split('/').pop()} updated from pop-out`;
+  setTimeout(() => { if (st.textContent.includes('pop-out')) st.textContent = ''; }, 4000);
+});
+
+// ── Keyboard shortcuts ───────────────────────────────────────────────────────
 document.addEventListener('keydown', e => {
   const tag = document.activeElement.tagName;
   const typing = tag === 'INPUT' || tag === 'TEXTAREA';
