@@ -220,6 +220,11 @@
   .diff-unchanged { text-align: center; padding: 32px 16px; color: #aaa; font-size: 13px; }
   .btn-popout { padding: 3px 8px; font-size: 11px; color: #1d4ed8; border: 0.5px solid #bfdbfe; background: #eff6ff; border-radius: 6px; cursor: pointer; white-space: nowrap; transition: background 0.12s; }
   .btn-popout:hover { background: #dbeafe; }
+  /* File type filter pills */
+  .filter-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 4px; }
+  .filter-pill { font-size: 11px; padding: 3px 9px; border-radius: 20px; border: 0.5px solid rgba(0,0,0,0.15); background: #f5f5f3; color: #666; cursor: pointer; user-select: none; transition: all 0.12s; }
+  .filter-pill.on { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .filter-pill.custom-row { display:flex; align-items:center; gap:6px; background:transparent; border:none; padding:0; cursor:default; }
 </style>
 </head>
 <body>
@@ -254,12 +259,26 @@
     <div class="drawer-field">
       <div class="drawer-label">Repository</div>
       <input type="text" id="repo" value="ndg2ndg/Docs" oninput="saveSettings()" />
+      <span id="repo-ok" class="pat-ok" style="display:none;">✓ Saved</span>
       <div class="drawer-note">Format: <kbd class="kbd">owner/repo</kbd></div>
     </div>
 
     <div class="drawer-field">
       <div class="drawer-label">Branch</div>
       <input type="text" id="branch" value="main" oninput="saveSettings()" />
+      <span id="branch-ok" class="pat-ok" style="display:none;">✓ Saved</span>
+    </div>
+
+    <hr class="drawer-divider" />
+
+    <div class="drawer-field">
+      <div class="drawer-label">Show file types</div>
+      <div class="filter-pills" id="filter-pills"></div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
+        <input type="text" id="filter-custom" placeholder="add extension e.g. csv" style="flex:1;font-size:12px;padding:5px 8px;" />
+        <button class="btn" style="padding:5px 10px;font-size:12px;" onclick="addCustomExt()">+</button>
+      </div>
+      <div class="drawer-note" style="margin-top:4px;">Click a type to toggle. Changes apply on next Refresh.</div>
     </div>
 
     <hr class="drawer-divider" />
@@ -666,7 +685,9 @@ function renderLock(msg = '') {
 }
 
 async function initLock() {
-  if (sessionStorage.getItem(SESSION_KEY)) { hideLock(); return; }
+  if (sessionStorage.getItem(SESSION_KEY)) {
+    hideLock(); return;
+  }
   const stored = localStorage.getItem(LOCK_KEY);
   if (stored) {
     _lockState = 'pw';
@@ -727,7 +748,13 @@ async function saveConfigToGitHub(patch) {
   } catch(e) {}
 }
 
-function hideLock() { document.getElementById('lock-overlay').style.display = 'none'; }
+function hideLock() {
+  document.getElementById('lock-overlay').style.display = 'none';
+  // Auto-connect if PAT and repo are already saved
+  const pat  = localStorage.getItem('gh_pat');
+  const repo = localStorage.getItem('gh_repo');
+  if (pat && repo) listFiles();
+}
 
 // Init immediately
 initLock();
@@ -838,10 +865,7 @@ async function verifyLockTOTP() {
   }
 }
 
-function hideLock() { document.getElementById('lock-overlay').style.display = 'none'; }
-
-// Init immediately
-initLock();
+function hideLock() { /* defined above */ }
 
 // ── 2FA settings flow ────────────────────────────────────────────────────────
 let _pendingSecret = null;
@@ -946,20 +970,67 @@ const docs = {};
 let activeDoc = null;
 let currentMode = 'ai';
 
+// ── File type filter ─────────────────────────────────────────────────────────
+const FILTER_KEY      = 'docrelay_filetypes';
+const DEFAULT_TYPES   = ['md','txt','html','json','js','css','csv','xml','yaml','yml','docx','pdf'];
+
+function loadFilterTypes() {
+  try { return JSON.parse(localStorage.getItem(FILTER_KEY)) || DEFAULT_TYPES.slice(0,6); }
+  catch(e) { return DEFAULT_TYPES.slice(0,6); }
+}
+function saveFilterTypes(types) { localStorage.setItem(FILTER_KEY, JSON.stringify(types)); }
+
+function renderFilterPills() {
+  const active = loadFilterTypes();
+  const pills  = document.getElementById('filter-pills');
+  if (!pills) return;
+  // Known types + any custom ones already saved
+  const allTypes = [...new Set([...DEFAULT_TYPES, ...active])].sort();
+  pills.innerHTML = allTypes.map(ext => `
+    <span class="filter-pill ${active.includes(ext) ? 'on' : ''}" onclick="toggleFilterType('${ext}')">
+      .${ext}
+    </span>`).join('');
+}
+
+function toggleFilterType(ext) {
+  let active = loadFilterTypes();
+  active = active.includes(ext) ? active.filter(e => e !== ext) : [...active, ext];
+  if (active.length === 0) return; // always keep at least one
+  saveFilterTypes(active);
+  renderFilterPills();
+}
+
+function addCustomExt() {
+  const inp = document.getElementById('filter-custom');
+  const ext = inp.value.trim().replace(/^\./, '').toLowerCase();
+  if (!ext) return;
+  let active = loadFilterTypes();
+  if (!active.includes(ext)) { active.push(ext); saveFilterTypes(active); }
+  inp.value = '';
+  renderFilterPills();
+}
+
+function getFileFilter() {
+  const types = loadFilterTypes();
+  const pattern = types.map(e => e.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  return new RegExp(`\\.(${pattern})$`, 'i');
+}
+
 // Restore saved settings on load
 window.addEventListener('load', () => {
   const p = localStorage.getItem('gh_pat');
   const r = localStorage.getItem('gh_repo');
   const b = localStorage.getItem('gh_branch');
   if (p) { document.getElementById('pat').value = p; document.getElementById('pat-ok').style.display = ''; }
-  if (r) document.getElementById('repo').value = r;
-  if (b) document.getElementById('branch').value = b;
+  if (r) { document.getElementById('repo').value = r; document.getElementById('repo-ok').style.display = ''; }
+  if (b) { document.getElementById('branch').value = b; document.getElementById('branch-ok').style.display = ''; }
   // Show repo name in pill if configured
   if (r) updateConnPill('idle');
   // Restore auto-lock preference
   const al = localStorage.getItem(AUTOLOCK_KEY);
   if (al) document.getElementById('autolock-select').value = al;
   resetAutolockTimer();
+  renderFilterPills();
 });
 
 function savePat() {
@@ -970,8 +1041,8 @@ function savePat() {
 function saveSettings() {
   const r = document.getElementById('repo').value.trim();
   const b = document.getElementById('branch').value.trim();
-  if (r) localStorage.setItem('gh_repo', r);
-  if (b) localStorage.setItem('gh_branch', b);
+  if (r) { localStorage.setItem('gh_repo', r); document.getElementById('repo-ok').style.display = ''; }
+  if (b) { localStorage.setItem('gh_branch', b); document.getElementById('branch-ok').style.display = ''; }
   updateConnPill('idle');
 }
 
@@ -981,6 +1052,7 @@ function openSettings() {
   document.getElementById('settings-backdrop').classList.add('open');
   document.getElementById('settings-btn').classList.add('active');
   refresh2FAStatus();
+  renderFilterPills();
 }
 function closeSettings() {
   document.getElementById('settings-drawer').classList.remove('open');
@@ -1026,7 +1098,7 @@ async function listFiles() {
     const r = await gh(`git/trees/${document.getElementById('branch').value.trim()}?recursive=1`);
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     const data = await r.json();
-    const files = data.tree.filter(f => f.type === 'blob' && /\.(md|txt|html|json|js|css)$/.test(f.path));
+    const files = data.tree.filter(f => f.type === 'blob' && getFileFilter().test(f.path));
     st.className = 'status ok'; st.textContent = `${files.length} files`;
     buildNavigator(files.map(f => f.path));
     updateConnPill('ok');
