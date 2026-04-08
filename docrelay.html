@@ -271,18 +271,6 @@
 
     <hr class="drawer-divider" />
 
-    <div class="drawer-field">
-      <div class="drawer-label">Show file types</div>
-      <div class="filter-pills" id="filter-pills"></div>
-      <div style="display:flex;align-items:center;gap:6px;margin-top:6px;">
-        <input type="text" id="filter-custom" placeholder="add extension e.g. csv" style="flex:1;font-size:12px;padding:5px 8px;" />
-        <button class="btn" style="padding:5px 10px;font-size:12px;" onclick="addCustomExt()">+</button>
-      </div>
-      <div class="drawer-note" style="margin-top:4px;">Click a type to toggle. Changes apply on next Refresh.</div>
-    </div>
-
-    <hr class="drawer-divider" />
-
     <div class="drawer-note" style="line-height:1.65;">
       To create a PAT: <strong>github.com → Settings → Developer settings → Personal access tokens</strong>.<br/><br/>
       Required scope: <kbd class="kbd">repo</kbd> (read + write contents).
@@ -337,6 +325,12 @@
 
   </div>
   <div class="drawer-footer">
+    <div class="drawer-label" style="margin-bottom:6px;">File types to show</div>
+    <div class="filter-pills" id="filter-pills"></div>
+    <div style="display:flex;align-items:center;gap:6px;margin-top:6px;margin-bottom:10px;">
+      <input type="text" id="filter-custom" placeholder="add extension e.g. docx" style="flex:1;font-size:12px;padding:5px 8px;" onkeydown="if(event.key==='Enter')addCustomExt()" />
+      <button class="btn" style="padding:5px 10px;font-size:12px;flex-shrink:0;" onclick="addCustomExt()">+ Add</button>
+    </div>
     <button class="btn primary" style="width:100%;" onclick="applyAndConnect()">Connect &amp; list files</button>
     <div id="drawer-conn-status" class="status" style="margin-top:8px;text-align:center;min-height:18px;"></div>
     <hr class="drawer-divider" style="margin:12px 0;" />
