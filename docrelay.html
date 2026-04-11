@@ -619,7 +619,8 @@ function renderLock(msg = '') {
              onkeydown="if(event.key==='Enter')handleLock()" />
       <button onclick="handleLock()" style="width:100%;padding:10px;font-size:13px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:9px;cursor:pointer;margin-bottom:6px;">Unlock</button>
       <div style="font-size:12px;min-height:18px;text-align:center;color:#dc2626;" id="lock-msg">${msg}</div>
-      ${msg ? `<span class="back-link" style="margin-top:4px;display:block;" onclick="_lockState='sync';renderLock()">Forgot password? Sync from GitHub →</span>` : ''}`;
+      <span class="back-link" style="margin-top:6px;display:block;" onclick="_lockState='sync';renderLock()">New device? Sync from GitHub →</span>
+      <span class="back-link" style="margin-top:2px;display:block;" onclick="_lockState='setup';renderLock()">← Set up a new password</span>`;
     setTimeout(() => document.getElementById('lock-pw')?.focus(), 50);
   } else if (s === 'setup') {
     el.innerHTML = `
@@ -667,18 +668,8 @@ async function initLock() {
   if (sessionStorage.getItem(SESSION_KEY)) {
     hideLock(); return;
   }
-  const stored = localStorage.getItem(LOCK_KEY);
-  if (stored) {
-    _lockState = 'pw';
-  } else {
-    const pat  = localStorage.getItem('gh_pat');
-    const repo = localStorage.getItem('gh_repo');
-    if (pat && repo) {
-      const synced = await trySyncConfig(pat, repo);
-      if (synced) { _lockState = 'pw'; renderLock(); return; }
-    }
-    _lockState = 'sync';
-  }
+  // Always show password screen first — sync/setup are secondary options
+  _lockState = 'pw';
   renderLock();
   refresh2FAStatus();
 }
@@ -803,14 +794,13 @@ async function syncFromGitHub() {
 }
 
 async function handleLock() {
-  const stored = localStorage.getItem(LOCK_KEY);
+  let stored = localStorage.getItem(LOCK_KEY);
   const pw  = (document.getElementById('lock-pw')?.value  || '').trim();
   const pw2 = (document.getElementById('lock-pw2')?.value || '').trim();
 
   if (!pw) { renderLock('Enter a password'); return; }
 
-  if (_lockState === 'setup' || !stored) {
-    if (!stored && _lockState !== 'setup') { _lockState = 'setup'; renderLock(); return; }
+  if (_lockState === 'setup') {
     if (pw !== pw2)    { renderLock("Passwords don't match"); return; }
     if (pw.length < 4) { renderLock('At least 4 characters'); return; }
     const hash = await sha256(pw);
@@ -819,6 +809,25 @@ async function handleLock() {
     document.getElementById('lock-content').innerHTML = '<div style="text-align:center;color:#16a34a;font-size:13px;padding:12px 0;">✓ Password saved — unlocking…</div>';
     setTimeout(hideLock, 800);
   } else {
+    // If no local hash, try to fetch it from GitHub before comparing
+    if (!stored) {
+      const msgEl = document.getElementById('lock-msg');
+      if (msgEl) { msgEl.style.color = '#888'; msgEl.textContent = 'Checking GitHub…'; }
+      const pat  = localStorage.getItem('gh_pat');
+      const repo = localStorage.getItem('gh_repo');
+      if (pat && repo) {
+        const synced = await trySyncConfig(pat, repo);
+        if (synced) stored = localStorage.getItem(LOCK_KEY);
+      }
+    }
+    if (!stored) {
+      // No hash anywhere — offer setup or sync
+      renderLock('No password found — set one up or sync from GitHub');
+      const el = document.getElementById('lock-content');
+      el.innerHTML += `<button onclick="_lockState='setup';renderLock()" style="width:100%;margin-top:8px;padding:9px;font-size:13px;border:0.5px solid rgba(0,0,0,0.2);border-radius:9px;background:transparent;cursor:pointer;">Set up a new password</button>
+        <span class="back-link" style="margin-top:6px;display:block;" onclick="_lockState='sync';renderLock()">Sync from GitHub instead →</span>`;
+      return;
+    }
     if (await sha256(pw) !== stored) { renderLock('Incorrect password'); return; }
     if (localStorage.getItem(TOTP_KEY)) {
       _lockState = 'totp'; renderLock(); return;
