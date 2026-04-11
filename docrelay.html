@@ -105,7 +105,6 @@
   .nav-crumb.active:hover { background: transparent; }
   .nav-sep { color: #ddd; font-size: 11px; user-select: none; }
   .nav-items { display: flex; flex-direction: column; gap: 1px; max-height: 264px; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
-  /* Desktop: thin unobtrusive scrollbar */
   .nav-items::-webkit-scrollbar { width: 4px; }
   .nav-items::-webkit-scrollbar-track { background: transparent; }
   .nav-items::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.14); border-radius: 2px; }
@@ -141,11 +140,6 @@
   .step-label { font-size: 12px; font-weight: 500; color: #1a1a1a; margin-bottom: 6px; }
 
   /* Workspace card */
-  .doc-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 12px; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 8px; margin-bottom: 6px; cursor: pointer; transition: background 0.15s; }
-  .doc-row:hover { background: #f9f9f7; }
-  .doc-row.active { border-color: #1d4ed8; background: #eff6ff; }
-  .doc-name { font-size: 13px; font-weight: 500; }
-  .doc-meta { font-size: 11px; color: #999; margin-top: 2px; }
   .doc-list-area { margin-bottom: 14px; }
 
   /* Mode toggle */
@@ -292,18 +286,15 @@
     <div class="drawer-field">
       <div class="drawer-label">Two-Factor Authentication</div>
 
-      <!-- Status -->
       <div class="twofa-status off" id="twofa-status-row">
         <span id="twofa-status-dot">○</span>
         <span id="twofa-status-text">Not enabled</span>
       </div>
 
-      <!-- Enable flow -->
       <div id="twofa-enable-area">
         <button class="btn" style="width:100%;" onclick="beginEnable2FA()">Enable 2FA</button>
       </div>
 
-      <!-- Setup: scan QR -->
       <div id="twofa-setup-area" style="display:none;">
         <div class="drawer-note" style="margin-bottom:8px;">Scan with your authenticator app (Google Authenticator, Authy, 1Password, Apple Passwords), then enter the 6-digit code to confirm.</div>
         <div id="qr-wrap"></div>
@@ -314,7 +305,6 @@
         <div id="twofa-setup-msg" class="status" style="margin-top:6px;text-align:center;min-height:16px;"></div>
       </div>
 
-      <!-- Disable flow -->
       <div id="twofa-disable-area" style="display:none;">
         <input type="text" id="totp-disable-code" class="totp-input" placeholder="000000" maxlength="6" inputmode="numeric" style="margin-bottom:8px;" />
         <button class="btn" style="width:100%;color:#dc2626;border-color:#fecaca;" onclick="disable2FA()">Disable 2FA</button>
@@ -482,16 +472,13 @@
   <!-- WORKSPACE -->
   <div class="card" id="workspace-card" style="display:none;">
 
-    <!-- Doc list -->
     <div class="doc-list-area" id="doc-list"></div>
 
-    <!-- Mode toggle -->
     <div class="mode-toggle">
       <button class="mode-btn active" id="mode-ai-btn"     onclick="setMode('ai')">↗ Send to AI</button>
       <button class="mode-btn"        id="mode-manual-btn" onclick="setMode('manual')">✎ Edit manually</button>
     </div>
 
-    <!-- AI panel -->
     <div id="ai-panel">
       <div class="ai-steps">
         <div class="ai-step ready" id="step1">
@@ -513,7 +500,6 @@
       </div>
     </div>
 
-    <!-- Manual panel -->
     <div id="manual-panel" style="display:none;">
       <div class="manual-meta">
         <span id="editor-filename" style="font-weight:500;"></span>
@@ -620,7 +606,7 @@ function generateSecret() {
 
 // ── Lock screen flow ─────────────────────────────────────────────────────────
 const CONFIG_FILE = '.docrelay.json';
-let _lockState = 'pw'; // pw | setup | sync | totp | logoff
+let _lockState = 'pw';
 
 function renderLock(msg = '') {
   const el = document.getElementById('lock-content');
@@ -671,7 +657,6 @@ function renderLock(msg = '') {
       <button onclick="executeLogoff()" style="width:100%;padding:10px;font-size:13px;color:#dc2626;border:0.5px solid #fecaca;background:#fff5f5;border-radius:9px;cursor:pointer;margin-bottom:8px;">↩ Yes, log off this device</button>
       <button onclick="_lockState='pw';renderLock()" style="width:100%;padding:10px;font-size:13px;border:0.5px solid rgba(0,0,0,0.2);background:transparent;border-radius:9px;cursor:pointer;">← Cancel</button>`;
   }
-  // shake animation on error msg
   if (msg && (s === 'pw' || s === 'setup' || s === 'totp')) {
     const card = document.getElementById('lock-card');
     card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
@@ -721,7 +706,6 @@ async function saveConfigToGitHub(patch) {
   const branch = localStorage.getItem('gh_branch') || 'main';
   if (!pat || !repo) return;
   try {
-    // Read existing or start fresh
     let sha = null, existing = {};
     const r = await fetch(`https://api.github.com/repos/${repo}/contents/${CONFIG_FILE}`, {
       headers: { Authorization: `Bearer ${pat}`, Accept: 'application/vnd.github+json' }
@@ -742,9 +726,9 @@ async function saveConfigToGitHub(patch) {
   } catch(e) {}
 }
 
+// ── THE ONE TRUE hideLock — hides overlay and auto-connects ──────────────────
 function hideLock() {
   document.getElementById('lock-overlay').style.display = 'none';
-  // Auto-connect if PAT and repo are already saved
   const pat  = localStorage.getItem('gh_pat');
   const repo = localStorage.getItem('gh_repo');
   if (pat && repo) listFiles();
@@ -770,7 +754,6 @@ function confirmLogoff() {
 }
 
 function executeLogoff() {
-  // Clear everything device-local
   sessionStorage.clear();
   localStorage.removeItem(LOCK_KEY);
   localStorage.removeItem(TOTP_KEY);
@@ -778,7 +761,6 @@ function executeLogoff() {
   localStorage.removeItem('gh_repo');
   localStorage.removeItem('gh_branch');
   localStorage.removeItem(AUTOLOCK_KEY);
-  // Reload to fresh state
   location.reload();
 }
 
@@ -797,7 +779,6 @@ function resetAutolockTimer() {
   }, mins * 60 * 1000);
 }
 
-// Reset timer on any user activity
 ['mousemove','keydown','touchstart','click'].forEach(ev => {
   document.addEventListener(ev, resetAutolockTimer, { passive: true });
 });
@@ -853,13 +834,11 @@ async function verifyLockTOTP() {
   if (token.length !== 6) { renderLock('Enter the 6-digit code'); return; }
   if (await verifyTOTP(secret, token)) {
     sessionStorage.setItem(SESSION_KEY, '1');
-    hideLock();
+    hideLock(); // now calls the real implementation above
   } else {
     _lockState = 'totp'; renderLock('Incorrect code — try again');
   }
 }
-
-function hideLock() { /* defined above */ }
 
 // ── 2FA settings flow ────────────────────────────────────────────────────────
 let _pendingSecret = null;
@@ -944,7 +923,7 @@ async function changePassword() {
   msg.className = ''; msg.textContent = '';
 
   if (!current || !newPw || !confirm) { msg.className = 'err'; msg.textContent = 'All fields required.'; return; }
-  if (newPw !== confirm)              { msg.className = 'err'; msg.textContent = 'New passwords don\'t match.'; return; }
+  if (newPw !== confirm)              { msg.className = 'err'; msg.textContent = "New passwords don't match."; return; }
   if (newPw.length < 4)               { msg.className = 'err'; msg.textContent = 'At least 4 characters.'; return; }
 
   const currentHash = await sha256(current);
@@ -978,7 +957,6 @@ function renderFilterPills() {
   const active = loadFilterTypes();
   const pills  = document.getElementById('filter-pills');
   if (!pills) return;
-  // Known types + any custom ones already saved
   const allTypes = [...new Set([...DEFAULT_TYPES, ...active])].sort();
   pills.innerHTML = allTypes.map(ext => `
     <span class="filter-pill ${active.includes(ext) ? 'on' : ''}" onclick="toggleFilterType('${ext}')">
@@ -989,7 +967,7 @@ function renderFilterPills() {
 function toggleFilterType(ext) {
   let active = loadFilterTypes();
   active = active.includes(ext) ? active.filter(e => e !== ext) : [...active, ext];
-  if (active.length === 0) return; // always keep at least one
+  if (active.length === 0) return;
   saveFilterTypes(active);
   renderFilterPills();
 }
@@ -1010,7 +988,6 @@ function getFileFilter() {
   return new RegExp(`\\.(${pattern})$`, 'i');
 }
 
-// Restore saved settings on load
 window.addEventListener('load', () => {
   const p = localStorage.getItem('gh_pat');
   const r = localStorage.getItem('gh_repo');
@@ -1018,9 +995,7 @@ window.addEventListener('load', () => {
   if (p) { document.getElementById('pat').value = p; document.getElementById('pat-ok').style.display = ''; }
   if (r) { document.getElementById('repo').value = r; document.getElementById('repo-ok').style.display = ''; }
   if (b) { document.getElementById('branch').value = b; document.getElementById('branch-ok').style.display = ''; }
-  // Show repo name in pill if configured
   if (r) updateConnPill('idle');
-  // Restore auto-lock preference
   const al = localStorage.getItem(AUTOLOCK_KEY);
   if (al) document.getElementById('autolock-select').value = al;
   resetAutolockTimer();
@@ -1040,7 +1015,6 @@ function saveSettings() {
   updateConnPill('idle');
 }
 
-// Settings drawer
 function openSettings() {
   document.getElementById('settings-drawer').classList.add('open');
   document.getElementById('settings-backdrop').classList.add('open');
@@ -1059,7 +1033,6 @@ function applyAndConnect() {
   listFiles();
 }
 
-// Connection pill
 function updateConnPill(state, text) {
   const pill = document.getElementById('conn-pill');
   const label = document.getElementById('conn-pill-text');
@@ -1076,7 +1049,6 @@ function updateConnPill(state, text) {
   }
 }
 
-// GitHub API helper
 function gh(path, opts={}) {
   return fetch(`https://api.github.com/repos/${document.getElementById('repo').value.trim()}/${path}`, {
     ...opts,
@@ -1107,12 +1079,11 @@ async function listFiles() {
 }
 
 // ── File navigator ───────────────────────────────────────────────────────────
-let fsTree = {};   // folderKey → { folders: Set<folderKey>, files: [{name,path}] }
+let fsTree = {};
 let navCurrent = '__root__';
 
 function buildNavigator(paths) {
   fsTree = {};
-
   paths.forEach(path => {
     const parts = path.split('/');
     for (let depth = 0; depth <= parts.length - 1; depth++) {
@@ -1126,7 +1097,6 @@ function buildNavigator(paths) {
       }
     }
   });
-
   navCurrent = '__root__';
   document.getElementById('browse-prompt').style.display = 'none';
   document.getElementById('nav-root').style.display = '';
@@ -1140,8 +1110,6 @@ function navigateTo(folderKey) {
 
 function renderNavigator() {
   const node = fsTree[navCurrent] || { folders: new Set(), files: [] };
-
-  // Breadcrumb
   const bc = document.getElementById('nav-breadcrumb');
   const crumbs = navCurrent === '__root__' ? [] : navCurrent.split('/');
   let bcHTML = `<span class="nav-crumb ${navCurrent === '__root__' ? 'active' : ''}" onclick="navigateTo('__root__')">root</span>`;
@@ -1152,7 +1120,6 @@ function renderNavigator() {
   });
   bc.innerHTML = bcHTML;
 
-  // Items
   const items = document.getElementById('nav-items');
   const folders = [...node.folders].sort((a, b) => a.split('/').pop().localeCompare(b.split('/').pop()));
   const files = [...node.files].sort((a, b) => a.name.localeCompare(b.name));
@@ -1270,7 +1237,6 @@ function setMode(mode) {
   document.getElementById('manual-panel').style.display = mode === 'manual' ? '' : 'none';
   document.getElementById('mode-ai-btn').classList.toggle('active',     mode === 'ai');
   document.getElementById('mode-manual-btn').classList.toggle('active', mode === 'manual');
-  // Populate editor when switching to manual
   if (mode === 'manual' && activeDoc) {
     document.getElementById('doc-area').value = docs[activeDoc].content;
   }
@@ -1285,7 +1251,6 @@ function setActive(path) {
   document.getElementById('diff-card').style.display = 'none';
   pendingContent = null;
   renderDocList();
-  // Light up step 2 now that docs are loaded
   document.getElementById('step2').classList.add('ready');
 }
 
@@ -1322,10 +1287,8 @@ async function captureAndSave() {
   } catch(e) { st.className = 'status err'; st.textContent = 'Clipboard access denied.'; }
 }
 
-// LCS-based line diff
 function computeDiff(oldLines, newLines) {
   const m = oldLines.length, n = newLines.length;
-  // For very large files, skip LCS and just show side-by-side
   if (m * n > 200000) {
     const ops = [];
     const len = Math.max(m, n);
@@ -1365,19 +1328,15 @@ function showDiff(original, proposed) {
   const ops = computeDiff(oldLines, newLines);
 
   let adds_count = 0, removes_count = 0;
-
-  // Build aligned rows — zip consecutive remove/add blocks
   const rows = [];
   let i = 0;
   while (i < ops.length) {
     if (ops[i].type === 'equal') {
       rows.push({ type: 'equal', left: ops[i].old, right: ops[i].new }); i++;
     } else {
-      // Collect the full remove block then the full add block
       const removes = [], addsList = [];
       while (i < ops.length && ops[i].type === 'remove') { removes.push(ops[i].old); i++; }
       while (i < ops.length && ops[i].type === 'add')    { addsList.push(ops[i].new); i++; }
-      // Zip them together row by row
       const len = Math.max(removes.length, addsList.length);
       for (let j = 0; j < len; j++) {
         const l = removes[j]  !== undefined ? removes[j]  : null;
@@ -1409,7 +1368,7 @@ function showDiff(original, proposed) {
       } else if (row.type === 'add') {
         tr = buildRow('add', null, null, '', rightLn, row.right, '+');
         rightLn++;
-      } else { // change
+      } else {
         tr = buildRow('change', leftLn, row.left, '−', rightLn, row.right, '+');
         leftLn++; rightLn++;
       }
@@ -1428,20 +1387,14 @@ function showDiff(original, proposed) {
 }
 
 function buildRow(type, leftLn, leftText, leftPrefix, rightLn, rightText, rightPrefix) {
-  const leftLnCell  = leftLn  !== null ? `<td class="diff-cell-ln">${leftLn}</td>`  : `<td class="diff-cell-ln"></td>`;
-  const rightLnCell = rightLn !== null ? `<td class="diff-cell-ln">${rightLn}</td>` : `<td class="diff-cell-ln"></td>`;
-
   const leftBg  = type === 'remove' || type === 'change' ? 'background:#fff5f5;' : type === 'equal' ? 'background:#fff;' : 'background:#fafafa;';
   const rightBg = type === 'add'    || type === 'change' ? 'background:#f0fdf4;' : type === 'equal' ? 'background:#fff;' : 'background:#fafafa;';
   const leftColor  = type === 'remove' || type === 'change' ? 'color:#991b1b;' : 'color:#1a1a1a;';
   const rightColor = type === 'add'    || type === 'change' ? 'color:#166534;' : 'color:#1a1a1a;';
-
   const leftContent  = leftText  !== null ? `${leftPrefix} ${escHtml(leftText)}`  : '';
   const rightContent = rightText !== null ? `${rightPrefix} ${escHtml(rightText)}` : '';
-
   const leftLnBg  = type === 'remove' || type === 'change' ? 'background:#fee2e2;color:#f87171;' : type === 'add' ? 'background:#fafafa;color:transparent;' : '';
   const rightLnBg = type === 'add'    || type === 'change' ? 'background:#dcfce7;color:#4ade80;' : type === 'remove' ? 'background:#fafafa;color:transparent;' : '';
-
   return `<tr>` +
     `<td class="diff-cell-ln" style="${leftLnBg}">${leftLn ?? ''}</td>` +
     `<td class="diff-cell-text" style="${leftBg}${leftColor}">${leftContent}</td>` +
@@ -1489,7 +1442,6 @@ async function copyAllToChat() {
   document.getElementById('step1').querySelector('.ai-step-num').textContent = '✓';
 }
 
-// Help modal
 function toggleHelp() {
   document.getElementById('help-modal').classList.toggle('open');
 }
@@ -1538,23 +1490,18 @@ function popOutDoc(path) {
   const ta = document.getElementById('editor');
   ta.value = content;
   updateMeta();
-
   ta.addEventListener('input', updateMeta);
-
   function updateMeta() {
     const lines = ta.value.split('\\n').length;
     const chars = ta.value.length;
     document.getElementById('meta').textContent = lines + ' lines · ' + chars + ' chars';
   }
-
   function sendBack() {
     window.opener.postMessage({ type: 'docrelay_update', path, content: ta.value }, '*');
     document.getElementById('status').textContent = '✓ Sent back to DocRelay — you can close this window.';
     document.getElementById('done-btn').disabled = true;
     document.getElementById('done-btn').textContent = '✓ Sent';
   }
-
-  // Cmd/Ctrl+S = send back
   document.addEventListener('keydown', e => {
     if ((e.metaKey || e.ctrlKey) && e.key === 's') { e.preventDefault(); sendBack(); }
   });
@@ -1568,7 +1515,6 @@ function popOutDoc(path) {
   w.document.close();
 }
 
-// Listen for content sent back from pop-out windows
 window.addEventListener('message', e => {
   if (e.data?.type !== 'docrelay_update') return;
   const { path, content } = e.data;
@@ -1580,7 +1526,6 @@ window.addEventListener('message', e => {
     document.getElementById('editor-meta').textContent = `${content.split('\n').length} lines · ${content.length} chars`;
   }
   renderDocList();
-  // Notification in conn-status
   const st = document.getElementById('conn-status');
   st.className = 'status ok'; st.textContent = `${path.split('/').pop()} updated from pop-out`;
   setTimeout(() => { if (st.textContent.includes('pop-out')) st.textContent = ''; }, 4000);
