@@ -1365,12 +1365,9 @@ function printDoc(path) {
       .replace(/`(.+?)`/g,'<code>$1</code>')
       .replace(/^[-*]\s(.+)/gm,'<li>$1</li>')
       .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
-      .replace(/
-
-/g,'</p><p>')
+      .replace(/\n\n/g,'</p><p>')
       .replace(/^(?!<[hHuUpP])/gm, '')
-      .replace(/
-/g,'<br>');
+      .replace(/\n/g,'<br>');
   }
 
   const body = isMarkdown
