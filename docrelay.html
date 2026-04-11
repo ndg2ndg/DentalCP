@@ -1101,12 +1101,20 @@ function renderDocList() {
     popBtn.title = 'Open in separate window';
     popBtn.onclick = e => { e.stopPropagation(); popOutDoc(path); };
 
+    const printBtn = document.createElement('button');
+    printBtn.className = 'btn-popout';
+    printBtn.textContent = '🖨';
+    printBtn.title = 'Print';
+    printBtn.style.cssText = 'color:#555;border-color:rgba(0,0,0,0.15);background:#f9f9f7;';
+    printBtn.onclick = e => { e.stopPropagation(); printDoc(path); };
+
     const removeBtn = document.createElement('button');
     removeBtn.className = 'btn red-sm';
     removeBtn.textContent = '✕';
     removeBtn.onclick = e => { e.stopPropagation(); unloadDoc(path); };
 
     actions.appendChild(popBtn);
+    actions.appendChild(printBtn);
     actions.appendChild(removeBtn);
     row.appendChild(info);
     row.appendChild(actions);
@@ -1333,6 +1341,86 @@ function closeHelpBackdrop(e) {
 }
 
 // ── Pop-out editor ───────────────────────────────────────────────────────────
+function printDoc(path) {
+  const d = docs[path];
+  if (!d) return;
+  const shortName = path.split('/').pop();
+  const ext = shortName.split('.').pop().toLowerCase();
+
+  // Detect if content is markdown-ish for basic formatting
+  const isMarkdown = ['md','markdown'].includes(ext);
+
+  // Convert basic markdown to HTML for nicer print output
+  function mdToHtml(text) {
+    return text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/^#{6}\s(.+)/gm,'<h6>$1</h6>')
+      .replace(/^#{5}\s(.+)/gm,'<h5>$1</h5>')
+      .replace(/^#{4}\s(.+)/gm,'<h4>$1</h4>')
+      .replace(/^#{3}\s(.+)/gm,'<h3>$1</h3>')
+      .replace(/^#{2}\s(.+)/gm,'<h2>$1</h2>')
+      .replace(/^#{1}\s(.+)/gm,'<h1>$1</h1>')
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g,'<em>$1</em>')
+      .replace(/`(.+?)`/g,'<code>$1</code>')
+      .replace(/^[-*]\s(.+)/gm,'<li>$1</li>')
+      .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+      .replace(/
+
+/g,'</p><p>')
+      .replace(/^(?!<[hHuUpP])/gm, '')
+      .replace(/
+/g,'<br>');
+  }
+
+  const body = isMarkdown
+    ? `<div class="prose">${mdToHtml(d.content)}</div>`
+    : `<pre>${d.content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>`;
+
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>${shortName}</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1a1a1a; padding: 2cm; font-size: 11pt; line-height: 1.6; }
+  .header { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 0.5px solid #ccc; padding-bottom: 8px; margin-bottom: 24px; }
+  .header h1 { font-size: 14pt; font-weight: 600; }
+  .header span { font-size: 9pt; color: #888; }
+  pre { font-family: 'Courier New', monospace; font-size: 9.5pt; line-height: 1.55; white-space: pre-wrap; word-break: break-word; background: #f9f9f7; border: 0.5px solid #e5e5e3; border-radius: 6px; padding: 16px; }
+  code { font-family: 'Courier New', monospace; font-size: 9pt; background: #f0f0ee; padding: 1px 4px; border-radius: 3px; }
+  .prose h1 { font-size: 20pt; font-weight: 600; margin: 20px 0 10px; }
+  .prose h2 { font-size: 16pt; font-weight: 600; margin: 18px 0 8px; border-bottom: 0.5px solid #e5e5e3; padding-bottom: 4px; }
+  .prose h3 { font-size: 13pt; font-weight: 600; margin: 14px 0 6px; }
+  .prose h4, .prose h5, .prose h6 { font-size: 11pt; font-weight: 600; margin: 12px 0 4px; }
+  .prose p { margin: 8px 0; }
+  .prose ul { margin: 6px 0 6px 20px; }
+  .prose li { margin: 3px 0; }
+  .prose strong { font-weight: 600; }
+  .prose em { font-style: italic; }
+  @media print {
+    body { padding: 0; }
+    @page { margin: 2cm; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>${shortName}</h1>
+  <span>${path} &nbsp;·&nbsp; ${new Date().toLocaleDateString()}</span>
+</div>
+${body}
+<script>window.onload = () => { window.print(); window.onafterprint = () => window.close(); }<\/script>
+</body>
+</html>`;
+
+  const w = window.open('', '_blank', 'width=800,height=900');
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+}
+
 function popOutDoc(path) {
   const d = docs[path];
   if (!d) return;
