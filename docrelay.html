@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>DocRelay</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -14,32 +13,14 @@
   #lock-card { background: #fff; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 16px; padding: 2rem 2rem 1.75rem; width: 100%; max-width: 340px; box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
   #lock-name { font-size: 20px; font-weight: 500; color: #1a1a1a; }
   #lock-sub { font-size: 12px; color: #aaa; margin-top: 2px; margin-bottom: 1.5rem; }
-  #lock-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #888; margin-bottom: 8px; }
-  #lock-pw { width: 100%; font-size: 14px; padding: 9px 12px; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 9px; background: #f9f9f7; color: #1a1a1a; outline: none; margin-bottom: 10px; font-family: monospace; letter-spacing: 0.08em; }
-  #lock-pw:focus { border-color: rgba(0,0,0,0.4); background: #fff; }
-  #lock-pw2 { width: 100%; font-size: 14px; padding: 9px 12px; border: 0.5px solid rgba(0,0,0,0.2); border-radius: 9px; background: #f9f9f7; color: #1a1a1a; outline: none; margin-bottom: 10px; font-family: monospace; letter-spacing: 0.08em; }
-  #lock-pw2:focus { border-color: rgba(0,0,0,0.4); background: #fff; }
-  #lock-btn { width: 100%; padding: 10px; font-size: 13px; font-weight: 500; background: #1a1a1a; color: #fff; border: none; border-radius: 9px; cursor: pointer; transition: background 0.15s; }
-  #lock-btn:hover { background: #333; }
-  #lock-msg { font-size: 12px; margin-top: 10px; min-height: 18px; text-align: center; }
-  #lock-msg.err { color: #dc2626; }
-  #lock-msg.ok { color: #16a34a; }
-  @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }
-  .shake { animation: shake 0.35s ease; }
-
-  /* 2FA */
-  #lock-totp-page { display:none; }
-  .totp-input { width:100%; font-size:22px; font-family:monospace; letter-spacing:0.2em; text-align:center; padding:10px; border:0.5px solid rgba(0,0,0,0.2); border-radius:9px; background:#f9f9f7; outline:none; margin-bottom:10px; }
-  .totp-input:focus { border-color:rgba(0,0,0,0.4); background:#fff; }
   .twofa-status { display:flex; align-items:center; gap:8px; font-size:12px; padding:8px 10px; border-radius:8px; margin-bottom:8px; }
   .twofa-status.on  { background:#f0faf4; color:#166534; border:0.5px solid #bbf7d0; }
-  .twofa-status.off { background:#f9f9f7; color:#888;    border:0.5px solid rgba(0,0,0,0.1); }
+  .twofa-status.off { background:#f9f9f7; color:#888; border:0.5px solid rgba(0,0,0,0.1); }
   #qr-wrap { display:flex; justify-content:center; margin:12px 0; }
   #qr-wrap canvas, #qr-wrap img { border-radius:8px; }
   .secret-code { font-family:monospace; font-size:11px; background:#f0f0ee; border:0.5px solid rgba(0,0,0,0.12); border-radius:6px; padding:6px 10px; word-break:break-all; color:#555; text-align:center; margin-bottom:10px; letter-spacing:0.05em; }
-  .back-link { font-size:12px; color:#aaa; cursor:pointer; text-align:center; margin-top:10px; display:block; }
-  .back-link:hover { color:#1a1a1a; }
-  .app { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+  .totp-input { width:100%; font-size:22px; font-family:monospace; letter-spacing:0.2em; text-align:center; padding:10px; border:0.5px solid rgba(0,0,0,0.2); border-radius:9px; background:#f9f9f7; outline:none; margin-bottom:10px; }
+  .totp-input:focus { border-color:rgba(0,0,0,0.4); background:#fff; }
   .card { background: #fff; border: 0.5px solid rgba(0,0,0,0.12); border-radius: 12px; padding: 1rem 1.25rem; }
   .section-title { font-size: 11px; font-weight: 500; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
   .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -268,17 +249,6 @@
     <div class="drawer-note" style="line-height:1.65;">
       To create a PAT: <strong>github.com → Settings → Developer settings → Personal access tokens</strong>.<br/><br/>
       Required scope: <kbd class="kbd">repo</kbd> (read + write contents).
-    </div>
-
-    <hr class="drawer-divider" />
-
-    <div class="drawer-field">
-      <div class="drawer-label">Change Password</div>
-      <input type="password" id="chpw-current" placeholder="Current password" style="width:100%;margin-bottom:6px;" />
-      <input type="password" id="chpw-new"     placeholder="New password"     style="width:100%;margin-bottom:6px;" />
-      <input type="password" id="chpw-confirm" placeholder="Confirm new password" style="width:100%;margin-bottom:8px;" />
-      <button class="btn" style="width:100%;" onclick="changePassword()">Update password</button>
-      <div id="chpw-msg" class="status" style="margin-top:6px;min-height:16px;text-align:center;"></div>
     </div>
 
     <hr class="drawer-divider" />
@@ -543,15 +513,11 @@
 </div>
 
 <script>
-// ── Lock screen ──────────────────────────────────────────────────────────────
-const LOCK_KEY    = 'docrelay_pw_hash';
-const SESSION_KEY = 'docrelay_unlocked';
-const TOTP_KEY    = 'docrelay_totp_secret';
-
-async function sha256(str) {
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
+// ── Auth — PAT is the credential, TOTP is optional 2FA ──────────────────────
+const SESSION_KEY  = 'docrelay_unlocked';
+const TOTP_KEY     = 'docrelay_totp_secret';
+const AUTOLOCK_KEY = 'docrelay_autolock';
+let _autolockTimer = null;
 
 // ── TOTP engine (RFC 6238 / HMAC-SHA1) ──────────────────────────────────────
 const B32 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
@@ -604,150 +570,217 @@ function generateSecret() {
   return base32Encode(crypto.getRandomValues(new Uint8Array(20)));
 }
 
-// ── Lock screen flow ─────────────────────────────────────────────────────────
-const CONFIG_FILE = '.docrelay.json';
-let _lockState = 'pw';
-
-function renderLock(msg = '') {
-  const el = document.getElementById('lock-content');
-  const s  = _lockState;
-  if (s === 'pw') {
-    el.innerHTML = `
-      <div class="drawer-label" style="margin-bottom:8px;">Password</div>
-      <input type="password" id="lock-pw" placeholder="Enter password" autocomplete="current-password"
-             style="width:100%;margin-bottom:8px;"
-             onkeydown="if(event.key==='Enter')handleLock()" />
-      <button onclick="handleLock()" style="width:100%;padding:10px;font-size:13px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:9px;cursor:pointer;margin-bottom:6px;">Unlock</button>
-      <div style="font-size:12px;min-height:18px;text-align:center;color:#dc2626;" id="lock-msg">${msg}</div>
-      <span class="back-link" style="margin-top:6px;display:block;" onclick="_lockState='sync';renderLock()">New device? Sync from GitHub →</span>
-      <span class="back-link" style="margin-top:2px;display:block;" onclick="_lockState='setup';renderLock()">← Set up a new password</span>`;
-    setTimeout(() => document.getElementById('lock-pw')?.focus(), 50);
-  } else if (s === 'setup') {
-    el.innerHTML = `
-      <div class="drawer-label" style="margin-bottom:8px;">Set a password</div>
-      <input type="password" id="lock-pw"  placeholder="Choose a password" style="width:100%;margin-bottom:6px;"
-             onkeydown="if(event.key==='Enter')handleLock()" />
-      <input type="password" id="lock-pw2" placeholder="Confirm password"  style="width:100%;margin-bottom:8px;"
-             onkeydown="if(event.key==='Enter')handleLock()" />
-      <button onclick="handleLock()" style="width:100%;padding:10px;font-size:13px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:9px;cursor:pointer;margin-bottom:6px;">Set password</button>
-      <div style="font-size:12px;min-height:18px;text-align:center;" id="lock-msg">${msg}</div>`;
-    setTimeout(() => document.getElementById('lock-pw')?.focus(), 50);
-  } else if (s === 'sync') {
-    el.innerHTML = `
-      <div class="drawer-label" style="margin-bottom:6px;">New device</div>
-      <div style="font-size:12px;color:#888;margin-bottom:12px;line-height:1.55;">Enter your PAT and repo to sync your settings from GitHub.</div>
-      <input type="password" id="sync-pat"  placeholder="PAT token (ghp_...)" style="width:100%;margin-bottom:6px;" autocomplete="off" />
-      <input type="text"     id="sync-repo" placeholder="owner/repo" style="width:100%;margin-bottom:10px;" autocomplete="off" />
-      <button onclick="syncFromGitHub()" style="width:100%;padding:10px;font-size:13px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:9px;cursor:pointer;margin-bottom:6px;">Sync &amp; continue</button>
-      <div style="font-size:12px;min-height:18px;text-align:center;" id="sync-msg">${msg}</div>
-      <span class="back-link" onclick="_lockState='setup';renderLock()">← Set up a new password instead</span>`;
-    setTimeout(() => document.getElementById('sync-pat')?.focus(), 50);
-  } else if (s === 'totp') {
-    el.innerHTML = `
-      <div class="drawer-label" style="margin-bottom:8px;">Authenticator code</div>
-      <input type="text" id="lock-totp" class="totp-input" placeholder="000000" maxlength="6"
-             inputmode="numeric" autocomplete="one-time-code"
-             onkeydown="if(event.key==='Enter')verifyLockTOTP()" />
-      <button onclick="verifyLockTOTP()" style="width:100%;padding:10px;font-size:13px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:9px;cursor:pointer;margin-bottom:6px;">Verify</button>
-      <div style="font-size:12px;min-height:18px;text-align:center;color:#dc2626;" id="lock-totp-msg">${msg}</div>
-      <span class="back-link" onclick="_lockState='pw';renderLock()">← Back</span>`;
-    setTimeout(() => document.getElementById('lock-totp')?.focus(), 50);
-  } else if (s === 'logoff') {
-    el.innerHTML = `
-      <div style="font-size:13px;color:#444;line-height:1.6;margin-bottom:16px;">This will clear your session on this device. Your PAT, password, and settings will be removed from this browser.<br/><br/>Your files and config in GitHub are not affected.</div>
-      <button onclick="executeLogoff()" style="width:100%;padding:10px;font-size:13px;color:#dc2626;border:0.5px solid #fecaca;background:#fff5f5;border-radius:9px;cursor:pointer;margin-bottom:8px;">↩ Yes, log off this device</button>
-      <button onclick="_lockState='pw';renderLock()" style="width:100%;padding:10px;font-size:13px;border:0.5px solid rgba(0,0,0,0.2);background:transparent;border-radius:9px;cursor:pointer;">← Cancel</button>`;
-  }
-  if (msg && (s === 'pw' || s === 'setup' || s === 'totp')) {
-    const card = document.getElementById('lock-card');
-    card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
-  }
+// ── Lock screen renderers ────────────────────────────────────────────────────
+function renderLock(msg = '', loading = false) {
+  const el   = document.getElementById('lock-content');
+  const card = document.getElementById('lock-card');
+  const savedPAT  = localStorage.getItem('gh_pat')  || '';
+  const savedRepo = localStorage.getItem('gh_repo') || '';
+  el.innerHTML = `
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#888;margin-bottom:6px;">GitHub PAT</div>
+    <input type="password" id="lock-pat" placeholder="ghp_..." autocomplete="current-password"
+           value="${savedPAT}"
+           style="width:100%;font-size:13px;padding:9px 12px;border:0.5px solid rgba(0,0,0,0.2);border-radius:9px;background:#f9f9f7;color:#1a1a1a;outline:none;margin-bottom:8px;font-family:monospace;"
+           onkeydown="if(event.key==='Enter')handleLock()" />
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#888;margin-bottom:6px;">Repository</div>
+    <input type="text" id="lock-repo" placeholder="owner/repo"
+           value="${savedRepo}"
+           style="width:100%;font-size:13px;padding:9px 12px;border:0.5px solid rgba(0,0,0,0.2);border-radius:9px;background:#f9f9f7;color:#1a1a1a;outline:none;margin-bottom:10px;"
+           onkeydown="if(event.key==='Enter')handleLock()" />
+    <button onclick="handleLock()" ${loading ? 'disabled' : ''}
+            style="width:100%;padding:10px;font-size:13px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:9px;cursor:pointer;margin-bottom:8px;opacity:${loading ? '0.6' : '1'};">
+      ${loading ? 'Verifying…' : 'Unlock'}
+    </button>
+    <div style="font-size:12px;min-height:18px;text-align:center;color:#dc2626;" id="lock-msg">${msg}</div>
+    <div style="font-size:11px;color:#bbb;text-align:center;margin-top:10px;line-height:1.5;">Your PAT is verified against GitHub<br>and stored in this browser only.</div>`;
+  if (msg) { card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake'); }
+  setTimeout(() => { const p = document.getElementById('lock-pat'); if (p && !p.value) p.focus(); }, 50);
 }
 
-async function initLock() {
-  if (sessionStorage.getItem(SESSION_KEY)) {
-    hideLock(); return;
-  }
-  // Always show password screen first — sync/setup are secondary options
-  _lockState = 'pw';
-  renderLock();
-  refresh2FAStatus();
+function renderTOTP(msg = '') {
+  const el   = document.getElementById('lock-content');
+  const card = document.getElementById('lock-card');
+  el.innerHTML = `
+    <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#888;margin-bottom:8px;">Authenticator code</div>
+    <input type="text" id="lock-totp" placeholder="000000" maxlength="6" inputmode="numeric"
+           autocomplete="one-time-code"
+           style="width:100%;font-size:22px;font-family:monospace;letter-spacing:0.2em;text-align:center;padding:10px;border:0.5px solid rgba(0,0,0,0.2);border-radius:9px;background:#f9f9f7;outline:none;margin-bottom:10px;"
+           onkeydown="if(event.key==='Enter')verifyLockTOTP()" />
+    <button onclick="verifyLockTOTP()"
+            style="width:100%;padding:10px;font-size:13px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:9px;cursor:pointer;margin-bottom:8px;">
+      Verify
+    </button>
+    <div style="font-size:12px;min-height:18px;text-align:center;color:#dc2626;" id="lock-msg">${msg}</div>
+    <span style="font-size:12px;color:#aaa;cursor:pointer;text-align:center;margin-top:10px;display:block;"
+          onclick="renderLock()">← Back</span>`;
+  if (msg) { card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake'); }
+  setTimeout(() => document.getElementById('lock-totp')?.focus(), 50);
 }
 
-async function trySyncConfig(pat, repo) {
+// ── PAT verification ─────────────────────────────────────────────────────────
+async function verifyPAT(pat, repo) {
   try {
-    const r = await fetch(`https://api.github.com/repos/${repo}/contents/${CONFIG_FILE}`, {
+    const r = await fetch(`https://api.github.com/repos/${repo}`, {
       headers: { Authorization: `Bearer ${pat}`, Accept: 'application/vnd.github+json' }
     });
-    if (!r.ok) return false;
-    const data = await r.json();
-    const config = JSON.parse(atob(data.content.replace(/\n/g,'')));
-    if (config.pw_hash) {
-      localStorage.setItem(LOCK_KEY, config.pw_hash);
-      if (config.totp_secret) localStorage.setItem(TOTP_KEY, config.totp_secret);
-      return true;
-    }
-  } catch(e) {}
-  return false;
+    return r.ok;
+  } catch(e) { return false; }
 }
 
-async function saveConfigToGitHub(patch) {
-  const pat  = localStorage.getItem('gh_pat')  || document.getElementById('pat')?.value?.trim();
-  const repo = localStorage.getItem('gh_repo') || document.getElementById('repo')?.value?.trim();
-  const branch = localStorage.getItem('gh_branch') || 'main';
-  if (!pat || !repo) return;
-  try {
-    let sha = null, existing = {};
-    const r = await fetch(`https://api.github.com/repos/${repo}/contents/${CONFIG_FILE}`, {
-      headers: { Authorization: `Bearer ${pat}`, Accept: 'application/vnd.github+json' }
-    });
-    if (r.ok) {
-      const d = await r.json();
-      sha = d.sha;
-      try { existing = JSON.parse(atob(d.content.replace(/\n/g,''))); } catch(e) {}
-    }
-    const updated = { ...existing, ...patch };
-    const body = { message: 'DocRelay: update config', content: btoa(JSON.stringify(updated)), branch };
-    if (sha) body.sha = sha;
-    await fetch(`https://api.github.com/repos/${repo}/contents/${CONFIG_FILE}`, {
-      method: 'PUT',
-      headers: { Authorization: `Bearer ${pat}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github+json' },
-      body: JSON.stringify(body)
-    });
-  } catch(e) {}
+async function handleLock() {
+  const pat  = (document.getElementById('lock-pat')?.value  || '').trim();
+  const repo = (document.getElementById('lock-repo')?.value || '').trim();
+  if (!pat)  { renderLock('Enter your GitHub PAT'); return; }
+  if (!repo) { renderLock('Enter your repository (owner/repo)'); return; }
+
+  renderLock('', true);
+
+  const valid = await verifyPAT(pat, repo);
+  if (!valid) { renderLock('Invalid PAT or repository — check and try again'); return; }
+
+  localStorage.setItem('gh_pat',  pat);
+  localStorage.setItem('gh_repo', repo);
+  localStorage.setItem('gh_branch', localStorage.getItem('gh_branch') || 'main');
+
+  // If 2FA is enabled, require TOTP before granting session
+  if (localStorage.getItem(TOTP_KEY)) {
+    renderTOTP();
+    return;
+  }
+
+  sessionStorage.setItem(SESSION_KEY, '1');
+  hideLock();
 }
 
-// ── THE ONE TRUE hideLock — hides overlay and auto-connects ──────────────────
+async function verifyLockTOTP() {
+  const token  = (document.getElementById('lock-totp')?.value || '').trim();
+  const secret = localStorage.getItem(TOTP_KEY);
+  if (token.length !== 6) { renderTOTP('Enter the 6-digit code'); return; }
+  if (await verifyTOTP(secret, token)) {
+    sessionStorage.setItem(SESSION_KEY, '1');
+    hideLock();
+  } else {
+    renderTOTP('Incorrect code — try again');
+  }
+}
+
+// ── 2FA settings ─────────────────────────────────────────────────────────────
+let _pendingSecret = null;
+
+function refresh2FAStatus() {
+  const enabled = !!localStorage.getItem(TOTP_KEY);
+  const row     = document.getElementById('twofa-status-row');
+  const dot     = document.getElementById('twofa-status-dot');
+  const text    = document.getElementById('twofa-status-text');
+  const enArea  = document.getElementById('twofa-enable-area');
+  const disArea = document.getElementById('twofa-disable-area');
+  if (!row) return;
+  if (enabled) {
+    row.className = 'twofa-status on'; dot.textContent = '●'; text.textContent = 'Active';
+    enArea.style.display = 'none'; disArea.style.display = '';
+  } else {
+    row.className = 'twofa-status off'; dot.textContent = '○'; text.textContent = 'Not enabled';
+    enArea.style.display = ''; disArea.style.display = 'none';
+  }
+  document.getElementById('twofa-setup-area').style.display = 'none';
+}
+
+function beginEnable2FA() {
+  _pendingSecret = generateSecret();
+  const uri = `otpauth://totp/DocRelay?secret=${_pendingSecret}&issuer=DocRelay`;
+  document.getElementById('twofa-enable-area').style.display = 'none';
+  document.getElementById('twofa-setup-area').style.display  = '';
+  document.getElementById('totp-secret-display').textContent = _pendingSecret;
+  document.getElementById('totp-setup-code').value = '';
+  document.getElementById('twofa-setup-msg').textContent = '';
+  const qrWrap = document.getElementById('qr-wrap');
+  qrWrap.innerHTML = '';
+  new QRCode(qrWrap, { text: uri, width: 160, height: 160, colorDark:'#1a1a1a', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.M });
+}
+
+async function confirmEnable2FA() {
+  const code = document.getElementById('totp-setup-code').value.trim();
+  const msg  = document.getElementById('twofa-setup-msg');
+  if (code.length !== 6) { msg.className = 'status err'; msg.textContent = 'Enter the 6-digit code from your app.'; return; }
+  if (await verifyTOTP(_pendingSecret, code)) {
+    localStorage.setItem(TOTP_KEY, _pendingSecret);
+    _pendingSecret = null;
+    msg.className = 'status ok'; msg.textContent = '✓ 2FA activated.';
+    setTimeout(refresh2FAStatus, 800);
+  } else {
+    msg.className = 'status err'; msg.textContent = 'Code incorrect — check your app and try again.';
+    document.getElementById('totp-setup-code').value = '';
+  }
+}
+
+function cancelSetup2FA() { _pendingSecret = null; refresh2FAStatus(); }
+
+async function disable2FA() {
+  const code   = document.getElementById('totp-disable-code').value.trim();
+  const secret = localStorage.getItem(TOTP_KEY);
+  const msg    = document.getElementById('twofa-disable-msg');
+  if (code.length !== 6) { msg.className = 'status err'; msg.textContent = 'Enter your current authenticator code.'; return; }
+  if (await verifyTOTP(secret, code)) {
+    localStorage.removeItem(TOTP_KEY);
+    msg.className = 'status ok'; msg.textContent = '2FA disabled.';
+    document.getElementById('totp-disable-code').value = '';
+    setTimeout(refresh2FAStatus, 600);
+  } else {
+    msg.className = 'status err'; msg.textContent = 'Incorrect code.';
+    document.getElementById('totp-disable-code').value = '';
+  }
+}
+
 function hideLock() {
   document.getElementById('lock-overlay').style.display = 'none';
-  const pat  = localStorage.getItem('gh_pat');
-  const repo = localStorage.getItem('gh_repo');
+  // Sync settings drawer fields
+  const pat    = localStorage.getItem('gh_pat')    || '';
+  const repo   = localStorage.getItem('gh_repo')   || '';
+  const branch = localStorage.getItem('gh_branch') || 'main';
+  const patEl    = document.getElementById('pat');
+  const repoEl   = document.getElementById('repo');
+  const branchEl = document.getElementById('branch');
+  if (patEl)    { patEl.value    = pat;    if (pat)    document.getElementById('pat-ok').style.display    = ''; }
+  if (repoEl)   { repoEl.value   = repo;   if (repo)   document.getElementById('repo-ok').style.display   = ''; }
+  if (branchEl) { branchEl.value = branch; if (branch) document.getElementById('branch-ok').style.display = ''; }
+  if (repo) updateConnPill('idle');
   if (pat && repo) listFiles();
 }
 
-// Init immediately
+function initLock() {
+  // If already unlocked this session and PAT still in storage, go straight in
+  if (sessionStorage.getItem(SESSION_KEY) && localStorage.getItem('gh_pat')) {
+    hideLock(); return;
+  }
+  renderLock();
+}
+
+// Run immediately
 initLock();
-const AUTOLOCK_KEY = 'docrelay_autolock';
-let _autolockTimer = null;
 
 function lockSession() {
   closeSettings();
   sessionStorage.removeItem(SESSION_KEY);
   document.getElementById('lock-overlay').style.display = 'flex';
-  _lockState = 'pw'; renderLock();
+  renderLock();
   resetAutolockTimer();
 }
 
 function confirmLogoff() {
   closeSettings();
   document.getElementById('lock-overlay').style.display = 'flex';
-  _lockState = 'logoff'; renderLock();
+  const el = document.getElementById('lock-content');
+  document.getElementById('lock-content').innerHTML = `
+    <div style="font-size:13px;color:#444;line-height:1.6;margin-bottom:16px;">
+      This will remove your PAT and settings from this browser.<br/><br/>
+      Your files in GitHub are not affected.
+    </div>
+    <button onclick="executeLogoff()" style="width:100%;padding:10px;font-size:13px;color:#dc2626;border:0.5px solid #fecaca;background:#fff5f5;border-radius:9px;cursor:pointer;margin-bottom:8px;">↩ Yes, log off this device</button>
+    <button onclick="initLock()" style="width:100%;padding:10px;font-size:13px;border:0.5px solid rgba(0,0,0,0.2);background:transparent;border-radius:9px;cursor:pointer;">← Cancel</button>`;
 }
 
 function executeLogoff() {
   sessionStorage.clear();
-  localStorage.removeItem(LOCK_KEY);
-  localStorage.removeItem(TOTP_KEY);
   localStorage.removeItem('gh_pat');
   localStorage.removeItem('gh_repo');
   localStorage.removeItem('gh_branch');
@@ -773,179 +806,6 @@ function resetAutolockTimer() {
 ['mousemove','keydown','touchstart','click'].forEach(ev => {
   document.addEventListener(ev, resetAutolockTimer, { passive: true });
 });
-
-async function syncFromGitHub() {
-  const pat  = document.getElementById('sync-pat').value.trim();
-  const repo = document.getElementById('sync-repo').value.trim();
-  if (!pat || !repo) { renderLock('Both fields required.'); return; }
-  document.getElementById('sync-msg').textContent = 'Syncing…';
-  localStorage.setItem('gh_pat', pat);
-  localStorage.setItem('gh_repo', repo);
-  const synced = await trySyncConfig(pat, repo);
-  if (synced) {
-    document.getElementById('sync-msg').style.color = '#16a34a';
-    document.getElementById('sync-msg').textContent = '✓ Config synced — enter your password.';
-    setTimeout(() => { _lockState = 'pw'; renderLock(); }, 700);
-  } else {
-    document.getElementById('sync-msg').style.color = '#dc2626';
-    document.getElementById('sync-msg').textContent = 'No config found — set up a new password.';
-    setTimeout(() => { _lockState = 'setup'; renderLock(); }, 1000);
-  }
-}
-
-async function handleLock() {
-  let stored = localStorage.getItem(LOCK_KEY);
-  const pw  = (document.getElementById('lock-pw')?.value  || '').trim();
-  const pw2 = (document.getElementById('lock-pw2')?.value || '').trim();
-
-  if (!pw) { renderLock('Enter a password'); return; }
-
-  if (_lockState === 'setup') {
-    if (pw !== pw2)    { renderLock("Passwords don't match"); return; }
-    if (pw.length < 4) { renderLock('At least 4 characters'); return; }
-    const hash = await sha256(pw);
-    localStorage.setItem(LOCK_KEY, hash);
-    await saveConfigToGitHub({ pw_hash: hash });
-    document.getElementById('lock-content').innerHTML = '<div style="text-align:center;color:#16a34a;font-size:13px;padding:12px 0;">✓ Password saved — unlocking…</div>';
-    setTimeout(hideLock, 800);
-  } else {
-    // If no local hash, try to fetch it from GitHub before comparing
-    if (!stored) {
-      const msgEl = document.getElementById('lock-msg');
-      if (msgEl) { msgEl.style.color = '#888'; msgEl.textContent = 'Checking GitHub…'; }
-      const pat  = localStorage.getItem('gh_pat');
-      const repo = localStorage.getItem('gh_repo');
-      if (pat && repo) {
-        const synced = await trySyncConfig(pat, repo);
-        if (synced) stored = localStorage.getItem(LOCK_KEY);
-      }
-    }
-    if (!stored) {
-      // No hash anywhere — offer setup or sync
-      renderLock('No password found — set one up or sync from GitHub');
-      const el = document.getElementById('lock-content');
-      el.innerHTML += `<button onclick="_lockState='setup';renderLock()" style="width:100%;margin-top:8px;padding:9px;font-size:13px;border:0.5px solid rgba(0,0,0,0.2);border-radius:9px;background:transparent;cursor:pointer;">Set up a new password</button>
-        <span class="back-link" style="margin-top:6px;display:block;" onclick="_lockState='sync';renderLock()">Sync from GitHub instead →</span>`;
-      return;
-    }
-    if (await sha256(pw) !== stored) { renderLock('Incorrect password'); return; }
-    if (localStorage.getItem(TOTP_KEY)) {
-      _lockState = 'totp'; renderLock(); return;
-    }
-    sessionStorage.setItem(SESSION_KEY, '1');
-    hideLock();
-  }
-}
-
-async function verifyLockTOTP() {
-  const token  = document.getElementById('lock-totp')?.value.trim() || '';
-  const secret = localStorage.getItem(TOTP_KEY);
-  if (token.length !== 6) { renderLock('Enter the 6-digit code'); return; }
-  if (await verifyTOTP(secret, token)) {
-    sessionStorage.setItem(SESSION_KEY, '1');
-    hideLock(); // now calls the real implementation above
-  } else {
-    _lockState = 'totp'; renderLock('Incorrect code — try again');
-  }
-}
-
-// ── 2FA settings flow ────────────────────────────────────────────────────────
-let _pendingSecret = null;
-
-function refresh2FAStatus() {
-  const enabled = !!localStorage.getItem(TOTP_KEY);
-  const row  = document.getElementById('twofa-status-row');
-  const dot  = document.getElementById('twofa-status-dot');
-  const text = document.getElementById('twofa-status-text');
-  const enArea  = document.getElementById('twofa-enable-area');
-  const disArea = document.getElementById('twofa-disable-area');
-  if (enabled) {
-    row.className = 'twofa-status on'; dot.textContent = '●'; text.textContent = 'Active';
-    enArea.style.display  = 'none';
-    disArea.style.display = '';
-  } else {
-    row.className = 'twofa-status off'; dot.textContent = '○'; text.textContent = 'Not enabled';
-    enArea.style.display  = '';
-    disArea.style.display = 'none';
-  }
-  document.getElementById('twofa-setup-area').style.display = 'none';
-}
-
-function beginEnable2FA() {
-  _pendingSecret = generateSecret();
-  const label = 'DocRelay';
-  const uri   = `otpauth://totp/${encodeURIComponent(label)}?secret=${_pendingSecret}&issuer=${encodeURIComponent(label)}`;
-
-  document.getElementById('twofa-enable-area').style.display = 'none';
-  document.getElementById('twofa-setup-area').style.display  = '';
-  document.getElementById('totp-secret-display').textContent = _pendingSecret;
-  document.getElementById('totp-setup-code').value = '';
-  document.getElementById('twofa-setup-msg').textContent = '';
-
-  const qrWrap = document.getElementById('qr-wrap');
-  qrWrap.innerHTML = '';
-  new QRCode(qrWrap, { text: uri, width: 160, height: 160, colorDark:'#1a1a1a', colorLight:'#ffffff', correctLevel: QRCode.CorrectLevel.M });
-}
-
-async function confirmEnable2FA() {
-  const code = document.getElementById('totp-setup-code').value.trim();
-  const msg  = document.getElementById('twofa-setup-msg');
-  if (code.length !== 6) { msg.className = 'err'; msg.textContent = 'Enter the 6-digit code from your app.'; return; }
-  if (await verifyTOTP(_pendingSecret, code)) {
-    localStorage.setItem(TOTP_KEY, _pendingSecret);
-    await saveConfigToGitHub({ totp_secret: _pendingSecret });
-    _pendingSecret = null;
-    msg.className = 'ok'; msg.textContent = '✓ 2FA activated.';
-    setTimeout(refresh2FAStatus, 800);
-  } else {
-    msg.className = 'err'; msg.textContent = 'Code incorrect — check your app and try again.';
-    document.getElementById('totp-setup-code').value = '';
-  }
-}
-
-function cancelSetup2FA() { _pendingSecret = null; refresh2FAStatus(); }
-
-async function disable2FA() {
-  const code   = document.getElementById('totp-disable-code').value.trim();
-  const secret = localStorage.getItem(TOTP_KEY);
-  const msg    = document.getElementById('twofa-disable-msg');
-  if (code.length !== 6) { msg.className = 'err'; msg.textContent = 'Enter your current authenticator code.'; return; }
-  if (await verifyTOTP(secret, code)) {
-    localStorage.removeItem(TOTP_KEY);
-    await saveConfigToGitHub({ totp_secret: null });
-    msg.className = 'ok'; msg.textContent = '2FA disabled.';
-    document.getElementById('totp-disable-code').value = '';
-    setTimeout(refresh2FAStatus, 600);
-  } else {
-    msg.className = 'err'; msg.textContent = 'Incorrect code.';
-    document.getElementById('totp-disable-code').value = '';
-  }
-}
-
-async function changePassword() {
-  const current  = document.getElementById('chpw-current').value;
-  const newPw    = document.getElementById('chpw-new').value;
-  const confirm  = document.getElementById('chpw-confirm').value;
-  const msg      = document.getElementById('chpw-msg');
-  const stored   = localStorage.getItem(LOCK_KEY);
-
-  msg.className = ''; msg.textContent = '';
-
-  if (!current || !newPw || !confirm) { msg.className = 'err'; msg.textContent = 'All fields required.'; return; }
-  if (newPw !== confirm)              { msg.className = 'err'; msg.textContent = "New passwords don't match."; return; }
-  if (newPw.length < 4)               { msg.className = 'err'; msg.textContent = 'At least 4 characters.'; return; }
-
-  const currentHash = await sha256(current);
-  if (currentHash !== stored)         { msg.className = 'err'; msg.textContent = 'Current password incorrect.'; return; }
-
-  const newHash = await sha256(newPw);
-  localStorage.setItem(LOCK_KEY, newHash);
-  await saveConfigToGitHub({ pw_hash: newHash });
-  msg.className = 'ok'; msg.textContent = '✓ Password updated & synced.';
-  document.getElementById('chpw-current').value = '';
-  document.getElementById('chpw-new').value     = '';
-  document.getElementById('chpw-confirm').value = '';
-}
 
 // ── App ──────────────────────────────────────────────────────────────────────
 const docs = {};
