@@ -1165,16 +1165,45 @@ async function saveActive() { if (activeDoc) await saveDoc(activeDoc); }
 
 async function captureAndSave() {
   const st = document.getElementById('capture-status');
-  if (!activeDoc) { st.className = 'status err'; st.textContent = 'No doc selected.'; return; }
   try {
     st.className = 'status'; st.textContent = 'Reading clipboard...';
     const text = await navigator.clipboard.readText();
-    const start = text.indexOf('<<<DOC_START>>>');
-    const end   = text.indexOf('<<<DOC_END>>>');
-    if (start === -1 || end === -1) { st.className = 'status err'; st.textContent = 'Markers not found — ask the AI to wrap its response in <<<DOC_START>>> / <<<DOC_END>>>.'; return; }
-    const proposed = text.slice(start + 15, end).trim();
-    st.className = 'status ok'; st.textContent = 'Review the diff below before saving.';
-    showDiff(docs[activeDoc].content, proposed);
+
+    // Parse all named blocks: <<<DOC_START:path>>> ... <<<DOC_END>>>
+    const namedRe = /<<<DOC_START:([^>]+)>>>([\s\S]*?)<<<DOC_END>>>/g;
+    const blocks = [];
+    let m;
+    while ((m = namedRe.exec(text)) !== null) {
+      const path = m[1].trim();
+      const proposed = m[2].trim();
+      if (docs[path]) blocks.push({ path, proposed });
+    }
+
+    // Fallback: unnamed single block <<<DOC_START>>> ... <<<DOC_END>>>
+    if (blocks.length === 0) {
+      const start = text.indexOf('<<<DOC_START>>>');
+      const end   = text.indexOf('<<<DOC_END>>>');
+      if (start === -1 || end === -1) {
+        st.className = 'status err';
+        st.textContent = 'Markers not found — ask the AI to wrap its response in <<<DOC_START:path>>> / <<<DOC_END>>>.';
+        return;
+      }
+      if (!activeDoc) { st.className = 'status err'; st.textContent = 'No doc selected.'; return; }
+      blocks.push({ path: activeDoc, proposed: text.slice(start + 15, end).trim() });
+    }
+
+    if (blocks.length === 0) {
+      st.className = 'status err'; st.textContent = 'No matching docs found in response.'; return;
+    }
+
+    // Store all pending changes and show first diff
+    pendingBlocks = blocks;
+    pendingBlockIndex = 0;
+    st.className = 'status ok';
+    st.textContent = blocks.length > 1
+      ? `${blocks.length} docs to review — confirming one at a time`
+      : 'Review the diff below before saving.';
+    showNextDiff();
   } catch(e) { st.className = 'status err'; st.textContent = 'Clipboard access denied.'; }
 }
 
@@ -1210,7 +1239,29 @@ function computeDiff(oldLines, newLines) {
   return ops;
 }
 
-let pendingContent = null;
+let pendingContent   = null;
+let pendingBlocks    = [];   // [{path, proposed}] — multi-doc queue
+let pendingBlockIndex = 0;
+
+function showNextDiff() {
+  if (pendingBlockIndex >= pendingBlocks.length) {
+    document.getElementById('diff-card').style.display = 'none';
+    document.getElementById('capture-status').className = 'status ok';
+    document.getElementById('capture-status').textContent = `All ${pendingBlocks.length} doc(s) saved.`;
+    pendingBlocks = []; pendingBlockIndex = 0;
+    return;
+  }
+  const { path, proposed } = pendingBlocks[pendingBlockIndex];
+  setActive(path);
+  showDiff(docs[path].content, proposed);
+  // Update diff header to show progress
+  const total = pendingBlocks.length;
+  const current = pendingBlockIndex + 1;
+  const title = document.querySelector('#diff-card .section-title');
+  if (title) title.textContent = total > 1
+    ? `review changes — doc ${current} of ${total}: ${path.split('/').pop()}`
+    : `review changes`;
+}
 
 function showDiff(original, proposed) {
   pendingContent = proposed;
@@ -1301,6 +1352,7 @@ function escHtml(s) {
 
 function discardDiff() {
   pendingContent = null;
+  pendingBlocks = []; pendingBlockIndex = 0;
   document.getElementById('diff-card').style.display = 'none';
   document.getElementById('capture-status').textContent = '';
   document.getElementById('diff-save-status').textContent = '';
@@ -1316,17 +1368,27 @@ async function confirmSave() {
   const st = document.getElementById('diff-save-status');
   st.className = 'status'; st.textContent = 'Saving...';
   await saveDoc(activeDoc);
-  st.className = 'status ok'; st.textContent = `Saved at ${new Date().toLocaleTimeString()}`;
+  const savedName = activeDoc.split('/').pop();
+  st.className = 'status ok'; st.textContent = `${savedName} saved at ${new Date().toLocaleTimeString()}`;
   pendingContent = null;
+  // Advance to next pending block if any
+  if (pendingBlocks.length > 0) {
+    pendingBlockIndex++;
+    setTimeout(showNextDiff, 600);
+  }
 }
 
 async function copyAllToChat() {
   const keys = Object.keys(docs);
   if (!keys.length) return;
-  let msg = keys.length === 1
-    ? `I've loaded "${keys[0]}" from my GitHub repo:\n\n---\n${docs[keys[0]].content}\n---\n\n`
-    : `I have ${keys.length} docs loaded:\n\n` + keys.map(p => `=== ${p} ===\n${docs[p].content}`).join('\n\n') + '\n\n';
-  msg += `When you return an updated doc, wrap it like this:\n\n<<<DOC_START>>>\n[full doc here]\n<<<DOC_END>>>\n\nI will paste your response back and save it to GitHub in one click.`;
+  const multi = keys.length > 1;
+  let msg = multi
+    ? `I have ${keys.length} docs loaded from my GitHub repo:\n\n`
+    : `I've loaded "${keys[0]}" from my GitHub repo:\n\n`;
+  msg += keys.map(p => `<<<DOC_START:${p}>>>\n${docs[p].content}\n<<<DOC_END>>>`).join('\n\n');
+  msg += `\n\n---\nPlease return ${multi ? 'each updated doc' : 'the updated doc'} using the same format:\n`;
+  msg += keys.map(p => `<<<DOC_START:${p}>>>\n[updated content]\n<<<DOC_END>>>`).join('\n\n');
+  msg += `\n\nI will paste your response back and it will be matched to each file automatically.`;
   await navigator.clipboard.writeText(msg);
   const st = document.getElementById('copy-status');
   st.className = 'status ok'; st.textContent = 'Copied — paste into your AI';
