@@ -574,7 +574,8 @@ function generateSecret() {
 function renderLock(msg = '', loading = false) {
   const el   = document.getElementById('lock-content');
   const card = document.getElementById('lock-card');
-  const savedPAT  = localStorage.getItem('gh_pat')  || '';
+  const rawPAT = localStorage.getItem('gh_pat') || '';
+  const savedPAT = (rawPAT.startsWith('ghp_') || rawPAT.startsWith('github_pat_')) ? rawPAT : '';
   const savedRepo = localStorage.getItem('gh_repo') || '';
   el.innerHTML = `
     <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:#888;margin-bottom:6px;">GitHub PAT</div>
@@ -620,11 +621,18 @@ function renderTOTP(msg = '') {
 // ── PAT verification ─────────────────────────────────────────────────────────
 async function verifyPAT(pat, repo) {
   try {
-    const r = await fetch(`https://api.github.com/repos/${repo}`, {
+    // Verify PAT is valid via /user (works regardless of repo scope)
+    const userResp = await fetch('https://api.github.com/user', {
       headers: { Authorization: `Bearer ${pat}`, Accept: 'application/vnd.github+json' }
     });
-    return r.ok;
-  } catch(e) { return false; }
+    if (!userResp.ok) return { ok: false, reason: 'pat' };
+    // Verify access to the specific repo
+    const repoResp = await fetch(`https://api.github.com/repos/${repo}`, {
+      headers: { Authorization: `Bearer ${pat}`, Accept: 'application/vnd.github+json' }
+    });
+    if (!repoResp.ok) return { ok: false, reason: 'repo' };
+    return { ok: true };
+  } catch(e) { return { ok: false, reason: 'network' }; }
 }
 
 async function handleLock() {
@@ -635,8 +643,14 @@ async function handleLock() {
 
   renderLock('', true);
 
-  const valid = await verifyPAT(pat, repo);
-  if (!valid) { renderLock('Invalid PAT or repository — check and try again'); return; }
+  const result = await verifyPAT(pat, repo);
+  if (!result.ok) {
+    if (result.reason === 'pat')       renderLock('PAT invalid or expired — check your GitHub token');
+    else if (result.reason === 'repo') renderLock('Repo not found or PAT lacks access — check owner/repo and token scope (needs repo access)');
+    else                               renderLock('Network error — check your connection');
+    return;
+  }
+
 
   localStorage.setItem('gh_pat',  pat);
   localStorage.setItem('gh_repo', repo);
