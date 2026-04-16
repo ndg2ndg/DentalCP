@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patient Reviews</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── CONFIG ─────────────────────────────────────────── */
+    :root {
+      --sky:     #e8f4fd;
+      --blue:    #2d9cdb;
+      --blue2:   #1a7abf;
+      --mint:    #d4f5ec;
+      --teal:    #27ae89;
+      --sun:     #f9c74f;
+      --coral:   #f06b6b;
+      --white:   #ffffff;
+      --gray-1:  #f7f9fc;
+      --gray-2:  #e4eaf2;
+      --gray-3:  #8a9bb5;
+      --ink:     #1d2b45;
+      --radius:  18px;
+      --shadow:  0 4px 24px rgba(45,156,219,.13);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: transparent;
+      color: var(--ink);
+      padding: 20px 16px 32px;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────── */
+    .header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--sky);
+      border: 2px solid var(--blue);
+      border-radius: 50px;
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--blue2);
+      margin-bottom: 12px;
+      letter-spacing: .4px;
+    }
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 4vw, 32px);
+      color: var(--ink);
+      line-height: 1.2;
+    }
+    .header h1 span { color: var(--blue); }
+
+    /* ── SUMMARY BAR ────────────────────────────────────── */
+    .summary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 28px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .summary-score {
+      font-size: 52px;
+      font-weight: 800;
+      color: var(--blue);
+      line-height: 1;
+    }
+    .summary-right { text-align: left; }
+    .stars-large { color: var(--sun); font-size: 22px; letter-spacing: 2px; }
+    .summary-count {
+      font-size: 13px;
+      color: var(--gray-3);
+      margin-top: 3px;
+      font-weight: 600;
+    }
+
+    /* ── FILTER BAR ─────────────────────────────────────── */
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    .filter-btn {
+      padding: 7px 16px;
+      border-radius: 50px;
+      border: 2px solid var(--gray-2);
+      background: var(--white);
+      color: var(--gray-3);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: var(--white);
+    }
+
+    /* ── GRID ───────────────────────────────────────────── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    /* ── CARD ───────────────────────────────────────────── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform .2s, box-shadow .2s;
+      animation: fadeUp .4s ease both;
+      border-top: 4px solid var(--blue);
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(45,156,219,.2);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--sky);
+      border: 2px solid var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 800;
+      color: var(--blue2);
+      flex-shrink: 0;
+    }
+    .reviewer-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .review-source {
+      font-size: 11px;
+      color: var(--gray-3);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .stars { color: var(--sun); font-size: 16px; letter-spacing: 1px; }
+    .review-date { font-size: 11px; color: var(--gray-3); font-weight: 600; }
+
+    .review-text {
+      font-size: 14px;
+      line-height: 1.65;
+      color: #3c4f6e;
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .review-text.expanded { -webkit-line-clamp: unset; }
+
+    .read-more {
+      background: none; border: none;
+      color: var(--blue);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 0;
+      align-self: flex-start;
+    }
+
+    /* ── LOAD MORE ──────────────────────────────────────── */
+    .load-more-wrap {
+      text-align: center;
+      margin-top: 28px;
+    }
+    .load-more-btn {
+      padding: 12px 32px;
+      border-radius: 50px;
+      border: none;
+      background: var(--blue);
+      color: var(--white);
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(45,156,219,.35);
+      transition: background .2s, transform .15s;
+    }
+    .load-more-btn:hover { background: var(--blue2); transform: translateY(-2px); }
+    .load-more-btn:disabled { background: var(--gray-2); color: var(--gray-3); box-shadow: none; transform: none; cursor: default; }
+
+    /* ── STATES ─────────────────────────────────────────── */
+    .state-box {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--gray-3);
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .state-box .icon { font-size: 40px; display: block; margin-bottom: 10px; }
+
+    .spinner {
+      display: inline-block;
+      width: 36px; height: 36px;
+      border: 4px solid var(--gray-2);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ───────────────────────────── -->
+  <div class="header">
+    <div class="header-badge">⭐ Verified Patient Reviews</div>
+    <h1>What Families Are <span>Saying About Us</span></h1>
+  </div>
+
+  <!-- ── SUMMARY ──────────────────────────── -->
+  <div class="summary" id="summary" style="display:none">
+    <div class="summary-score" id="avg-score">—</div>
+    <div class="summary-right">
+      <div class="stars-large" id="avg-stars"></div>
+      <div class="summary-count" id="review-count"></div>
+    </div>
+  </div>
+
+  <!-- ── FILTERS ──────────────────────────── -->
+  <div class="filters" id="filters" style="display:none">
+    <button class="filter-btn active" data-rating="all">All Reviews</button>
+    <button class="filter-btn" data-rating="5">⭐⭐⭐⭐⭐ 5 Star</button>
+    <button class="filter-btn" data-rating="4">⭐⭐⭐⭐ 4 Star</button>
+    <button class="filter-btn" data-rating="3">⭐⭐⭐ 3 Star</button>
+  </div>
+
+  <!-- ── REVIEW GRID ───────────────────────── -->
+  <div class="grid" id="review-grid"></div>
+
+  <div class="load-more-wrap" id="load-more-wrap" style="display:none">
+    <button class="load-more-btn" id="load-more-btn">Load More Reviews</button>
+  </div>
+
+  <!-- ── LOADING / ERROR STATES ───────────── -->
+  <div class="state-box" id="loading-state">
+    <div class="spinner"></div>
+    <div>Loading reviews…</div>
+  </div>
+  <div class="state-box" id="error-state" style="display:none">
+    <span class="icon">⚠️</span>
+    Could not load reviews. Please try again later.
+  </div>
+
+<script>
+  /* ════════════════════════════════════════════════
+     CONFIGURATION — update these two values
+  ════════════════════════════════════════════════ */
+  const BUSINESS_ID = "YOUR_BUSINESS_ID";
+  const API_KEY     = "YOUR_API_KEY";
+
+  /* ════════════════════════════════════════════════
+     SETTINGS
+  ════════════════════════════════════════════════ */
+  const PAGE_SIZE      = 9;    // cards per page load
+  const MIN_RATING     = 4;    // hide reviews below this (set 1 to show all)
+  const TRUNCATE_LINES = 5;    // lines before "Read more"
+
+  /* ════════════════════════════════════════════════
+     STATE
+  ════════════════════════════════════════════════ */
+  let allReviews   = [];
+  let filtered     = [];
+  let currentPage  = 0;
+  let activeFilter = "all";
+
+  /* ════════════════════════════════════════════════
+     FETCH
+  ════════════════════════════════════════════════ */
+  async function fetchReviews() {
+    try {
+      const url = `https://api.birdeye.com/resources/v1/business/${BUSINESS_ID}/reviews`
+        + `?api_key=${API_KEY}&count=200&start=0&sort=date&order=desc`;
+
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      // Normalise — Birdeye may return { reviews: [...] } or a direct array
+      allReviews = (Array.isArray(data) ? data : data.reviews ?? [])
+        .filter(r => r.rating >= MIN_RATING);
+
+      renderSummary();
+      showFilters();
+      applyFilter("all");
+      hide("loading-state");
+
+    } catch (err) {
+      console.error("Birdeye fetch error:", err);
+      hide("loading-state");
+      show("error-state");
+    }
+  }
+
+  /* ════════════════════════════════════════════════
+     SUMMARY
+  ════════════════════════════════════════════════ */
+  function renderSummary() {
+    if (!allReviews.length) return;
+    const avg = allReviews.reduce((s, r) => s + r.rating, 0) / allReviews.length;
+    id("avg-score").textContent = avg.toFixed(1);
+    id("avg-stars").textContent = starsStr(Math.round(avg));
+    id("review-count").textContent = `Based on ${allReviews.length} review${allReviews.length !== 1 ? "s" : ""}`;
+    show("summary");
+  }
+
+  /* ════════════════════════════════════════════════
+     FILTERS
+  ════════════════════════════════════════════════ */
+  function showFilters() { show("filters"); }
+
+  document.querySelectorAll(".filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      applyFilter(btn.dataset.rating);
+    });
+  });
+
+  function applyFilter(rating) {
+    activeFilter = rating;
+    filtered = rating === "all"
+      ? [...allReviews]
+      : allReviews.filter(r => String(r.rating) === rating);
+    currentPage = 0;
+    id("review-grid").innerHTML = "";
+    renderPage();
+  }
+
+  /* ════════════════════════════════════════════════
+     RENDER PAGE
+  ════════════════════════════════════════════════ */
+  function renderPage() {
+    const start = currentPage * PAGE_SIZE;
+    const slice = filtered.slice(start, start + PAGE_SIZE);
+
+    if (!slice.length && currentPage === 0) {
+      id("review-grid").innerHTML =
+        `<div class="state-box" style="grid-column:1/-1"><span class="icon">🦷</span>No reviews found for this filter.</div>`;
+      hide("load-more-wrap");
+      return;
+    }
+
+    slice.forEach((r, i) => {
+      const card = buildCard(r, start + i);
+      id("review-grid").appendChild(card);
+    });
+
+    currentPage++;
+    const hasMore = currentPage * PAGE_SIZE < filtered.length;
+    hasMore ? show("load-more-wrap") : hide("load-more-wrap");
+  }
+
+  id("load-more-btn").addEventListener("click", renderPage);
+
+  /* ════════════════════════════════════════════════
+     CARD BUILDER
+  ════════════════════════════════════════════════ */
+  function buildCard(r, idx) {
+    const name    = reviewerName(r);
+    const initial = name.charAt(0).toUpperCase() || "?";
+    const stars   = starsStr(r.rating);
+    const date    = formatDate(r.reviewDate || r.createdAt || r.date);
+    const text    = (r.comments || r.reviewText || r.text || "").trim();
+    const source  = r.sourceName || r.source || "";
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.style.animationDelay = `${(idx % PAGE_SIZE) * 60}ms`;
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="avatar">${initial}</div>
+        <div>
+          <div class="reviewer-name">${esc(name)}</div>
+          ${source ? `<div class="review-source">${esc(source)}</div>` : ""}
+        </div>
+      </div>
+      <div>
+        <span class="stars">${stars}</span>
+        ${date ? `<span class="review-date" style="margin-left:8px">${date}</span>` : ""}
+      </div>
+      ${text ? `
+        <p class="review-text" id="rt-${idx}">${esc(text)}</p>
+        <button class="read-more" data-target="rt-${idx}">Read more</button>
+      ` : ""}
+    `;
+
+    // Read more toggle
+    const btn = card.querySelector(".read-more");
+    if (btn) {
+      btn.addEventListener("click", () => {
+        const p = id(btn.dataset.target);
+        const expanded = p.classList.toggle("expanded");
+        btn.textContent = expanded ? "Show less" : "Read more";
+      });
+    }
+
+    return card;
+  }
+
+  /* ════════════════════════════════════════════════
+     HELPERS
+  ════════════════════════════════════════════════ */
+  function reviewerName(r) {
+    return (r.reviewer && (r.reviewer.displayName || `${r.reviewer.firstName || ""} ${r.reviewer.lastName || ""}`.trim()))
+      || r.authorName || r.name || "Anonymous";
+  }
+
+  function starsStr(n) {
+    return "★".repeat(Math.max(0, Math.min(5, n))) + "☆".repeat(5 - Math.max(0, Math.min(5, n)));
+  }
+
+  function formatDate(val) {
+    if (!val) return "";
+    try {
+      return new Date(val).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+    } catch { return ""; }
+  }
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function id(i) { return document.getElementById(i); }
+  function show(i) { id(i).style.display = ""; }
+  function hide(i) { id(i).style.display = "none"; }
+
+  /* ════════════════════════════════════════════════
+     BOOT
+  ════════════════════════════════════════════════ */
+  fetchReviews();
+</script>
+</body>
+</html>
