@@ -1,198 +1,393 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Patient Reviews</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dental Center Pediatrics — Patient Reviews</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --sky:#e8f4fd;--blue:#2d9cdb;--blue2:#1a7abf;--sun:#f9c74f;
-      --white:#ffffff;--gray-2:#e4eaf2;--gray-3:#8a9bb5;--ink:#1d2b45;
-      --radius:18px;--shadow:0 4px 24px rgba(45,156,219,.13);
+    :root{
+      --blue:#1a73e8;--blue2:#1558b0;--teal:#0097a7;
+      --sun:#f9c74f;--white:#fff;--bg:#f5f7fa;
+      --ink:#1d2b45;--gray:#8a9bb5;--gray2:#e4eaf2;
+      --red:#e53935;--green:#2e7d32;
+      --radius:14px;--shadow:0 2px 12px rgba(0,0,0,.09);
     }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Nunito',sans-serif;background:transparent;color:var(--ink);padding:20px 16px 32px}
-    .header{text-align:center;margin-bottom:28px}
-    .header-badge{display:inline-flex;align-items:center;gap:8px;background:var(--sky);border:2px solid var(--blue);border-radius:50px;padding:6px 18px;font-size:13px;font-weight:700;color:var(--blue2);margin-bottom:12px;letter-spacing:.4px}
-    .header h1{font-family:'Playfair Display',serif;font-size:clamp(22px,4vw,32px);color:var(--ink);line-height:1.2}
-    .header h1 span{color:var(--blue)}
-    .summary{display:flex;align-items:center;justify-content:center;gap:20px;background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 28px;margin-bottom:28px;flex-wrap:wrap}
-    .summary-score{font-size:52px;font-weight:800;color:var(--blue);line-height:1}
-    .summary-right{text-align:left}
-    .stars-large{color:var(--sun);font-size:22px;letter-spacing:2px}
-    .summary-count{font-size:13px;color:var(--gray-3);margin-top:3px;font-weight:600}
-    .filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
-    .filter-btn{padding:7px 16px;border-radius:50px;border:2px solid var(--gray-2);background:var(--white);color:var(--gray-3);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s}
-    .filter-btn.active,.filter-btn:hover{background:var(--blue);border-color:var(--blue);color:var(--white)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-    .card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 20px 18px;display:flex;flex-direction:column;gap:10px;transition:transform .2s,box-shadow .2s;animation:fadeUp .4s ease both;border-top:4px solid var(--blue)}
-    .card:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(45,156,219,.2)}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-    .card-top{display:flex;align-items:center;gap:12px}
-    .avatar{width:44px;height:44px;border-radius:50%;background:var(--sky);border:2px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--blue2);flex-shrink:0}
-    .reviewer-name{font-size:15px;font-weight:800;color:var(--ink)}
-    .review-source{font-size:11px;color:var(--gray-3);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-    .stars{color:var(--sun);font-size:16px;letter-spacing:1px}
-    .review-date{font-size:11px;color:var(--gray-3);font-weight:600}
-    .review-text{font-size:14px;line-height:1.65;color:#3c4f6e;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+    body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+
+    /* ── HERO ── */
+    .hero{background:linear-gradient(135deg,#1a73e8 0%,#0097a7 100%);color:#fff;padding:36px 24px 28px;text-align:center}
+    .hero-logo{width:110px;height:110px;border-radius:50%;object-fit:cover;border:4px solid #fff;margin-bottom:14px;background:#fff}
+    .hero-logo-fallback{width:110px;height:110px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:800;color:var(--blue);margin:0 auto 14px;border:4px solid rgba(255,255,255,.5)}
+    .hero h1{font-family:'Playfair Display',serif;font-size:clamp(22px,5vw,34px);margin-bottom:6px}
+    .hero-meta{font-size:13px;opacity:.85;margin-bottom:16px}
+    .hero-rating{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.18);border-radius:50px;padding:8px 20px;font-size:15px;font-weight:700}
+    .hero-stars{color:var(--sun);font-size:18px;letter-spacing:1px}
+    .hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+    .btn{padding:10px 22px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;cursor:pointer;text-decoration:none;border:none;transition:all .2s}
+    .btn-white{background:#fff;color:var(--blue)}
+    .btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.7)}
+    .btn-white:hover{background:#e8f0fe}
+    .btn-outline:hover{background:rgba(255,255,255,.15)}
+
+    /* ── LAYOUT ── */
+    .page{max-width:1100px;margin:0 auto;padding:24px 16px 48px;display:grid;grid-template-columns:1fr 300px;gap:24px}
+    @media(max-width:768px){.page{grid-template-columns:1fr}}
+
+    /* ── CARDS ── */
+    .card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:20px}
+    .card-title{font-size:16px;font-weight:800;color:var(--ink);margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--gray2)}
+
+    /* ── RATING SUMMARY ── */
+    .rating-big{display:flex;align-items:center;gap:20px;margin-bottom:18px}
+    .rating-score{font-size:56px;font-weight:800;color:var(--blue);line-height:1}
+    .rating-right{flex:1}
+    .rating-stars{color:var(--sun);font-size:22px;letter-spacing:2px}
+    .rating-count{font-size:13px;color:var(--gray);margin-top:4px;font-weight:600}
+    .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;font-weight:600}
+    .bar-label{width:32px;text-align:right;color:var(--gray)}
+    .bar-track{flex:1;height:8px;background:var(--gray2);border-radius:4px;overflow:hidden}
+    .bar-fill{height:100%;background:var(--sun);border-radius:4px;transition:width .6s ease}
+    .bar-count{width:32px;color:var(--gray)}
+
+    /* ── SOURCES ── */
+    .sources{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+    .source-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:50px;border:1.5px solid var(--gray2);font-size:12px;font-weight:700;color:var(--ink)}
+
+    /* ── FILTERS ── */
+    .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+    .filter-btn{padding:6px 14px;border-radius:50px;border:2px solid var(--gray2);background:var(--white);color:var(--gray);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s}
+    .filter-btn.active,.filter-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+
+    /* ── REVIEW CARDS ── */
+    .review-list{display:flex;flex-direction:column;gap:16px}
+    .review-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;animation:fadeUp .35s ease both}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .review-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+    .avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--gray2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:var(--blue);border:2px solid #e8f0fe}
+    .reviewer-name{font-weight:800;font-size:15px}
+    .review-source-label{font-size:11px;color:var(--gray);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+    .review-stars{color:var(--sun);font-size:15px;letter-spacing:1px;margin-bottom:2px}
+    .review-date{font-size:11px;color:var(--gray);font-weight:600}
+    .review-text{font-size:14px;line-height:1.7;color:#3c4f6e;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
     .review-text.expanded{-webkit-line-clamp:unset}
-    .read-more{background:none;border:none;color:var(--blue);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;padding:0;align-self:flex-start}
-    .load-more-wrap{text-align:center;margin-top:28px}
-    .load-more-btn{padding:12px 32px;border-radius:50px;border:none;background:var(--blue);color:var(--white);font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 16px rgba(45,156,219,.35);transition:background .2s,transform .15s}
+    .read-more{background:none;border:none;color:var(--blue);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;padding:4px 0 0;display:block}
+    .review-response{margin-top:12px;padding:10px 14px;background:#f0f4ff;border-left:3px solid var(--blue);border-radius:0 8px 8px 0}
+    .review-response-label{font-size:11px;font-weight:800;color:var(--blue);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+    .review-response-text{font-size:13px;line-height:1.6;color:#3c4f6e}
+
+    /* ── LOAD MORE ── */
+    .load-more-wrap{text-align:center;margin-top:20px}
+    .load-more-btn{padding:12px 36px;border-radius:50px;border:none;background:var(--blue);color:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 4px 16px rgba(26,115,232,.3);transition:all .2s}
     .load-more-btn:hover{background:var(--blue2);transform:translateY(-2px)}
-    .state-box{text-align:center;padding:48px 24px;color:var(--gray-3);font-weight:700;font-size:15px}
-    .state-box .icon{font-size:40px;display:block;margin-bottom:10px}
-    .spinner{display:inline-block;width:36px;height:36px;border:4px solid var(--gray-2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:12px}
+
+    /* ── SIDEBAR ── */
+    .info-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;font-size:14px}
+    .info-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+    .info-label{font-weight:700;color:var(--ink)}
+    .info-value{color:#3c4f6e}
+    .hours-table{width:100%;font-size:13px;border-collapse:collapse}
+    .hours-table tr td{padding:3px 0}
+    .hours-table td:first-child{font-weight:700;width:80px;color:var(--ink)}
+    .hours-table td:last-child{color:#3c4f6e}
+    .open-badge{display:inline-block;padding:2px 10px;border-radius:50px;font-size:11px;font-weight:800;background:#e8f5e9;color:var(--green);margin-left:6px}
+    .closed-badge{background:#ffebee;color:var(--red)}
+
+    /* ── STATES ── */
+    .state-box{text-align:center;padding:48px 24px;color:var(--gray);font-weight:700}
+    .spinner{display:inline-block;width:32px;height:32px;border:4px solid var(--gray2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:12px}
     @keyframes spin{to{transform:rotate(360deg)}}
-    .last-updated{text-align:center;font-size:11px;color:var(--gray-3);margin-top:20px}
+    .last-updated{text-align:center;font-size:11px;color:var(--gray);margin-top:12px}
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <div class="header-badge">⭐ Verified Patient Reviews</div>
-    <h1>What Families Are <span>Saying About Us</span></h1>
+<!-- HERO -->
+<div class="hero" id="hero">
+  <div class="hero-logo-fallback" id="hero-logo">DC</div>
+  <h1 id="hero-name">Dental Center Pediatrics</h1>
+  <div class="hero-meta" id="hero-meta">Plymouth, MA</div>
+  <div class="hero-rating">
+    <span class="hero-stars" id="hero-stars">★★★★★</span>
+    <span id="hero-rating-text">4.9 · 664 reviews</span>
+  </div>
+  <div class="hero-actions">
+    <a class="btn btn-white" id="write-review-btn" href="#" target="_blank">✏️ Write a Review</a>
+    <a class="btn btn-outline" id="website-btn" href="#" target="_blank">🌐 Visit Website</a>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="page">
+
+  <!-- LEFT COLUMN -->
+  <div>
+
+    <!-- RATING SUMMARY -->
+    <div class="card">
+      <div class="card-title">Rating Summary</div>
+      <div class="rating-big">
+        <div class="rating-score" id="avg-score">4.9</div>
+        <div class="rating-right">
+          <div class="rating-stars" id="avg-stars-lg">★★★★★</div>
+          <div class="rating-count" id="avg-count">664 reviews</div>
+        </div>
+      </div>
+      <div id="rating-bars"></div>
+      <div class="sources" id="sources-list"></div>
+    </div>
+
+    <!-- FILTERS + REVIEWS -->
+    <div class="filters" id="filters" style="display:none">
+      <button class="filter-btn active" data-rating="all">All Reviews</button>
+      <button class="filter-btn" data-rating="5">★★★★★</button>
+      <button class="filter-btn" data-rating="4">★★★★</button>
+      <button class="filter-btn" data-rating="3">★★★</button>
+      <button class="filter-btn" data-rating="1,2">1-2 Stars</button>
+    </div>
+
+    <div class="review-list" id="review-list">
+      <div class="state-box">
+        <div class="spinner"></div>
+        <div>Loading reviews…</div>
+      </div>
+    </div>
+
+    <div class="load-more-wrap" id="load-more-wrap" style="display:none">
+      <button class="load-more-btn" id="load-more-btn">Load More Reviews</button>
+    </div>
+
+    <div class="last-updated" id="last-updated"></div>
   </div>
 
-  <div class="summary" id="summary" style="display:none">
-    <div class="summary-score" id="avg-score">—</div>
-    <div class="summary-right">
-      <div class="stars-large" id="avg-stars"></div>
-      <div class="summary-count" id="review-count"></div>
+  <!-- RIGHT COLUMN (SIDEBAR) -->
+  <div>
+    <div class="card" id="business-info" style="display:none">
+      <div class="card-title">Business Information</div>
+      <div id="info-rows"></div>
+    </div>
+
+    <div class="card" id="hours-card" style="display:none">
+      <div class="card-title">Hours of Operation</div>
+      <table class="hours-table" id="hours-table"></table>
     </div>
   </div>
 
-  <div class="filters" id="filters" style="display:none">
-    <button class="filter-btn active" data-rating="all">All Reviews</button>
-    <button class="filter-btn" data-rating="5">⭐⭐⭐⭐⭐ 5 Star</button>
-    <button class="filter-btn" data-rating="4">⭐⭐⭐⭐ 4 Star</button>
-    <button class="filter-btn" data-rating="3">⭐⭐⭐ 3 Star</button>
-  </div>
-
-  <div class="grid" id="review-grid"></div>
-
-  <div class="load-more-wrap" id="load-more-wrap" style="display:none">
-    <button class="load-more-btn" id="load-more-btn">Load More Reviews</button>
-  </div>
-
-  <div class="state-box" id="loading-state">
-    <div class="spinner"></div>
-    <div>Loading reviews…</div>
-  </div>
-  <div class="state-box" id="error-state" style="display:none">
-    <span class="icon">⚠️</span>
-    Could not load reviews. Please try again later.
-  </div>
-  <div class="last-updated" id="last-updated"></div>
+</div>
 
 <script>
-  // Reads from static reviews.json generated by GitHub Actions
-  // using the official Birdeye REST API
-  const REVIEWS_URL = "reviews.json";
-  const PAGE_SIZE   = 9;
-  const MIN_RATING  = 4;
+const REVIEWS_URL = "reviews.json";
+const PAGE_SIZE   = 10;
+const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 
-  let allReviews  = [];
-  let filtered    = [];
-  let currentPage = 0;
+let allReviews = [], filtered = [], currentPage = 0;
 
-  async function fetchReviews() {
-    try {
-      const res = await fetch(REVIEWS_URL);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
+async function init() {
+  try {
+    const res = await fetch(REVIEWS_URL);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
 
-      id("avg-score").textContent = data.avgRating.toFixed(1);
-      id("avg-stars").textContent = starsStr(Math.round(data.avgRating));
-      id("review-count").textContent = `Based on ${data.revCount} reviews`;
-      show("summary");
+    renderHero(data);
+    renderSummary(data);
+    renderSidebar(data);
 
-      if (data.lastUpdated) {
-        const d = new Date(data.lastUpdated);
-        id("last-updated").textContent = `Last updated: ${d.toLocaleDateString("en-US", {month:"long",day:"numeric",year:"numeric"})}`;
-      }
-
-      allReviews = data.reviews.filter(r => r.rating >= MIN_RATING);
-      if (!allReviews.length) throw new Error("No reviews");
-
-      showFilters();
-      applyFilter("all");
-      hide("loading-state");
-
-    } catch (err) {
-      console.error(err);
-      hide("loading-state");
-      show("error-state");
+    if (data.lastUpdated) {
+      const d = new Date(data.lastUpdated);
+      id("last-updated").textContent = `Last updated: ${d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}`;
     }
+
+    allReviews = data.reviews || [];
+    show("filters");
+    applyFilter("all");
+
+  } catch(err) {
+    console.error(err);
+    id("review-list").innerHTML = `<div class="state-box">⚠️ Could not load reviews.</div>`;
+  }
+}
+
+function renderHero(data) {
+  const b = data.business || {};
+  if (b.name)  id("hero-name").textContent = b.name;
+  if (b.logoUrl) {
+    const img = document.createElement("img");
+    img.src = b.logoUrl; img.className = "hero-logo"; img.alt = b.name;
+    img.onerror = () => {};
+    id("hero-logo").replaceWith(img);
+  }
+  if (b.address) id("hero-meta").textContent = `${b.address.city}, ${b.address.state}`;
+  if (b.avgRating) {
+    id("hero-stars").textContent = starsStr(Math.round(b.avgRating));
+    id("hero-rating-text").textContent = `${b.avgRating.toFixed(1)} · ${b.reviewCount || ""} reviews`;
+  }
+  if (b.website) id("website-btn").href = b.website;
+}
+
+function renderSummary(data) {
+  const b = data.business || {};
+  const s = data.summary  || {};
+
+  if (b.avgRating) {
+    id("avg-score").textContent    = b.avgRating.toFixed(1);
+    id("avg-stars-lg").textContent = starsStr(Math.round(b.avgRating));
+    id("avg-count").textContent    = `${b.reviewCount || ""} reviews`;
   }
 
-  document.querySelectorAll(".filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      applyFilter(btn.dataset.rating);
-    });
+  // Rating bars
+  const ratings = (s.ratings || []).filter(r => r.rating > 0).sort((a,b) => b.rating - a.rating);
+  const maxCount = Math.max(...ratings.map(r => r.reviewCount), 1);
+  const barsEl = id("rating-bars");
+  ratings.forEach(r => {
+    const pct = Math.round((r.reviewCount / maxCount) * 100);
+    barsEl.innerHTML += `
+      <div class="bar-row">
+        <span class="bar-label">${r.rating}★</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <span class="bar-count">${r.reviewCount}</span>
+      </div>`;
   });
 
-  function applyFilter(rating) {
-    filtered = rating === "all" ? [...allReviews] : allReviews.filter(r => String(r.rating) === rating);
-    currentPage = 0;
-    id("review-grid").innerHTML = "";
-    renderPage();
-  }
+  // Sources
+  const sourcesEl = id("sources-list");
+  (s.sources || []).forEach(src => {
+    sourcesEl.innerHTML += `<span class="source-pill">
+      ${src.sourceName} · ${src.avgRating?.toFixed(1) || "—"} ★ · ${src.reviewCount} reviews
+    </span>`;
+  });
+}
 
-  function renderPage() {
-    const start = currentPage * PAGE_SIZE;
-    const slice = filtered.slice(start, start + PAGE_SIZE);
-    if (!slice.length && currentPage === 0) {
-      id("review-grid").innerHTML = `<div class="state-box" style="grid-column:1/-1"><span class="icon">🦷</span>No reviews found.</div>`;
-      hide("load-more-wrap");
-      return;
-    }
-    slice.forEach((r, i) => id("review-grid").appendChild(buildCard(r, start + i)));
-    currentPage++;
-    currentPage * PAGE_SIZE < filtered.length ? show("load-more-wrap") : hide("load-more-wrap");
-  }
+function renderSidebar(data) {
+  const b = data.business || {};
+  const rows = [];
 
-  id("load-more-btn").addEventListener("click", renderPage);
+  if (b.address) rows.push({icon:"📍", label:"Address",
+    value:`${b.address.address1}, ${b.address.city}, ${b.address.state} ${b.address.zip}`});
+  if (b.phone)   rows.push({icon:"📞", label:"Phone",   value:b.phone});
+  if (b.website) rows.push({icon:"🌐", label:"Website",
+    value:`<a href="${b.website}" target="_blank" style="color:var(--blue)">${b.website}</a>`});
+  if (b.description) rows.push({icon:"ℹ️", label:"About", value: b.description.slice(0,200) + "..."});
 
-  function buildCard(r, idx) {
-    const name = r.reviewer?.name || "Anonymous";
-    const card = document.createElement("div");
-    card.className = "card";
-    card.style.animationDelay = `${(idx % PAGE_SIZE) * 60}ms`;
-    card.innerHTML = `
-      <div class="card-top">
-        <div class="avatar">${name.charAt(0).toUpperCase()}</div>
-        <div>
-          <div class="reviewer-name">${esc(name)}</div>
-          ${r.sourceName ? `<div class="review-source">${esc(r.sourceName)}</div>` : ""}
-        </div>
-      </div>
-      <div>
-        <span class="stars">${starsStr(r.rating)}</span>
-        ${r.reviewDate ? `<span class="review-date" style="margin-left:8px">${esc(r.reviewDate)}</span>` : ""}
-      </div>
-      ${r.comment ? `<p class="review-text" id="rt-${idx}">${esc(r.comment)}</p>
-        <button class="read-more" data-target="rt-${idx}">Read more</button>` : ""}
-    `;
-    const btn = card.querySelector(".read-more");
-    if (btn) btn.addEventListener("click", () => {
-      const p = id(btn.dataset.target);
-      btn.textContent = p.classList.toggle("expanded") ? "Show less" : "Read more";
+  if (rows.length) {
+    const infoEl = id("info-rows");
+    rows.forEach(r => {
+      infoEl.innerHTML += `<div class="info-row">
+        <span class="info-icon">${r.icon}</span>
+        <div><div class="info-label">${r.label}</div><div class="info-value">${r.value}</div></div>
+      </div>`;
     });
-    return card;
+    show("business-info");
   }
 
-  function showFilters() { show("filters"); }
-  function starsStr(n) { return "★".repeat(Math.max(0,Math.min(5,n)))+"☆".repeat(5-Math.max(0,Math.min(5,n))); }
-  function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-  function id(i) { return document.getElementById(i); }
-  function show(i) { id(i).style.display=""; }
-  function hide(i) { id(i).style.display="none"; }
+  // Hours
+  const hours = b.hours || [];
+  if (hours.length) {
+    const today = (new Date().getDay() + 6) % 7; // 0=Mon
+    const tbody = id("hours-table");
+    hours.forEach(h => {
+      const isToday = h.day === today;
+      const dayName = DAYS[h.day] || `Day ${h.day}`;
+      let timeStr = "Closed";
+      if (h.isOpen && h.workingHours && h.workingHours.length) {
+        timeStr = h.workingHours.map(w => `${fmt(w.startHour)}–${fmt(w.endHour)}`).join(", ");
+      }
+      tbody.innerHTML += `<tr style="${isToday ? "font-weight:800;color:var(--blue)" : ""}">
+        <td>${dayName.slice(0,3)}</td>
+        <td>${timeStr}${isToday ? `<span class="open-badge${h.isOpen ? "" : " closed-badge"}">${h.isOpen ? "Open" : "Closed"}</span>` : ""}</td>
+      </tr>`;
+    });
+    show("hours-card");
+  }
+}
 
-  fetchReviews();
+function fmt(t) {
+  if (!t) return "";
+  const [h, m] = t.split(":").map(Number);
+  const ampm = h >= 12 ? "PM" : "AM";
+  return `${h % 12 || 12}:${String(m || 0).padStart(2,"0")} ${ampm}`;
+}
+
+document.querySelectorAll(".filter-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    applyFilter(btn.dataset.rating);
+  });
+});
+
+function applyFilter(rating) {
+  if (rating === "all") {
+    filtered = [...allReviews];
+  } else if (rating === "1,2") {
+    filtered = allReviews.filter(r => r.rating <= 2 && r.rating > 0);
+  } else {
+    filtered = allReviews.filter(r => String(r.rating) === rating);
+  }
+  currentPage = 0;
+  id("review-list").innerHTML = "";
+  if (!filtered.length) {
+    id("review-list").innerHTML = `<div class="state-box">No reviews found for this filter.</div>`;
+    hide("load-more-wrap");
+    return;
+  }
+  renderPage();
+}
+
+function renderPage() {
+  const start = currentPage * PAGE_SIZE;
+  const slice = filtered.slice(start, start + PAGE_SIZE);
+  slice.forEach((r, i) => id("review-list").appendChild(buildCard(r, start + i)));
+  currentPage++;
+  currentPage * PAGE_SIZE < filtered.length ? show("load-more-wrap") : hide("load-more-wrap");
+}
+
+id("load-more-btn").addEventListener("click", renderPage);
+
+function buildCard(r, idx) {
+  const name  = r.reviewer?.name || "Anonymous";
+  const thumb = r.reviewer?.thumbnail || "";
+  const card  = document.createElement("div");
+  card.className = "review-card";
+  card.style.animationDelay = `${(idx % PAGE_SIZE) * 40}ms`;
+
+  const avatarHtml = thumb
+    ? `<img class="avatar" src="${esc(thumb)}" alt="${esc(name)}" onerror="this.outerHTML='<div class=\\'avatar\\'>${name.charAt(0).toUpperCase()}</div>'">`
+    : `<div class="avatar">${name.charAt(0).toUpperCase()}</div>`;
+
+  card.innerHTML = `
+    <div class="review-top">
+      ${avatarHtml}
+      <div style="flex:1">
+        <div class="reviewer-name">${esc(name)}</div>
+        ${r.sourceName ? `<div class="review-source-label">${esc(r.sourceName)}</div>` : ""}
+      </div>
+    </div>
+    <div class="review-stars">${starsStr(r.rating)}</div>
+    ${r.reviewDate ? `<div class="review-date">${esc(r.reviewDate)}</div>` : ""}
+    ${r.comment ? `<p class="review-text" id="rt-${idx}">${esc(r.comment)}</p>
+      <button class="read-more" data-target="rt-${idx}">Read more</button>` : ""}
+    ${r.response ? `<div class="review-response">
+      <div class="review-response-label">Response from owner</div>
+      <div class="review-response-text">${esc(r.response)}</div>
+    </div>` : ""}
+  `;
+
+  const rmBtn = card.querySelector(".read-more");
+  if (rmBtn) rmBtn.addEventListener("click", () => {
+    const p = id(rmBtn.dataset.target);
+    rmBtn.textContent = p.classList.toggle("expanded") ? "Show less" : "Read more";
+  });
+  return card;
+}
+
+function starsStr(n) { return "★".repeat(Math.max(0,Math.min(5,n)))+"☆".repeat(5-Math.max(0,Math.min(5,n))); }
+function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function id(i) { return document.getElementById(i); }
+function show(i) { const el = id(i); if(el) el.style.display=""; }
+function hide(i) { const el = id(i); if(el) el.style.display="none"; }
+
+init();
 </script>
 </body>
 </html>
