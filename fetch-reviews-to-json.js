@@ -108,17 +108,6 @@ async function main() {
     faqs = faqRes.qnAs || [];
   } catch(e) { console.log("  No FAQs found:", e.message); }
 
-  console.log("Fetching true review count via count-by-rating...");
-  let trueReviewCount = 0;
-  try {
-    const countData = await apiPost(
-      `/v1/review/report/count-by-rating/${BUSINESS_ID}`,
-      { businessNumbers: [parseInt(BUSINESS_ID)], statuses: ["published"] }
-    );
-    trueReviewCount = countData.reviewCount || 0;
-    console.log(`True review count: ${trueReviewCount}`);
-  } catch(e) { console.log("  Could not fetch count:", e.message); }
-
   console.log("Fetching all reviews...");
   const rawReviews = await fetchAllReviews();
   console.log(`Total reviews: ${rawReviews.length}`);
@@ -140,7 +129,7 @@ async function main() {
       } : null,
       hours:       business.hoursOfOperations || [],
       avgRating:   business.avgRating,
-      reviewCount: trueReviewCount || business.reviewCount,
+      reviewCount: business.reviewCount,
       social:      business.socialProfileURLs || {},
       services:    business.services || "",
       category:    business.category || ""
