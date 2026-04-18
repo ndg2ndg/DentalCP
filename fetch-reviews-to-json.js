@@ -111,7 +111,7 @@ async function main() {
 
   // 2. Published summary — for display (matches Birdeye public page)
   console.log("Fetching published summary (for display)...");
-  const publishedSummary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary?statuses=published`);
+  const publishedSummary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary?statuses=published,parked`);
 
   // 3. Full summary — all statuses (for data control)
   console.log("Fetching full summary (all statuses)...");
@@ -171,9 +171,11 @@ async function main() {
       coverUrl:    business.coverImageURL || business.coverImageUrl,
       address: business.location ? {
         address1: business.location.address1,
+        address2: business.location.address2 || "Ste 306",
         city:     business.location.city,
         state:    business.location.state,
-        zip:      business.location.zip
+        zip:      business.location.zip,
+        country:  business.location.countryName || "United States"
       } : null,
       hours:       business.hoursOfOperations || [],
       avgRating:   business.avgRating,
@@ -182,11 +184,15 @@ async function main() {
       services:    business.services || "",
       category:    business.category || ""
     },
-    // Published summary — shown on page (matches Birdeye public)
+    // Published summary — calculated from actual published reviews array
+    // (API summary endpoint ignores status filter, so we calculate ourselves)
     summary: {
-      sources:      publishedSummary.sources || [],
-      ratings:      publishedSummary.ratings || [],
-      noRatingCount: (publishedSummary.ratings || []).find(r => r.rating === 0)?.reviewCount || 0
+      sources: publishedSummary.sources.filter(s => s.sourceAlias !== "direct_feedback") || [],
+      ratings: [5,4,3,2,1,0].map(r => ({
+        rating: r,
+        reviewCount: publishedReviews.filter(rev => rev.rating === r).length
+      })),
+      noRatingCount: publishedReviews.filter(r => r.rating === 0).length
     },
     // Full summary — all statuses for data control
     fullSummary: {
@@ -199,9 +205,37 @@ async function main() {
       imageUrl: e.imageUrl || e.profilePicUrl || ""
     })),
     // Published reviews — displayed on page
-    reviews: publishedReviews.map(mapReview),
-    // ALL reviews — for data control (not displayed, available for analysis)
-    allReviews: allReviews.map(mapReview)
+    reviews: publishedReviews.map(r => ({
+      reviewId:     r.reviewId,
+      rating:       r.rating,
+      status:       r.status || "published",
+      comment:      r.comments || "",
+      reviewer: {
+        name:      r.reviewer?.nickName || r.reviewer?.firstName || "Anonymous",
+        thumbnail: r.reviewer?.thumbnailUrl || ""
+      },
+      reviewDate:   r.reviewDate || "",
+      sourceName:   r.sourceType || "",
+      reviewUrl:    r.reviewURL  || r.reviewUrl || "",
+      response:     r.response   || "",
+      responseDate: r.responseDate || ""
+    })),
+    // ALL reviews — for data control
+    allReviews: allReviews.map(r => ({
+      reviewId:     r.reviewId,
+      rating:       r.rating,
+      status:       r.status || "",
+      comment:      r.comments || "",
+      reviewer: {
+        name:      r.reviewer?.nickName || r.reviewer?.firstName || "Anonymous",
+        thumbnail: r.reviewer?.thumbnailUrl || ""
+      },
+      reviewDate:   r.reviewDate || "",
+      sourceName:   r.sourceType || "",
+      reviewUrl:    r.reviewURL  || r.reviewUrl || "",
+      response:     r.response   || "",
+      responseDate: r.responseDate || ""
+    }))
   };
 
   fs.writeFileSync("reviews.json", JSON.stringify(output, null, 2));
