@@ -60,18 +60,28 @@
     .service-pill{padding:4px 12px;border-radius:50px;background:#e8f0fe;color:var(--blue);font-size:12px;font-weight:700}
 
     /* MAP */
-    .map-frame{width:100%;height:200px;border-radius:10px;border:none;margin-bottom:14px}
+    .map-frame{width:100%;height:220px;border-radius:10px;border:none}
+    .location-layout{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start}
+    @media(max-width:600px){.location-layout{grid-template-columns:1fr}}
+    .map-col{display:flex;flex-direction:column;gap:10px}
+    .map-addr-row{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#3c4f6e;line-height:1.5}
+    .map-addr-icon{color:var(--red);font-size:16px;flex-shrink:0;margin-top:2px}
+    .map-addr-text{flex:1}
+    .directions-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 16px;border-radius:50px;border:1.5px solid var(--blue);color:var(--blue);font-family:"Nunito",sans-serif;font-weight:700;font-size:12px;text-decoration:none;transition:all .2s;margin-top:4px}
+    .directions-btn:hover{background:#e8f0fe}
 
     /* HOURS */
     .hours-table{width:100%;font-size:13px;border-collapse:collapse}
     .hours-table tr{border-bottom:1px solid var(--gray2)}
     .hours-table tr:last-child{border:none}
-    .hours-table td{padding:7px 4px}
-    .hours-table td:first-child{font-weight:700;width:90px;color:var(--ink)}
+    .hours-table td{padding:6px 4px}
+    .hours-table td:first-child{font-weight:700;width:40px;color:var(--ink)}
     .hours-table td:last-child{color:#3c4f6e}
     .today-row td{color:var(--blue)!important;font-weight:800!important}
     .open-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:4px}
     .closed-dot{background:var(--red)}
+    .closed-now-badge{display:inline-block;padding:1px 8px;border-radius:50px;font-size:11px;font-weight:800;background:#ffebee;color:var(--red);margin-left:6px}
+    .open-now-badge{display:inline-block;padding:1px 8px;border-radius:50px;font-size:11px;font-weight:800;background:#e8f5e9;color:var(--green);margin-left:6px}
 
     /* RATING SUMMARY */
     .rating-big{display:flex;align-items:center;gap:20px;margin-bottom:16px}
@@ -198,14 +208,29 @@
     <!-- MAP + HOURS -->
     <div class="card">
       <div class="card-title">Location Details</div>
-      <div id="map-address-bar" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
-        <span id="map-address-text" style="font-size:13px;font-weight:700;color:var(--ink)"></span>
-        <a id="map-directions-link" href="#" target="_blank" class="btn btn-outline" style="font-size:12px;padding:6px 14px">📍 Get Directions</a>
+      <div class="location-layout">
+        <!-- Left: Map + Address + Directions -->
+        <div class="map-col">
+          <iframe class="map-frame" id="map-frame"
+            src="https://maps.google.com/maps?q=45+Resnik+Rd+Ste+306+Plymouth+MA+02360&output=embed"
+            allowfullscreen loading="lazy"></iframe>
+          <div class="map-addr-row">
+            <span class="map-addr-icon">📍</span>
+            <div class="map-addr-text">
+              <div id="map-addr-line1" style="font-weight:700"></div>
+              <div id="map-addr-line2"></div>
+              <div id="map-addr-line3" style="color:var(--gray)"></div>
+              <a id="map-directions-link" class="directions-btn" href="#" target="_blank">
+                ⊕ Get directions
+              </a>
+            </div>
+          </div>
+        </div>
+        <!-- Right: Hours -->
+        <div>
+          <table class="hours-table" id="hours-table"></table>
+        </div>
       </div>
-      <iframe class="map-frame" id="map-frame"
-        src="https://maps.google.com/maps?q=45+Resnik+Rd,+Plymouth,+MA+02360&output=embed"
-        allowfullscreen loading="lazy"></iframe>
-      <table class="hours-table" id="hours-table"></table>
     </div>
 
     <!-- RATING SUMMARY -->
@@ -286,11 +311,10 @@ function renderStaff(data) {
   const employees = (data.employees || []).filter(e => e.name && e.name !== "Main Office");
   if (!employees.length) return;
   const list = id("staff-list");
-  // Show doctors first (Kritsineli, Lu), then staff
-  const doctors = employees.filter(e => 
-    e.name.includes("Kritsineli") || e.name.includes("Lu")
-  );
-  const toShow = doctors.length ? doctors : employees.slice(0, 3);
+  // Only show known doctors — exact names from Birdeye profile
+  const KNOWN_DOCTORS = ["Maria Kritsineli", "Yuhe Lu"];
+  const doctors = employees.filter(e => KNOWN_DOCTORS.some(d => e.name.includes(d)));
+  const toShow = doctors.length ? doctors : employees.slice(0, 2);
   toShow.forEach(e => {
     const initials = e.name.split(" ").map(n => n[0]).join("").slice(0,2).toUpperCase();
     const avatarUrl = e.imageUrl
@@ -300,7 +324,7 @@ function renderStaff(data) {
       ${avatarUrl}
       <div>
         <div class="doctor-name">Dr. ${esc(e.name)}</div>
-        <div class="doctor-title">${e.title || "Pediatric Dentist"}</div>
+        <div class="doctor-title">${e.name.includes("Lu") ? "Orthodontist" : "Pediatric Dentist"}</div>
       </div>
     </div>`;
   });
@@ -423,13 +447,16 @@ function renderHours(data) {
   const b = data.business || {};
   // Populate map address bar
   if (b.address) {
-    const addr = [b.address.address1, b.address.address2, b.address.city, b.address.state, b.address.zip]
-      .filter(Boolean).join(", ");
-    id("map-address-text").textContent = addr;
-    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(addr)}`;
+    const line1 = b.address.address1 + (b.address.address2 ? ", " + b.address.address2 : "");
+    const line2 = b.address.city + ", " + b.address.state + " " + b.address.zip;
+    const line3 = "United States";
+    const fullAddr = line1 + ", " + line2 + ", " + line3;
+    id("map-addr-line1").textContent = line1;
+    id("map-addr-line2").textContent = line2;
+    id("map-addr-line3").textContent = line3;
+    const mapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(fullAddr);
     id("map-directions-link").href = mapsUrl;
-    // Update map iframe src with full address
-    id("map-frame").src = `https://maps.google.com/maps?q=${encodeURIComponent(addr)}&output=embed`;
+    id("map-frame").src = "https://maps.google.com/maps?q=" + encodeURIComponent(fullAddr) + "&output=embed";
   }
   const hours = b.hours || [];
   if (!hours.length) return;
@@ -441,13 +468,26 @@ function renderHours(data) {
     const dayName = DAYS[d] || `Day ${d}`;
     let timeStr = "Closed";
     if (h.isOpen && h.workingHours && h.workingHours.length)
-      timeStr = h.workingHours.map(w => `${fmt(w.startHour)} to ${fmt(w.endHour)}`).join(", ");
+      timeStr = h.workingHours.map(w => `${fmt(w.startHour)} a.m. to ${fmt(w.endHour)} p.m.`).join(", ");
+    // Check if open right now (only for today)
+    let todayBadge = "";
+    if (isToday && h.isOpen) {
+      const now = new Date();
+      const mins = now.getHours() * 60 + now.getMinutes();
+      const isOpenNow = (h.workingHours || []).some(w => {
+        const [sh,sm] = w.startHour.split(":").map(Number);
+        const [eh,em] = w.endHour.split(":").map(Number);
+        return mins >= sh*60+sm && mins < eh*60+em;
+      });
+      todayBadge = isOpenNow
+        ? '<span class="open-now-badge">Open now</span>'
+        : '<span class="closed-now-badge">Closed now</span>';
+    } else if (isToday && !h.isOpen) {
+      todayBadge = '<span class="closed-now-badge">Closed now</span>';
+    }
     const tr = document.createElement("tr");
     if (isToday) tr.className = "today-row";
-    tr.innerHTML = `<td>${dayName}</td><td>
-      ${h.isOpen ? `<span class="open-dot${isToday ? ***REMOVED***: ""}"></span>` : `<span class="open-dot closed-dot"></span>`}
-      ${timeStr}
-    </td>`;
+    tr.innerHTML = `<td>${dayName.slice(0,3)}</td><td>${timeStr}${todayBadge}</td>`;
     tbody.appendChild(tr);
   });
 }
