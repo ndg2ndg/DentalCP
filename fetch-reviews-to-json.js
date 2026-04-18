@@ -111,7 +111,7 @@ async function main() {
 
   // 2. Published summary — for display (matches Birdeye public page)
   console.log("Fetching published summary (for display)...");
-  const publishedSummary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary`);
+  const publishedSummary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary?statuses=published`);
 
   // 3. Full summary — all statuses (for data control)
   console.log("Fetching full summary (all statuses)...");
@@ -160,8 +160,8 @@ async function main() {
 
   const output = {
     lastUpdated: new Date().toISOString(),
-    displayCount: publishedCount || publishedReviews.length,
-    totalCount:   totalCount     || allReviews.length,
+    displayCount: publishedReviews.length,
+    totalCount: allReviews.length,
     business: {
       name:        business.name,
       phone:       business.phone,
@@ -177,7 +177,7 @@ async function main() {
       } : null,
       hours:       business.hoursOfOperations || [],
       avgRating:   business.avgRating,
-      reviewCount: publishedCount || publishedReviews.length,
+      reviewCount: publishedReviews.length,
       social:      business.socialProfileURLs || {},
       services:    business.services || "",
       category:    business.category || ""
