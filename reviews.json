@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-18T07:15:14.133Z",
+  "lastUpdated": "2026-04-18T11:54:14.436Z",
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -91,7 +91,9 @@
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
       "instagramUrl": "https://www.instagram.com/dentalcenterpediatrics",
       "bbbUrl": "https://www.bbb.org/boston/business-reviews/dental-hygienist/dental-center-pediatrics-in-plymouth-ma-138488"
-    }
+    },
+    "services": "Pediatric Dentistry, Dentists, Orthodontists, Dental, Oral Health, Braces, Healthy Gums, Dental Surgery, Medical Center, Pediatrician",
+    "category": ""
   },
   "summary": {
     "sources": [
@@ -159,6 +161,120 @@
       }
     ]
   },
+  "employees": [
+    {
+      "name": "Anastasia Gamouras",
+      "email": "of07_1@www.dentalcenterpediatrics.com",
+      "phone": "(508) 830-1212",
+      "imageUrl": ""
+    },
+    {
+      "name": "Bill Korsavvas",
+      "email": "boffice@dentalpc.com",
+      "phone": "(508) 830-1212",
+      "imageUrl": ""
+    },
+    {
+      "name": "Deborah Lemieux",
+      "email": "da11_1@www.dentalcenterpediatrics.com",
+      "phone": "(401) 359-1298",
+      "imageUrl": ""
+    },
+    {
+      "name": "Eirini Kritsineli",
+      "email": "of08_1@www.dentalcenterpediatrics.com",
+      "phone": "",
+      "imageUrl": ""
+    },
+    {
+      "name": "Grace Anderson",
+      "email": "da10_1@www.dentalcenterpediatrics.com",
+      "phone": "(401) 298-3670",
+      "imageUrl": ""
+    },
+    {
+      "name": "Katerina Gamouras",
+      "email": "of06_1@www.dentalcenterpediatrics.com",
+      "phone": "(508) 830-1212",
+      "imageUrl": ""
+    },
+    {
+      "name": "Leanne Chandler",
+      "email": "hy01_1@www.dentalcenterpediatrics.com",
+      "phone": "(781) 927-5230",
+      "imageUrl": ""
+    },
+    {
+      "name": "Leila Sekkal",
+      "email": "hy04_1@www.dentalcenterpediatrics.com",
+      "phone": "",
+      "imageUrl": ""
+    },
+    {
+      "name": "Loreta Ingvoldstad",
+      "email": "of10_1@www.dentalcenterpediatrics.com",
+      "phone": "(508) 830-1212",
+      "imageUrl": ""
+    },
+    {
+      "name": "Main Office",
+      "email": "of02_1@www.dentalcenterpediatrics.com",
+      "phone": "(508) 830-1212",
+      "imageUrl": ""
+    },
+    {
+      "name": "Maria Kritsineli",
+      "email": "dr01_1@www.dentalcenterpediatrics.com",
+      "phone": "(508) 830-1212",
+      "imageUrl": ""
+    },
+    {
+      "name": "Nicholas Gamouras",
+      "email": "it@dentalcp.com",
+      "phone": "(781) 354-9384",
+      "imageUrl": ""
+    },
+    {
+      "name": "Yuhe Lu",
+      "email": "dr04_1@www.dentalcenterpediatrics.com",
+      "phone": "",
+      "imageUrl": ""
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What are your contact details?",
+      "answer": "You can call us \n[Business Phone] \n\nemail us at office@dentalcp.com\n\n"
+    },
+    {
+      "question": "What are your business hours?",
+      "answer": "Our regular business hours are [Business hours]"
+    },
+    {
+      "question": "Where are you located?",
+      "answer": "We’re located at [Business location]"
+    },
+    {
+      "question": "What are the services you offer?",
+      "answer": "We offer the following services: [Business services]"
+    },
+    {
+      "question": "What are the payment options available?",
+      "answer": "We accept the following payment methods: [Business payment options]"
+    },
+    {
+      "question": "What are the languages you speak?",
+      "answer": "We speak the following languages [Business languages]"
+    },
+    {
+      "question": "How can I book an appointment?",
+      "answer": "The appointment can be booked using the link : [Appointment link]"
+    },
+    {
+      "question": "What kind of Dental Services you offer?",
+      "answer": "[Business Name] provides Pediatric and Orthodontic services\n\n[Business Phone] "
+    }
+  ],
   "reviews": [
     {
       "reviewId": "5493438111452624687",
