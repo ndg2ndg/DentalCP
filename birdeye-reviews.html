@@ -280,6 +280,8 @@
 
 <script>
 const REVIEWS_URL = "reviews.json";
+// ── INTERNAL MODE: add ?internal=1 to URL to see all 787 reviews ──
+const INTERNAL_MODE = new URLSearchParams(window.location.search).get("internal") === "1";
 const PAGE_SIZE   = 10;
 const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 
@@ -304,7 +306,18 @@ async function init() {
       id("last-updated").textContent = `Last updated: ${d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}`;
     }
 
-    allReviews = data.reviews || [];
+    // Internal mode: add ?internal=1 to URL to see all 787 reviews
+    allReviews = INTERNAL_MODE
+      ? (data.allReviews || data.reviews || [])
+      : (data.reviews || []);
+
+    if (INTERNAL_MODE) {
+      const banner = document.createElement("div");
+      banner.style.cssText = "background:#b71c1c;color:#fff;text-align:center;padding:10px;font-weight:800;font-size:14px;position:sticky;top:0;z-index:999;letter-spacing:.5px";
+      banner.textContent = "🔒 INTERNAL MODE — Showing ALL " + allReviews.length + " reviews including unpublished. Remove ?internal=1 for public view.";
+      document.body.prepend(banner);
+    }
+
     applyFilters();
 
   } catch(err) {
@@ -331,8 +344,13 @@ function renderHeader(data) {
     id("biz-logo").replaceWith(img);
   }
   if (b.avgRating) {
-    id("biz-stars").textContent      = starsStr(Math.round(b.avgRating));
-    id("biz-rating-text").textContent = `${b.avgRating.toFixed(1)} · ${b.reviewCount || ""} reviews`;
+    // Public: show published count (712), Internal: show total (787)
+    const displayCount = INTERNAL_MODE
+      ? (data.totalCount || (data.allReviews || []).length || b.reviewCount)
+      : (data.displayCount || (data.reviews || []).length || b.reviewCount);
+    id("biz-stars").textContent       = starsStr(Math.round(b.avgRating));
+    id("biz-rating-text").textContent = b.avgRating.toFixed(1) + " · " + displayCount + " reviews"
+      + (INTERNAL_MODE ? " (all)" : "");
   }
   if (b.category) id("biz-category").textContent = b.category.split(",")[0];
   if (b.address)  id("biz-city").textContent = `· ${b.address.city}, ${b.address.state}`;
@@ -403,11 +421,16 @@ function renderSummary(data) {
   const b = data.business || {};
   const s = data.summary  || {};
   if (b.avgRating) {
+    const displayCount = INTERNAL_MODE
+      ? (data.totalCount || (data.allReviews || []).length || b.reviewCount)
+      : (data.displayCount || (data.reviews || []).length || b.reviewCount);
     id("avg-score").textContent    = b.avgRating.toFixed(1);
     id("avg-stars-lg").textContent = starsStr(Math.round(b.avgRating));
-    id("avg-count").textContent    = `${b.reviewCount || ""} reviews`;
+    id("avg-count").textContent    = displayCount + " reviews" + (INTERNAL_MODE ? " (all)" : "");
   }
-  const ratings = (s.ratings || []).filter(r => r.rating > 0).sort((a,b) => b.rating - a.rating);
+  // Use fullSummary in internal mode, published summary publicly
+  const summaryToUse = INTERNAL_MODE ? (data.fullSummary || s) : s;
+  const ratings = (summaryToUse.ratings || []).filter(r => r.rating > 0).sort((a,b) => b.rating - a.rating);
   const maxCount = Math.max(...ratings.map(r => r.reviewCount), 1);
   ratings.forEach(r => {
     const pct = Math.round((r.reviewCount / maxCount) * 100);
@@ -426,10 +449,21 @@ function renderSummary(data) {
     });
     id("rating-bars").appendChild(row);
   });
+  // Show no-rating note like Birdeye
+  const noRatingCount = INTERNAL_MODE
+    ? ((summaryToUse.ratings || []).find(r => r.rating === 0) || {}).reviewCount || 0
+    : (s.noRatingCount || ((s.ratings || []).find(r => r.rating === 0) || {}).reviewCount || 0);
+  if (noRatingCount > 0) {
+    const note = document.createElement("div");
+    note.style.cssText = "font-size:12px;color:var(--gray);margin-top:8px;font-weight:600";
+    note.textContent = noRatingCount + " reviews have no rating";
+    id("rating-bars").appendChild(note);
+  }
 }
 
 function renderSourceTabs(data) {
-  const sources = (data.summary || {}).sources || [];
+  const summaryData = INTERNAL_MODE ? (data.fullSummary || data.summary || {}) : (data.summary || {});
+  const sources = summaryData.sources || [];
   const tabsEl  = id("source-tabs");
   sources.forEach(src => {
     const tab = document.createElement("button");
