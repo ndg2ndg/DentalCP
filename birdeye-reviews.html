@@ -423,13 +423,13 @@ function renderHours(data) {
   const b = data.business || {};
   // Populate map address bar
   if (b.address) {
-    const line1 = b.address.address1 + (b.address.address2 ? ", " + b.address.address2 : "");
-    const line2 = b.address.city + ", " + b.address.state + " " + b.address.zip;
-    const fullAddr = line1 + ", " + line2 + ", United States";
-    id("map-address-text").innerHTML = `<strong>${line1}</strong><br>${line2}`;
-    const mapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(fullAddr);
+    const addr = [b.address.address1, b.address.address2, b.address.city, b.address.state, b.address.zip]
+      .filter(Boolean).join(", ");
+    id("map-address-text").textContent = addr;
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(addr)}`;
     id("map-directions-link").href = mapsUrl;
-    id("map-frame").src = "https://maps.google.com/maps?q=" + encodeURIComponent(fullAddr) + "&output=embed";
+    // Update map iframe src with full address
+    id("map-frame").src = `https://maps.google.com/maps?q=${encodeURIComponent(addr)}&output=embed`;
   }
   const hours = b.hours || [];
   if (!hours.length) return;
