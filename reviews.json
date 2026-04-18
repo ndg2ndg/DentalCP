@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-18T14:54:17.878Z",
+  "lastUpdated": "2026-04-18T15:39:19.974Z",
   "displayCount": 664,
   "totalCount": 787,
   "business": {
@@ -10,9 +10,11 @@
     "coverUrl": "https://ddjkm7nmu27lx.cloudfront.net/420373/fileUpload/420373_1692122107464_DCPLOGOw2ChildrenRGB16bit72Dpi1110x3744BirdEyev2.jpeg",
     "address": {
       "address1": "45 Resnik Rd",
+      "address2": "Ste 306",
       "city": "Plymouth",
       "state": "MA",
-      "zip": "02360"
+      "zip": "02360",
+      "country": "United States"
     },
     "hours": [
       {
@@ -102,8 +104,8 @@
       {
         "sourceName": "Google",
         "sourceAlias": "google",
-        "avgRating": 4.9,
-        "reviewCount": 467
+        "avgRating": 4.7,
+        "reviewCount": 496
       },
       {
         "sourceName": "Wellness",
@@ -114,52 +116,52 @@
       {
         "sourceName": "Healthgrades",
         "sourceAlias": "healthgrades",
-        "avgRating": 5,
-        "reviewCount": 16
+        "avgRating": 4.2,
+        "reviewCount": 20
       },
       {
         "sourceName": "Birdeye",
         "sourceAlias": "birdeye",
-        "avgRating": 5,
-        "reviewCount": 2
+        "avgRating": 3,
+        "reviewCount": 4
       },
       {
         "sourceName": "Facebook",
         "sourceAlias": "facebook",
-        "avgRating": 5,
-        "reviewCount": 23
+        "avgRating": 4.6,
+        "reviewCount": 32
       },
       {
         "sourceName": "RateABiz",
         "sourceAlias": "rateabiz",
-        "avgRating": 5,
-        "reviewCount": 146
+        "avgRating": 4.9,
+        "reviewCount": 150
       }
     ],
     "ratings": [
       {
-        "rating": 0,
-        "reviewCount": 11
-      },
-      {
-        "rating": 1,
-        "reviewCount": 0
-      },
-      {
-        "rating": 2,
-        "reviewCount": 0
-      },
-      {
-        "rating": 3,
-        "reviewCount": 7
+        "rating": 5,
+        "reviewCount": 625
       },
       {
         "rating": 4,
         "reviewCount": 21
       },
       {
-        "rating": 5,
-        "reviewCount": 625
+        "rating": 3,
+        "reviewCount": 7
+      },
+      {
+        "rating": 2,
+        "reviewCount": 0
+      },
+      {
+        "rating": 1,
+        "reviewCount": 0
+      },
+      {
+        "rating": 0,
+        "reviewCount": 11
       }
     ],
     "noRatingCount": 11
