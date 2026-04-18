@@ -198,6 +198,10 @@
     <!-- MAP + HOURS -->
     <div class="card">
       <div class="card-title">Location Details</div>
+      <div id="map-address-bar" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <span id="map-address-text" style="font-size:13px;font-weight:700;color:var(--ink)"></span>
+        <a id="map-directions-link" href="#" target="_blank" class="btn btn-outline" style="font-size:12px;padding:6px 14px">📍 Get Directions</a>
+      </div>
       <iframe class="map-frame" id="map-frame"
         src="https://maps.google.com/maps?q=45+Resnik+Rd,+Plymouth,+MA+02360&output=embed"
         allowfullscreen loading="lazy"></iframe>
@@ -261,18 +265,9 @@
     </div>
 
     <!-- DOCTOR PROFILE -->
-    <div class="card">
-      <div class="card-title">Our Doctor</div>
-      <div class="doctor-card">
-        <img class="doctor-photo" src="https://ddjkm7nmu27lx.cloudfront.net/151691706474903/doctor.jpg"
-          onerror="this.src='https://ui-avatars.com/api/?name=Dr+Maria&background=1a73e8&color=fff&size=70'"
-          alt="Dr. Maria Kritsineli DMD"/>
-        <div>
-          <div class="doctor-name">Dr. Maria Kritsineli DMD</div>
-          <div class="doctor-title">Pediatric Dentist</div>
-          <div class="doctor-bio">Dr. Maria Kritsineli is Board Certified by the American Board of Pediatric Dentistry and a proud member of the Massachusetts Dental Society and the American Academy of Pediatric Dentistry.</div>
-        </div>
-      </div>
+    <div class="card" id="staff-card">
+      <div class="card-title">Our Team</div>
+      <div id="staff-list"></div>
     </div>
 
   </div>
@@ -287,6 +282,30 @@ const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sun
 
 let allReviews = [], filtered = [], currentPage = 0, activeSrc = "all";
 
+function renderStaff(data) {
+  const employees = (data.employees || []).filter(e => e.name && e.name !== "Main Office");
+  if (!employees.length) return;
+  const list = id("staff-list");
+  // Show doctors first (Kritsineli, Lu), then staff
+  const doctors = employees.filter(e => 
+    e.name.includes("Kritsineli") || e.name.includes("Lu")
+  );
+  const toShow = doctors.length ? doctors : employees.slice(0, 3);
+  toShow.forEach(e => {
+    const initials = e.name.split(" ").map(n => n[0]).join("").slice(0,2).toUpperCase();
+    const avatarUrl = e.imageUrl
+      ? `<img class="doctor-photo" src="${esc(e.imageUrl)}" alt="${esc(e.name)}" onerror="this.outerHTML='<div class=\'doctor-photo\'style=\'display:flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;font-weight:800;font-size:18px;\'>${initials}</div>'">`
+      : `<div class="doctor-photo" style="display:flex;align-items:center;justify-content:center;background:var(--blue);color:#fff;font-weight:800;font-size:18px;">${initials}</div>`;
+    list.innerHTML += `<div class="doctor-card" style="margin-bottom:14px">
+      ${avatarUrl}
+      <div>
+        <div class="doctor-name">Dr. ${esc(e.name)}</div>
+        <div class="doctor-title">${e.title || "Pediatric Dentist"}</div>
+      </div>
+    </div>`;
+  });
+}
+
 async function init() {
   try {
     const res  = await fetch(REVIEWS_URL);
@@ -300,6 +319,7 @@ async function init() {
     renderSourceTabs(data);
     renderSidebar(data);
     renderFAQ(data);
+    renderStaff(data);
 
     if (data.lastUpdated) {
       const d = new Date(data.lastUpdated);
@@ -307,9 +327,11 @@ async function init() {
     }
 
     // Internal mode: add ?internal=1 to URL to see all 787 reviews
+    // Support both old structure (data.reviews) and new structure (data.reviews = published, data.allReviews = all)
     allReviews = INTERNAL_MODE
       ? (data.allReviews || data.reviews || [])
       : (data.reviews || []);
+    console.log("Reviews loaded:", allReviews.length, "internal:", INTERNAL_MODE);
 
     if (INTERNAL_MODE) {
       const banner = document.createElement("div");
@@ -344,10 +366,12 @@ function renderHeader(data) {
     id("biz-logo").replaceWith(img);
   }
   if (b.avgRating) {
-    // Public: show published count (712), Internal: show total (787)
-    const displayCount = INTERNAL_MODE
-      ? (data.totalCount || (data.allReviews || []).length || b.reviewCount)
-      : (data.displayCount || (data.reviews || []).length || b.reviewCount);
+    const fs2 = data.fullSummary || {};
+    const s2  = data.summary     || {};
+    const ratedCount2  = (fs2.ratings || []).filter(r => r.rating > 0).reduce((s,r) => s + r.reviewCount, 0);
+    const pubNoRating2 = s2.noRatingCount || ((s2.ratings || []).find(r => r.rating === 0) || {}).reviewCount || 0;
+    const publicDisplay2 = ratedCount2 + pubNoRating2; // 712
+    const displayCount = INTERNAL_MODE ? data.totalCount : publicDisplay2;
     id("biz-stars").textContent       = starsStr(Math.round(b.avgRating));
     id("biz-rating-text").textContent = b.avgRating.toFixed(1) + " · " + displayCount + " reviews"
       + (INTERNAL_MODE ? " (all)" : "");
@@ -396,7 +420,18 @@ function renderAbout(data) {
 }
 
 function renderHours(data) {
-  const hours = (data.business || {}).hours || [];
+  const b = data.business || {};
+  // Populate map address bar
+  if (b.address) {
+    const addr = [b.address.address1, b.address.address2, b.address.city, b.address.state, b.address.zip]
+      .filter(Boolean).join(", ");
+    id("map-address-text").textContent = addr;
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(addr)}`;
+    id("map-directions-link").href = mapsUrl;
+    // Update map iframe src with full address
+    id("map-frame").src = `https://maps.google.com/maps?q=${encodeURIComponent(addr)}&output=embed`;
+  }
+  const hours = b.hours || [];
   if (!hours.length) return;
   const today = (new Date().getDay() + 6) % 7;
   const tbody = id("hours-table");
@@ -418,18 +453,25 @@ function renderHours(data) {
 }
 
 function renderSummary(data) {
-  const b = data.business || {};
-  const s = data.summary  || {};
+  const b  = data.business    || {};
+  const s  = data.summary     || {};
+  const fs = data.fullSummary || {};
+
+  // Rating bars always use fullSummary (has correct 1★/2★ counts matching Birdeye)
+  // Internal mode uses fullSummary totals, public mode calculates 712:
+  //   712 = sum of fullSummary rated reviews (698) + published no-rating (14)
+  const fullRatings   = (fs.ratings || []);
+  const ratedCount    = fullRatings.filter(r => r.rating > 0).reduce((s,r) => s + r.reviewCount, 0);
+  const pubNoRating   = s.noRatingCount || ((s.ratings || []).find(r => r.rating === 0) || {}).reviewCount || 0;
+  const publicDisplay = ratedCount + pubNoRating; // 698 + 14 = 712
+
   if (b.avgRating) {
-    const displayCount = INTERNAL_MODE
-      ? (data.totalCount || (data.allReviews || []).length || b.reviewCount)
-      : (data.displayCount || (data.reviews || []).length || b.reviewCount);
+    const displayCount = INTERNAL_MODE ? data.totalCount : publicDisplay;
     id("avg-score").textContent    = b.avgRating.toFixed(1);
     id("avg-stars-lg").textContent = starsStr(Math.round(b.avgRating));
     id("avg-count").textContent    = displayCount + " reviews" + (INTERNAL_MODE ? " (all)" : "");
   }
-  // Use fullSummary in internal mode, published summary publicly
-  const summaryToUse = INTERNAL_MODE ? (data.fullSummary || s) : s;
+  const summaryToUse = INTERNAL_MODE ? fs : fs; // always use fullSummary for bars
   const ratings = (summaryToUse.ratings || []).filter(r => r.rating > 0).sort((a,b) => b.rating - a.rating);
   const maxCount = Math.max(...ratings.map(r => r.reviewCount), 1);
   ratings.forEach(r => {
@@ -451,8 +493,8 @@ function renderSummary(data) {
   });
   // Show no-rating note like Birdeye
   const noRatingCount = INTERNAL_MODE
-    ? ((summaryToUse.ratings || []).find(r => r.rating === 0) || {}).reviewCount || 0
-    : (s.noRatingCount || ((s.ratings || []).find(r => r.rating === 0) || {}).reviewCount || 0);
+    ? ((fs.ratings || []).find(r => r.rating === 0) || {}).reviewCount || 0
+    : pubNoRating;
   if (noRatingCount > 0) {
     const note = document.createElement("div");
     note.style.cssText = "font-size:12px;color:var(--gray);margin-top:8px;font-weight:600";
@@ -463,7 +505,8 @@ function renderSummary(data) {
 
 function renderSourceTabs(data) {
   const summaryData = INTERNAL_MODE ? (data.fullSummary || data.summary || {}) : (data.summary || {});
-  const sources = summaryData.sources || [];
+  // Exclude Direct Feedback from public tabs (internal only)
+  const sources = (summaryData.sources || []).filter(s => INTERNAL_MODE || s.sourceAlias !== "direct_feedback");
   const tabsEl  = id("source-tabs");
   sources.forEach(src => {
     const tab = document.createElement("button");
