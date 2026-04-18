@@ -113,7 +113,7 @@ async function main() {
   try {
     const countData = await apiPost(
       `/v1/review/report/count-by-rating/${BUSINESS_ID}`,
-      { businessNumbers: [parseInt(BUSINESS_ID)] }
+      { businessNumbers: [parseInt(BUSINESS_ID)], statuses: ["published"] }
     );
     trueReviewCount = countData.reviewCount || 0;
     console.log(`True review count: ${trueReviewCount}`);
