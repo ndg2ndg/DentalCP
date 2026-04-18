@@ -1,13 +1,15 @@
 /**
  * Birdeye Microsite Data Fetcher
- * Calls 3 endpoints from the official API blueprint:
- *   1. GET  /v1/business/{businessId}          — business info
- *   2. GET  /v1/review/businessid/{id}/summary — ratings breakdown
- *   3. POST /v1/review/businessId/{id}         — all reviews
+ * Calls these endpoints from the official API blueprint:
+ *   1. GET  /v1/business/{businessId}                — business info
+ *   2. GET  /v1/review/businessid/{id}/summary       — ratings breakdown
+ *   3. POST /v1/review/businessId/{id}               — all reviews
+ *   4. GET  /v1/employee/{businessId}                — staff/doctors
+ *   5. POST /v1/quero/external/get-all-qna           — FAQ
  */
 
-const https  = require("https");
-const fs     = require("fs");
+const https = require("https");
+const fs    = require("fs");
 
 const API_KEY     = process.env.BIRDEYE_API_KEY;
 const BUSINESS_ID = process.env.BIRDEYE_BID;
@@ -17,16 +19,13 @@ if (!API_KEY || !BUSINESS_ID) {
   process.exit(1);
 }
 
-function apiGet(path) {
+function apiGet(path, extraHeaders = {}) {
   return new Promise((resolve, reject) => {
     const options = {
       hostname: "api.birdeye.com",
       path: `/resources${path}`,
       method: "GET",
-      headers: {
-        "Accept":    "application/json",
-        "x-api-key": API_KEY
-      }
+      headers: { "Accept": "application/json", "x-api-key": API_KEY, ...extraHeaders }
     };
     const req = https.request(options, (res) => {
       let data = "";
@@ -41,7 +40,7 @@ function apiGet(path) {
   });
 }
 
-function apiPost(path, body) {
+function apiPost(path, body, extraHeaders = {}) {
   return new Promise((resolve, reject) => {
     const bodyStr = JSON.stringify(body);
     const options = {
@@ -49,10 +48,9 @@ function apiPost(path, body) {
       path: `/resources${path}`,
       method: "POST",
       headers: {
-        "Accept":          "application/json",
-        "Content-Type":    "application/json",
-        "x-api-key":       API_KEY,
-        "Content-Length":  Buffer.byteLength(bodyStr)
+        "Accept": "application/json", "Content-Type": "application/json",
+        "x-api-key": API_KEY, "Content-Length": Buffer.byteLength(bodyStr),
+        ...extraHeaders
       }
     };
     const req = https.request(options, (res) => {
@@ -75,7 +73,7 @@ async function fetchAllReviews() {
   while (true) {
     console.log(`  Fetching reviews sindex=${sindex}...`);
     const page = await apiPost(
-      `/v1/review/businessId/${BUSINESS_ID}?sindex=${sindex}&count=${COUNT}`,
+      `/v1/review/businessId/${BUSINESS_ID}?sindex=${sindex}&count=${COUNT}&includeNonAggregatedReviews=true`,
       { statuses: ["all"] }
     );
     if (!Array.isArray(page) || page.length === 0) break;
@@ -93,6 +91,23 @@ async function main() {
   console.log("Fetching review summary...");
   const summary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary`);
 
+  console.log("Fetching employees/staff...");
+  let employees = [];
+  try {
+    employees = await apiGet(`/v1/employee/${BUSINESS_ID}`);
+  } catch(e) { console.log("  No employees found:", e.message); }
+
+  console.log("Fetching FAQs...");
+  let faqs = [];
+  try {
+    const faqRes = await apiPost(
+      `/v1/quero/external/get-all-qna?sIndex=0&count=10&order=1`,
+      { businessNumbers: [parseInt(BUSINESS_ID)] },
+      { "x-business-number": BUSINESS_ID }
+    );
+    faqs = faqRes.qnAs || [];
+  } catch(e) { console.log("  No FAQs found:", e.message); }
+
   console.log("Fetching all reviews...");
   const rawReviews = await fetchAllReviews();
   console.log(`Total reviews: ${rawReviews.length}`);
@@ -106,7 +121,7 @@ async function main() {
       description: business.description,
       logoUrl:     business.logoURL    || business.logoUrl,
       coverUrl:    business.coverImageURL || business.coverImageUrl,
-      address:     business.location ? {
+      address: business.location ? {
         address1: business.location.address1,
         city:     business.location.city,
         state:    business.location.state,
@@ -115,24 +130,36 @@ async function main() {
       hours:       business.hoursOfOperations || [],
       avgRating:   business.avgRating,
       reviewCount: business.reviewCount,
-      social:      business.socialProfileURLs || {}
+      social:      business.socialProfileURLs || {},
+      services:    business.services || "",
+      category:    business.category || ""
     },
     summary: {
       sources: summary.sources || [],
       ratings: summary.ratings || []
     },
+    employees: (employees || []).map(e => ({
+      name:     `${e.firstName || ""} ${e.lastName || ""}`.trim(),
+      email:    e.emailId || "",
+      phone:    e.phone   || "",
+      imageUrl: e.imageUrl || ""
+    })),
+    faqs: (faqs || []).map(f => ({
+      question: f.question?.text || "",
+      answer:   f.question?.answers?.[0]?.text || ""
+    })).filter(f => f.question && f.answer),
     reviews: rawReviews.map(r => ({
-      reviewId:   r.reviewId,
-      rating:     r.rating,
-      comment:    r.comments || "",
+      reviewId:     r.reviewId,
+      rating:       r.rating,
+      comment:      r.comments || "",
       reviewer: {
         name:      r.reviewer?.nickName || r.reviewer?.firstName || "Anonymous",
         thumbnail: r.reviewer?.thumbnailUrl || ""
       },
-      reviewDate: r.reviewDate || "",
-      sourceName: r.sourceType || "",
-      reviewUrl:  r.reviewURL  || r.reviewUrl || "",
-      response:   r.response   || "",
+      reviewDate:   r.reviewDate || "",
+      sourceName:   r.sourceType || "",
+      reviewUrl:    r.reviewURL  || r.reviewUrl || "",
+      response:     r.response   || "",
       responseDate: r.responseDate || ""
     }))
   };
