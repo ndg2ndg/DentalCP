@@ -89,7 +89,7 @@ async function main() {
   const business = await apiGet(`/v1/business/${BUSINESS_ID}`);
 
   console.log("Fetching review summary...");
-  const summary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary`);
+  const summary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary?statuses=published,parked`);
 
   console.log("Fetching employees/staff...");
   let employees = [];
@@ -107,6 +107,17 @@ async function main() {
     );
     faqs = faqRes.qnAs || [];
   } catch(e) { console.log("  No FAQs found:", e.message); }
+
+  console.log("Fetching true review count via count-by-rating...");
+  let trueReviewCount = 0;
+  try {
+    const countData = await apiPost(
+      `/v1/review/report/count-by-rating/${BUSINESS_ID}`,
+      { businessNumbers: [parseInt(BUSINESS_ID)], statuses: ["published", "parked"] }
+    );
+    trueReviewCount = countData.reviewCount || 0;
+    console.log(`True review count: ${trueReviewCount}`);
+  } catch(e) { console.log("  Could not fetch count:", e.message); }
 
   console.log("Fetching all reviews...");
   const rawReviews = await fetchAllReviews();
@@ -129,7 +140,7 @@ async function main() {
       } : null,
       hours:       business.hoursOfOperations || [],
       avgRating:   business.avgRating,
-      reviewCount: business.reviewCount,
+      reviewCount: trueReviewCount || business.reviewCount,
       social:      business.socialProfileURLs || {},
       services:    business.services || "",
       category:    business.category || ""
