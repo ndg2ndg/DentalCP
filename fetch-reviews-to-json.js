@@ -1,615 +1,185 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dental Center Pediatrics — Patient Reviews</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet"/>
-  <style>
-    :root{
-      --blue:#1a73e8;--blue2:#1558b0;--teal:#0097a7;
-      --sun:#f9c74f;--white:#fff;--bg:#f5f7fa;
-      --ink:#1d2b45;--gray:#8a9bb5;--gray2:#e4eaf2;
-      --red:#e53935;--green:#2e7d32;
-      --radius:14px;--shadow:0 2px 12px rgba(0,0,0,.09);
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--ink)}
+/**
+ * Birdeye Microsite Data Fetcher
+ * Calls these endpoints from the official API blueprint:
+ *   1. GET  /v1/business/{businessId}                — business info
+ *   2. GET  /v1/review/businessid/{id}/summary       — ratings breakdown
+ *   3. POST /v1/review/businessId/{id}               — all reviews
+ *   4. GET  /v1/employee/{businessId}                — staff/doctors
+ *   5. POST /v1/quero/external/get-all-qna           — FAQ
+ */
 
-    /* COVER BANNER */
-    .cover{position:relative;height:200px;background:linear-gradient(135deg,#1a73e8,#0097a7);overflow:hidden}
-    .cover img{width:100%;height:100%;object-fit:cover}
-    .cover-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.1),rgba(0,0,0,.45))}
+const https = require("https");
+const fs    = require("fs");
 
-    /* BREADCRUMB */
-    .breadcrumb{background:var(--white);padding:8px 24px;font-size:12px;color:var(--gray);border-bottom:1px solid var(--gray2)}
-    .breadcrumb a{color:var(--blue);text-decoration:none}
-    .breadcrumb a:hover{text-decoration:underline}
+const API_KEY     = process.env.BIRDEYE_API_KEY;
+const BUSINESS_ID = process.env.BIRDEYE_BID;
 
-    /* BUSINESS HEADER */
-    .biz-header{background:var(--white);padding:20px 24px 16px;border-bottom:1px solid var(--gray2)}
-    .biz-header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap}
-    .biz-logo{width:80px;height:80px;border-radius:12px;object-fit:cover;border:2px solid var(--gray2);flex-shrink:0;background:var(--gray2)}
-    .biz-logo-fallback{width:80px;height:80px;border-radius:12px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#fff;flex-shrink:0}
-    .biz-info{flex:1;min-width:200px}
-    .biz-name{font-family:'Playfair Display',serif;font-size:clamp(20px,4vw,30px);font-weight:700;margin-bottom:6px}
-    .biz-meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:13px;color:var(--gray);margin-bottom:10px}
-    .open-badge{padding:2px 10px;border-radius:50px;font-size:12px;font-weight:800;background:#e8f5e9;color:var(--green)}
-    .closed-badge{background:#ffebee;color:var(--red)}
-    .biz-stars{color:var(--sun);font-size:15px;letter-spacing:1px}
-    .biz-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    .btn{padding:9px 20px;border-radius:50px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;text-decoration:none;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
-    .btn-blue{background:var(--blue);color:#fff}
-    .btn-blue:hover{background:var(--blue2)}
-    .btn-outline{background:transparent;color:var(--blue);border:2px solid var(--blue)}
-    .btn-outline:hover{background:#e8f0fe}
+if (!API_KEY || !BUSINESS_ID) {
+  console.error("Missing BIRDEYE_API_KEY or BIRDEYE_BID environment variables");
+  process.exit(1);
+}
 
-    /* LAYOUT */
-    .page{max-width:1100px;margin:0 auto;padding:24px 16px 48px;display:grid;grid-template-columns:1fr 300px;gap:24px}
-    @media(max-width:768px){.page{grid-template-columns:1fr}}
+function apiGet(path, extraHeaders = {}) {
+  return new Promise((resolve, reject) => {
+    const options = {
+      hostname: "api.birdeye.com",
+      path: `/resources${path}`,
+      method: "GET",
+      headers: { "Accept": "application/json", "x-api-key": API_KEY, ...extraHeaders }
+    };
+    const req = https.request(options, (res) => {
+      let data = "";
+      res.on("data", c => data += c);
+      res.on("end", () => {
+        if (res.statusCode !== 200) { reject(new Error(`GET ${path} → HTTP ${res.statusCode}: ${data}`)); return; }
+        try { resolve(JSON.parse(data)); } catch(e) { reject(e); }
+      });
+    });
+    req.on("error", reject);
+    req.end();
+  });
+}
 
-    /* CARDS */
-    .card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;margin-bottom:20px}
-    .card-title{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--gray2)}
+function apiPost(path, body, extraHeaders = {}) {
+  return new Promise((resolve, reject) => {
+    const bodyStr = JSON.stringify(body);
+    const options = {
+      hostname: "api.birdeye.com",
+      path: `/resources${path}`,
+      method: "POST",
+      headers: {
+        "Accept": "application/json", "Content-Type": "application/json",
+        "x-api-key": API_KEY, "Content-Length": Buffer.byteLength(bodyStr),
+        ...extraHeaders
+      }
+    };
+    const req = https.request(options, (res) => {
+      let data = "";
+      res.on("data", c => data += c);
+      res.on("end", () => {
+        if (res.statusCode !== 200) { reject(new Error(`POST ${path} → HTTP ${res.statusCode}: ${data}`)); return; }
+        try { resolve(JSON.parse(data)); } catch(e) { reject(e); }
+      });
+    });
+    req.on("error", reject);
+    req.write(bodyStr);
+    req.end();
+  });
+}
 
-    /* ABOUT */
-    .about-text{font-size:14px;line-height:1.75;color:#3c4f6e}
-    .about-text.collapsed{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-    .read-more-about{background:none;border:none;color:var(--blue);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;padding:6px 0 0;display:block}
-    .services-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-    .service-pill{padding:4px 12px;border-radius:50px;background:#e8f0fe;color:var(--blue);font-size:12px;font-weight:700}
+async function fetchAllReviews() {
+  const COUNT = 100;
+  let all = [], sindex = 0;
+  while (true) {
+    console.log(`  Fetching reviews sindex=${sindex}...`);
+    const page = await apiPost(
+      `/v1/review/businessId/${BUSINESS_ID}?sindex=${sindex}&count=${COUNT}&includeNonAggregatedReviews=true`,
+      { statuses: ["all"] }
+    );
+    if (!Array.isArray(page) || page.length === 0) break;
+    all = all.concat(page);
+    if (page.length < COUNT) break;
+    sindex += COUNT;
+  }
+  return all;
+}
 
-    /* MAP */
-    .map-frame{width:100%;height:200px;border-radius:10px;border:none;margin-bottom:14px}
+async function main() {
+  console.log("Fetching business info...");
+  const business = await apiGet(`/v1/business/${BUSINESS_ID}`);
 
-    /* HOURS */
-    .hours-table{width:100%;font-size:13px;border-collapse:collapse}
-    .hours-table tr{border-bottom:1px solid var(--gray2)}
-    .hours-table tr:last-child{border:none}
-    .hours-table td{padding:7px 4px}
-    .hours-table td:first-child{font-weight:700;width:90px;color:var(--ink)}
-    .hours-table td:last-child{color:#3c4f6e}
-    .today-row td{color:var(--blue)!important;font-weight:800!important}
-    .open-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:4px}
-    .closed-dot{background:var(--red)}
+  console.log("Fetching review summary...");
+  const summary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary`);
 
-    /* RATING SUMMARY */
-    .rating-big{display:flex;align-items:center;gap:20px;margin-bottom:16px}
-    .rating-score{font-size:56px;font-weight:800;color:var(--blue);line-height:1}
-    .rating-stars-lg{color:var(--sun);font-size:22px;letter-spacing:2px}
-    .rating-count{font-size:13px;color:var(--gray);margin-top:4px;font-weight:600}
-    .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:13px;font-weight:600;cursor:pointer}
-    .bar-row:hover .bar-label{color:var(--blue)}
-    .bar-label{width:32px;text-align:right;color:var(--gray)}
-    .bar-track{flex:1;height:8px;background:var(--gray2);border-radius:4px;overflow:hidden}
-    .bar-fill{height:100%;background:var(--sun);border-radius:4px;transition:width .6s ease}
-    .bar-count{width:32px;color:var(--gray)}
-
-    /* SOURCE TABS */
-    .source-tabs{display:flex;gap:0;flex-wrap:wrap;border-bottom:2px solid var(--gray2);margin-bottom:18px}
-    .source-tab{padding:8px 16px;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;border:none;background:transparent;color:var(--gray);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
-    .source-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
-    .source-tab:hover{color:var(--blue)}
-
-    /* FILTER BUTTONS */
-    .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-    .filter-btn{padding:6px 14px;border-radius:50px;border:2px solid var(--gray2);background:var(--white);color:var(--gray);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s}
-    .filter-btn.active,.filter-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
-
-    /* REVIEW CARDS */
-    .review-list{display:flex;flex-direction:column;gap:14px}
-    .review-card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px 20px;animation:fadeUp .35s ease both}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-    .review-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:8px}
-    .avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#e8f0fe;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:var(--blue);border:2px solid var(--gray2)}
-    .reviewer-name{font-weight:800;font-size:14px;color:var(--ink)}
-    .review-source-label{font-size:11px;color:var(--gray);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
-    .review-stars{color:var(--sun);font-size:14px;letter-spacing:1px;margin-bottom:3px}
-    .review-date{font-size:11px;color:var(--gray);font-weight:600}
-    .review-text{font-size:14px;line-height:1.7;color:#3c4f6e;margin-top:6px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
-    .review-text.expanded{-webkit-line-clamp:unset}
-    .read-more{background:none;border:none;color:var(--blue);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;padding:4px 0 0;display:block}
-    .review-response{margin-top:10px;padding:10px 14px;background:#f0f4ff;border-left:3px solid var(--blue);border-radius:0 8px 8px 0}
-    .review-response-label{font-size:11px;font-weight:800;color:var(--blue);margin-bottom:3px;text-transform:uppercase;letter-spacing:.5px}
-    .review-response-text{font-size:13px;line-height:1.6;color:#3c4f6e}
-
-    /* PAGINATION */
-    .pagination{display:flex;justify-content:center;gap:6px;margin-top:20px;flex-wrap:wrap}
-    .page-btn{width:36px;height:36px;border-radius:50%;border:2px solid var(--gray2);background:var(--white);font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
-    .page-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
-    .page-btn:hover:not(.active){background:#e8f0fe;border-color:var(--blue)}
-
-    /* SIDEBAR */
-    .info-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;font-size:13px}
-    .info-icon{font-size:17px;flex-shrink:0;margin-top:1px}
-    .info-label{font-weight:700;color:var(--ink);font-size:12px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
-    .info-value{color:#3c4f6e;font-size:13px}
-    .info-value a{color:var(--blue);text-decoration:none}
-
-    /* DOCTOR CARD */
-    .doctor-card{display:flex;gap:14px;align-items:flex-start}
-    .doctor-photo{width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--gray2);flex-shrink:0}
-    .doctor-name{font-weight:800;font-size:14px;margin-bottom:4px}
-    .doctor-title{font-size:12px;color:var(--gray);font-weight:600;margin-bottom:6px}
-    .doctor-bio{font-size:12px;line-height:1.6;color:#3c4f6e}
-
-    /* FAQ */
-    .faq-item{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--gray2)}
-    .faq-item:last-child{border:none;margin:0;padding:0}
-    .faq-q{font-weight:800;font-size:13px;color:var(--ink);margin-bottom:4px}
-    .faq-a{font-size:13px;color:#3c4f6e;line-height:1.6}
-
-    /* STATES */
-    .state-box{text-align:center;padding:40px 24px;color:var(--gray);font-weight:700}
-    .spinner{display:inline-block;width:32px;height:32px;border:4px solid var(--gray2);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:12px}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .last-updated{text-align:center;font-size:11px;color:var(--gray);margin-top:8px}
-  </style>
-</head>
-<body>
-
-<!-- COVER BANNER -->
-<div class="cover" id="cover">
-  <img id="cover-img" src=***REMOVED***alt=***REMOVED***style="display:none" onerror="this.style.display='none'"/>
-  <div class="cover-overlay"></div>
-</div>
-
-<!-- BREADCRUMB -->
-<div class="breadcrumb">
-  <a href="#">Home</a> › <a href="#">Dentists</a> › <span id="bc-name">Dental Center Pediatrics</span>
-</div>
-
-<!-- BUSINESS HEADER -->
-<div class="biz-header">
-  <div class="biz-header-inner">
-    <div class="biz-logo-fallback" id="biz-logo">DC</div>
-    <div class="biz-info">
-      <div class="biz-name" id="biz-name">Dental Center Pediatrics</div>
-      <div class="biz-meta">
-        <span class="biz-stars" id="biz-stars">★★★★★</span>
-        <span id="biz-rating-text">4.9 · 664 reviews</span>
-        <span id="open-status" class="open-badge">Open</span>
-        <span id="biz-category" style="color:var(--gray)"></span>
-        <span id="biz-city" style="color:var(--gray)"></span>
-      </div>
-      <div class="biz-actions">
-        <a class="btn btn-blue" id="write-review-btn" href="https://search.google.com/local/writereview?placeid=ChIJvbaVbXm75IkRcMbWQD8z488" target="_blank">✏️ Write a Review</a>
-        <a class="btn btn-outline" id="website-btn" href="#" target="_blank">🌐 Visit Website</a>
-        <a class="btn btn-outline" id="appt-btn" href="tel:+15088301212">📅 Request Appointment</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MAIN LAYOUT -->
-<div class="page">
-
-  <!-- LEFT COLUMN -->
-  <div>
-
-    <!-- ABOUT -->
-    <div class="card" id="about-card" style="display:none">
-      <div class="card-title">About This Business</div>
-      <p class="about-text collapsed" id="about-text"></p>
-      <button class="read-more-about" id="about-toggle">Read more</button>
-      <div class="services-list" id="services-list"></div>
-    </div>
-
-    <!-- MAP + HOURS -->
-    <div class="card">
-      <div class="card-title">Location Details</div>
-      <iframe class="map-frame" id="map-frame"
-        src="https://maps.google.com/maps?q=45+Resnik+Rd,+Plymouth,+MA+02360&output=embed"
-        allowfullscreen loading="lazy"></iframe>
-      <table class="hours-table" id="hours-table"></table>
-    </div>
-
-    <!-- RATING SUMMARY -->
-    <div class="card">
-      <div class="card-title">Featured Reviews</div>
-      <div class="rating-big">
-        <div class="rating-score" id="avg-score">4.9</div>
-        <div>
-          <div class="rating-stars-lg" id="avg-stars-lg">★★★★★</div>
-          <div class="rating-count" id="avg-count">664 reviews</div>
-        </div>
-      </div>
-      <div id="rating-bars"></div>
-
-      <!-- SOURCE TABS -->
-      <div class="source-tabs" id="source-tabs" style="margin-top:16px">
-        <button class="source-tab active" data-source="all">All</button>
-      </div>
-
-      <!-- STAR FILTERS -->
-      <div class="filters">
-        <button class="filter-btn active" data-rating="all">All Stars</button>
-        <button class="filter-btn" data-rating="5">★★★★★</button>
-        <button class="filter-btn" data-rating="4">★★★★</button>
-        <button class="filter-btn" data-rating="3">★★★</button>
-        <button class="filter-btn" data-rating="1,2">1-2 Stars</button>
-      </div>
-
-      <!-- WRITE REVIEW ROW -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px">
-        <a class="btn btn-outline" href="https://search.google.com/local/writereview?placeid=ChIJvbaVbXm75IkRcMbWQD8z488" target="_blank" style="font-size:13px">✏️ Write a Review</a>
-      </div>
-
-      <div class="review-list" id="review-list">
-        <div class="state-box"><div class="spinner"></div><div>Loading reviews…</div></div>
-      </div>
-
-      <div class="pagination" id="pagination"></div>
-      <div class="last-updated" id="last-updated"></div>
-    </div>
-
-    <!-- FAQ -->
-    <div class="card" id="faq-card">
-      <div class="card-title">Frequently Asked Questions</div>
-      <div id="faq-list"></div>
-    </div>
-
-  </div>
-
-  <!-- RIGHT SIDEBAR -->
-  <div>
-
-    <!-- BUSINESS INFO -->
-    <div class="card" id="business-info" style="display:none">
-      <div class="card-title">Business Information</div>
-      <div id="info-rows"></div>
-    </div>
-
-    <!-- DOCTOR PROFILE -->
-    <div class="card">
-      <div class="card-title">Our Doctor</div>
-      <div class="doctor-card">
-        <img class="doctor-photo" src="https://ddjkm7nmu27lx.cloudfront.net/151691706474903/doctor.jpg"
-          onerror="this.src='https://ui-avatars.com/api/?name=Dr+Maria&background=1a73e8&color=fff&size=70'"
-          alt="Dr. Maria Kritsineli DMD"/>
-        <div>
-          <div class="doctor-name">Dr. Maria Kritsineli DMD</div>
-          <div class="doctor-title">Pediatric Dentist</div>
-          <div class="doctor-bio">Dr. Maria Kritsineli is Board Certified by the American Board of Pediatric Dentistry and a proud member of the Massachusetts Dental Society and the American Academy of Pediatric Dentistry.</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<script>
-const REVIEWS_URL = "reviews.json";
-const PAGE_SIZE   = 10;
-const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-
-let allReviews = [], filtered = [], currentPage = 0, activeSrc = "all";
-
-async function init() {
+  console.log("Fetching employees/staff...");
+  let employees = [];
   try {
-    const res  = await fetch(REVIEWS_URL);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    employees = await apiGet(`/v1/employee/${BUSINESS_ID}`);
+  } catch(e) { console.log("  No employees found:", e.message); }
 
-    renderHeader(data);
-    renderAbout(data);
-    renderHours(data);
-    renderSummary(data);
-    renderSourceTabs(data);
-    renderSidebar(data);
-    renderFAQ(data);
+  console.log("Fetching FAQs...");
+  let faqs = [];
+  try {
+    const faqRes = await apiPost(
+      `/v1/quero/external/get-all-qna?sIndex=0&count=10&order=1`,
+      { businessNumbers: [parseInt(BUSINESS_ID)] },
+      { "x-business-number": BUSINESS_ID }
+    );
+    faqs = faqRes.qnAs || [];
+  } catch(e) { console.log("  No FAQs found:", e.message); }
 
-    if (data.lastUpdated) {
-      const d = new Date(data.lastUpdated);
-      id("last-updated").textContent = `Last updated: ${d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}`;
-    }
+  console.log("Fetching true review count via count-by-rating...");
+  let trueReviewCount = 0;
+  try {
+    const countData = await apiPost(
+      `/v1/review/report/count-by-rating/${BUSINESS_ID}`,
+      { businessNumbers: [parseInt(BUSINESS_ID)] }
+    );
+    trueReviewCount = countData.reviewCount || 0;
+    console.log(`True review count: ${trueReviewCount}`);
+  } catch(e) { console.log("  Could not fetch count:", e.message); }
 
-    allReviews = data.reviews || [];
-    applyFilters();
+  console.log("Fetching all reviews...");
+  const rawReviews = await fetchAllReviews();
+  console.log(`Total reviews: ${rawReviews.length}`);
 
-  } catch(err) {
-    console.error(err);
-    id("review-list").innerHTML = `<div class="state-box">⚠️ Could not load reviews. Please try again later.</div>`;
-  }
+  const output = {
+    lastUpdated: new Date().toISOString(),
+    business: {
+      name:        business.name,
+      phone:       business.phone,
+      website:     business.websiteURL || business.websiteUrl,
+      description: business.description,
+      logoUrl:     business.logoURL    || business.logoUrl,
+      coverUrl:    business.coverImageURL || business.coverImageUrl,
+      address: business.location ? {
+        address1: business.location.address1,
+        city:     business.location.city,
+        state:    business.location.state,
+        zip:      business.location.zip
+      } : null,
+      hours:       business.hoursOfOperations || [],
+      avgRating:   business.avgRating,
+      reviewCount: trueReviewCount || business.reviewCount,
+      social:      business.socialProfileURLs || {},
+      services:    business.services || "",
+      category:    business.category || ""
+    },
+    summary: {
+      sources: summary.sources || [],
+      ratings: summary.ratings || []
+    },
+    employees: (employees || []).map(e => ({
+      name:     `${e.firstName || ""} ${e.lastName || ""}`.trim(),
+      email:    e.emailId || "",
+      phone:    e.phone   || "",
+      imageUrl: e.imageUrl || ""
+    })),
+    faqs: (faqs || []).map(f => ({
+      question: f.question?.text || "",
+      answer:   f.question?.answers?.[0]?.text || ""
+    })).filter(f => f.question && f.answer),
+    reviews: rawReviews.map(r => ({
+      reviewId:     r.reviewId,
+      rating:       r.rating,
+      comment:      r.comments || "",
+      reviewer: {
+        name:      r.reviewer?.nickName || r.reviewer?.firstName || "Anonymous",
+        thumbnail: r.reviewer?.thumbnailUrl || ""
+      },
+      reviewDate:   r.reviewDate || "",
+      sourceName:   r.sourceType || "",
+      reviewUrl:    r.reviewURL  || r.reviewUrl || "",
+      response:     r.response   || "",
+      responseDate: r.responseDate || ""
+    }))
+  };
+
+  fs.writeFileSync("reviews.json", JSON.stringify(output, null, 2));
+  console.log("✅ Saved reviews.json");
 }
 
-function renderHeader(data) {
-  const b = data.business || {};
-  if (b.name) {
-    id("biz-name").textContent = b.name;
-    id("bc-name").textContent  = b.name;
-    document.title = b.name + " — Patient Reviews";
-  }
-  if (b.coverUrl) {
-    const ci = id("cover-img");
-    ci.src = b.coverUrl; ci.style.display = "block";
-  }
-  if (b.logoUrl) {
-    const img = document.createElement("img");
-    img.src = b.logoUrl; img.className = "biz-logo"; img.alt = b.name || "";
-    img.onerror = () => {};
-    id("biz-logo").replaceWith(img);
-  }
-  if (b.avgRating) {
-    const totalCount = (data.reviews || []).length || b.reviewCount || 0;
-    id("biz-stars").textContent      = starsStr(Math.round(b.avgRating));
-    id("biz-rating-text").textContent = `${b.avgRating.toFixed(1)} · ${totalCount} reviews`;
-  }
-  if (b.category) id("biz-category").textContent = b.category.split(",")[0];
-  if (b.address)  id("biz-city").textContent = `· ${b.address.city}, ${b.address.state}`;
-  if (b.website)  id("website-btn").href = b.website;
-  renderOpenStatus(b.hours || []);
-}
-
-function renderOpenStatus(hours) {
-  const now  = new Date();
-  const day  = (now.getDay() + 6) % 7; // 0=Mon
-  const mins = now.getHours() * 60 + now.getMinutes();
-  const todayHours = hours.find(h => parseInt(h.day) === day);
-  const badge = id("open-status");
-  if (!todayHours || !todayHours.isOpen) {
-    badge.textContent = "Closed"; badge.className = "open-badge closed-badge"; return;
-  }
-  const isOpen = (todayHours.workingHours || []).some(w => {
-    const [sh, sm] = w.startHour.split(":").map(Number);
-    const [eh, em] = w.endHour.split(":").map(Number);
-    return mins >= sh*60+sm && mins < eh*60+em;
-  });
-  badge.textContent = isOpen ? "Open Now" : "Closed Now";
-  badge.className   = isOpen ? "open-badge" : "open-badge closed-badge";
-}
-
-function renderAbout(data) {
-  const b = data.business || {};
-  if (!b.description) return;
-  id("about-text").textContent = b.description;
-  show("about-card");
-  id("about-toggle").addEventListener("click", () => {
-    const p = id("about-text");
-    const collapsed = p.classList.toggle("collapsed");
-    id("about-toggle").textContent = collapsed ? "Read more" : "Show less";
-  });
-  if (b.services) {
-    b.services.split(",").forEach(s => {
-      const pill = document.createElement("span");
-      pill.className = "service-pill"; pill.textContent = s.trim();
-      id("services-list").appendChild(pill);
-    });
-  }
-}
-
-function renderHours(data) {
-  const hours = (data.business || {}).hours || [];
-  if (!hours.length) return;
-  const today = (new Date().getDay() + 6) % 7;
-  const tbody = id("hours-table");
-  hours.forEach(h => {
-    const d = parseInt(h.day);
-    const isToday = d === today;
-    const dayName = DAYS[d] || `Day ${d}`;
-    let timeStr = "Closed";
-    if (h.isOpen && h.workingHours && h.workingHours.length)
-      timeStr = h.workingHours.map(w => `${fmt(w.startHour)} to ${fmt(w.endHour)}`).join(", ");
-    const tr = document.createElement("tr");
-    if (isToday) tr.className = "today-row";
-    tr.innerHTML = `<td>${dayName}</td><td>
-      ${h.isOpen ? `<span class="open-dot${isToday ? ***REMOVED***: ""}"></span>` : `<span class="open-dot closed-dot"></span>`}
-      ${timeStr}
-    </td>`;
-    tbody.appendChild(tr);
-  });
-}
-
-function renderSummary(data) {
-  const b = data.business || {};
-  const s = data.summary  || {};
-  if (b.avgRating) {
-    const totalReviews = (data.reviews || []).length || b.reviewCount || 0;
-    id("avg-score").textContent    = b.avgRating.toFixed(1);
-    id("avg-stars-lg").textContent = starsStr(Math.round(b.avgRating));
-    id("avg-count").textContent    = `${totalReviews} reviews`;
-  }
-  const ratings = (s.ratings || []).filter(r => r.rating > 0).sort((a,b) => b.rating - a.rating);
-  const maxCount = Math.max(...ratings.map(r => r.reviewCount), 1);
-  ratings.forEach(r => {
-    const pct = Math.round((r.reviewCount / maxCount) * 100);
-    const row = document.createElement("div");
-    row.className = "bar-row";
-    row.dataset.rating = r.rating;
-    row.innerHTML = `
-      <span class="bar-label">${r.rating}★</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-      <span class="bar-count">${r.reviewCount}</span>`;
-    row.addEventListener("click", () => {
-      document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-      const fb = document.querySelector(`.filter-btn[data-rating="${r.rating}"]`);
-      if (fb) fb.classList.add("active");
-      applyFilters(String(r.rating), activeSrc);
-    });
-    id("rating-bars").appendChild(row);
-  });
-}
-
-function renderSourceTabs(data) {
-  const sources = (data.summary || {}).sources || [];
-  const tabsEl  = id("source-tabs");
-  sources.forEach(src => {
-    const tab = document.createElement("button");
-    tab.className   = "source-tab";
-    tab.dataset.source = src.sourceAlias || src.sourceName;
-    tab.textContent = `${src.sourceName} (${src.reviewCount})`;
-    tab.addEventListener("click", () => {
-      document.querySelectorAll(".source-tab").forEach(t => t.classList.remove("active"));
-      tab.classList.add("active");
-      activeSrc = tab.dataset.source;
-      applyFilters(getActiveRating(), activeSrc);
-    });
-    tabsEl.appendChild(tab);
-  });
-  tabsEl.querySelector("[data-source='all']").addEventListener("click", () => {
-    document.querySelectorAll(".source-tab").forEach(t => t.classList.remove("active"));
-    tabsEl.querySelector("[data-source='all']").classList.add("active");
-    activeSrc = "all";
-    applyFilters(getActiveRating(), "all");
-  });
-}
-
-document.querySelectorAll(".filter-btn").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    applyFilters(btn.dataset.rating, activeSrc);
-  });
+main().catch(err => {
+  console.error("Failed:", err.message);
+  process.exit(1);
 });
-
-function getActiveRating() {
-  return document.querySelector(".filter-btn.active")?.dataset.rating || "all";
-}
-
-function applyFilters(rating, source) {
-  rating = rating || getActiveRating();
-  source = source || activeSrc;
-  filtered = allReviews.filter(r => {
-    const ratingOk = rating === "all" ? true
-      : rating === "1,2" ? r.rating <= 2 && r.rating > 0
-      : String(r.rating) === rating;
-    const sourceOk = source === "all" ? true
-      : (r.sourceName || "").toLowerCase().includes(source.toLowerCase());
-    return ratingOk && sourceOk;
-  });
-  currentPage = 0;
-  renderReviewPage();
-}
-
-function renderReviewPage() {
-  const list = id("review-list");
-  list.innerHTML = "";
-  if (!filtered.length) {
-    list.innerHTML = `<div class="state-box">No reviews found for this filter.</div>`;
-    id("pagination").innerHTML = "";
-    return;
-  }
-  const start = currentPage * PAGE_SIZE;
-  const slice = filtered.slice(start, start + PAGE_SIZE);
-  slice.forEach((r, i) => list.appendChild(buildCard(r, i)));
-  renderPagination();
-}
-
-function renderPagination() {
-  const total = Math.ceil(filtered.length / PAGE_SIZE);
-  const pg    = id("pagination");
-  pg.innerHTML = "";
-  if (total <= 1) return;
-  for (let i = 0; i < total; i++) {
-    const btn = document.createElement("button");
-    btn.className  = "page-btn" + (i === currentPage ? " active" : "");
-    btn.textContent = i + 1;
-    btn.addEventListener("click", () => {
-      currentPage = i;
-      renderReviewPage();
-      id("review-list").scrollIntoView({behavior:"smooth", block:"start"});
-    });
-    pg.appendChild(btn);
-  }
-}
-
-function buildCard(r, idx) {
-  const name  = r.reviewer?.name || "Anonymous";
-  const thumb = r.reviewer?.thumbnail || "";
-  const card  = document.createElement("div");
-  card.className = "review-card";
-  card.style.animationDelay = `${idx * 40}ms`;
-  const avatarHtml = thumb
-    ? `<img class="avatar" src="${esc(thumb)}" alt="${esc(name)}"
-        onerror="this.outerHTML='<div class=\\'avatar\\'>${name.charAt(0).toUpperCase()}</div>'">`
-    : `<div class="avatar">${name.charAt(0).toUpperCase()}</div>`;
-  card.innerHTML = `
-    <div class="review-top">
-      ${avatarHtml}
-      <div style="flex:1">
-        <div class="reviewer-name">${esc(name)}</div>
-        ${r.sourceName ? `<div class="review-source-label">${esc(r.sourceName)}</div>` : ""}
-      </div>
-    </div>
-    <div class="review-stars">${starsStr(r.rating)}</div>
-    ${r.reviewDate ? `<div class="review-date">${esc(r.reviewDate)}</div>` : ""}
-    ${r.comment ? `<p class="review-text" id="rt-${idx}">${esc(r.comment)}</p>
-      <button class="read-more" data-target="rt-${idx}">Read more</button>` : ""}
-    ${r.response ? `<div class="review-response">
-      <div class="review-response-label">Response from Owner</div>
-      <div class="review-response-text">${esc(r.response)}</div>
-    </div>` : ""}`;
-  const rmBtn = card.querySelector(".read-more");
-  if (rmBtn) rmBtn.addEventListener("click", () => {
-    const p = id(rmBtn.dataset.target);
-    rmBtn.textContent = p.classList.toggle("expanded") ? "Show less" : "Read more";
-  });
-  return card;
-}
-
-function renderSidebar(data) {
-  const b = data.business || {};
-  const rows = [];
-  if (b.address) rows.push({icon:"📍", label:"Address",
-    value:`${b.address.address1}, ${b.address.city}, ${b.address.state} ${b.address.zip}`});
-  if (b.phone) rows.push({icon:"📞", label:"Phone",
-    value:`<a href="tel:${b.phone.replace(/\D/g,'')}">${b.phone}</a>`});
-  if (b.website) rows.push({icon:"🌐", label:"Website",
-    value:`<a href="${b.website}" target="_blank">${b.website.replace(/^https?:\/\//,"")}</a>`});
-  if (rows.length) {
-    rows.forEach(r => {
-      id("info-rows").innerHTML += `<div class="info-row">
-        <span class="info-icon">${r.icon}</span>
-        <div><div class="info-label">${r.label}</div><div class="info-value">${r.value}</div></div>
-      </div>`;
-    });
-    show("business-info");
-  }
-}
-
-function renderFAQ(data) {
-  const b = data.business || {};
-  const name = b.name || "this business";
-  const faqs = [
-    { q:`How is ${name} rated?`,
-      a:`${name} is rated ${b.avgRating?.toFixed(1) || "4.9"} stars based on ${b.reviewCount || "664"} reviews.` },
-    { q:`What are ${name}'s hours?`,
-      a: getHoursSummary(b.hours || []) },
-    { q:`Where is ${name} located?`,
-      a: b.address ? `${b.address.address1}, ${b.address.city}, ${b.address.state} ${b.address.zip}` : "Plymouth, MA" },
-    { q:`How can I contact ${name}?`,
-      a: b.phone ? `You can call ${name} at ${b.phone}.` : "Please visit their website for contact information." }
-  ];
-  const faqEl = id("faq-list");
-  faqs.forEach(f => {
-    faqEl.innerHTML += `<div class="faq-item">
-      <div class="faq-q">🦷 ${f.q}</div>
-      <div class="faq-a">${f.a}</div>
-    </div>`;
-  });
-}
-
-function getHoursSummary(hours) {
-  const today = (new Date().getDay() + 6) % 7;
-  const t = hours.find(h => parseInt(h.day) === today);
-  if (!t) return "Please check our hours above.";
-  if (!t.isOpen) return `${DAYS[today]}: Closed. Check the hours section for full schedule.`;
-  const times = (t.workingHours || []).map(w => `${fmt(w.startHour)}–${fmt(w.endHour)}`).join(", ");
-  return `Today (${DAYS[today]}): ${times}. Check the hours section for our full weekly schedule.`;
-}
-
-function fmt(t) {
-  if (!t) return "";
-  const [h, m] = t.split(":").map(Number);
-  return `${h % 12 || 12}:${String(m || 0).padStart(2,"0")} ${h >= 12 ? "PM" : "AM"}`;
-}
-
-function starsStr(n) { return "★".repeat(Math.max(0,Math.min(5,n)))+"☆".repeat(5-Math.max(0,Math.min(5,n))); }
-function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-function id(i) { return document.getElementById(i); }
-function show(i) { const el=id(i); if(el) el.style.display=""; }
-
-init();
-</script>
-</body>
-</html>
