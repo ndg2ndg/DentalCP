@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-18T12:44:18.158Z",
+  "lastUpdated": "2026-04-18T12:51:00.244Z",
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -85,7 +85,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 664,
+    "reviewCount": 787,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -100,8 +100,8 @@
       {
         "sourceName": "Google",
         "sourceAlias": "google",
-        "avgRating": 4.9,
-        "reviewCount": 467
+        "avgRating": 4.7,
+        "reviewCount": 496
       },
       {
         "sourceName": "Wellness",
@@ -112,52 +112,58 @@
       {
         "sourceName": "Healthgrades",
         "sourceAlias": "healthgrades",
-        "avgRating": 5,
-        "reviewCount": 16
+        "avgRating": 4.2,
+        "reviewCount": 20
       },
       {
         "sourceName": "Birdeye",
         "sourceAlias": "birdeye",
-        "avgRating": 5,
-        "reviewCount": 2
+        "avgRating": 3,
+        "reviewCount": 4
       },
       {
         "sourceName": "Facebook",
         "sourceAlias": "facebook",
-        "avgRating": 5,
-        "reviewCount": 23
+        "avgRating": 4.6,
+        "reviewCount": 32
       },
       {
         "sourceName": "RateABiz",
         "sourceAlias": "rateabiz",
-        "avgRating": 5,
-        "reviewCount": 146
+        "avgRating": 4.9,
+        "reviewCount": 150
+      },
+      {
+        "sourceName": "Direct Feedback",
+        "sourceAlias": "direct_feedback",
+        "avgRating": 0,
+        "reviewCount": 75
       }
     ],
     "ratings": [
       {
         "rating": 0,
-        "reviewCount": 11
+        "reviewCount": 89
       },
       {
         "rating": 1,
-        "reviewCount": 0
+        "reviewCount": 27
       },
       {
         "rating": 2,
-        "reviewCount": 0
+        "reviewCount": 8
       },
       {
         "rating": 3,
-        "reviewCount": 7
+        "reviewCount": 9
       },
       {
         "rating": 4,
-        "reviewCount": 21
+        "reviewCount": 22
       },
       {
         "rating": 5,
-        "reviewCount": 625
+        "reviewCount": 632
       }
     ]
   },
