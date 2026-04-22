@@ -107,15 +107,27 @@ function mapReview(r) {
 async function main() {
   // 1. Business info
   console.log("Fetching business info...");
-  const business = await apiGet(`/v1/business/${BUSINESS_ID}`);
+  let business = {};
+  try {
+    business = await apiGet(`/v1/business/${BUSINESS_ID}`);
+    console.log("  Business info fetched OK");
+  } catch(e) { console.log("  Business info failed:", e.message); }
 
-  // 2. Published summary — for display (matches Birdeye public page)
-  console.log("Fetching published summary (for display)...");
-  const publishedSummary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary?statuses=published,parked`);
+  // 2. Published summary — for display
+  console.log("Fetching published summary...");
+  let publishedSummary = {};
+  try {
+    publishedSummary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary?statuses=published,parked`);
+    console.log("  Published summary fetched OK");
+  } catch(e) { console.log("  Published summary failed:", e.message); }
 
-  // 3. Full summary — all statuses (for data control)
-  console.log("Fetching full summary (all statuses)...");
-  const fullSummary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary?statuses=published,parked`);
+  // 3. Full summary — all statuses
+  console.log("Fetching full summary...");
+  let fullSummary = {};
+  try {
+    fullSummary = await apiGet(`/v1/review/businessid/${BUSINESS_ID}/summary?statuses=published,parked`);
+    console.log("  Full summary fetched OK");
+  } catch(e) { console.log("  Full summary failed:", e.message); }
 
   // 4. Published count — what to display publicly
   console.log("Fetching published review count...");
