@@ -6,8 +6,8 @@ echo ================================
 echo.
 
 :: Check we're in the right place
-if not exist webchat_widget.html (
-    echo ERROR: webchat_widget.html not found in I:\Dev\DentalCP
+if not exist hours_widget.html (
+    echo ERROR: hours_widget.html not found in I:\Dev\DentalCP
     pause
     exit /b 1
 )
