@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: transparent; font-family: 'Roboto', Arial, sans-serif; }
+    body { padding: 6px; }
+    .card { width: 100%; max-width: 480px; margin: 0 auto; background: #f4f8ff; border: 1px solid #d9e4f5; border-radius: 16px; color: #1a1a1a; box-shadow: 0 6px 20px rgba(42, 122, 181, 0.08); overflow: hidden; }
+    .cta-banner { background: linear-gradient(135deg, #1a5a8a 0%, #2a7ab5 100%); padding: 16px 16px 14px; text-align: center; border-bottom: 2px solid #1a5a8a; }
+    .cta-banner .cta-headline { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.25; margin-bottom: 3px; }
+    .cta-banner .cta-sub { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.78); margin-bottom: 12px; letter-spacing: 0.3px; }
+    .cta-btn { display: inline-block; background: #fff; color: #1a5a8a; font-family: 'Roboto', Arial, sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; text-decoration: none; padding: 9px 22px; border-radius: 999px; box-shadow: 0 3px 10px rgba(0,0,0,0.18); transition: background .15s, color .15s, transform .15s; }
+    .cta-btn:hover { background: #e8f2fb; transform: translateY(-1px); }
+    .card-body { padding: 14px 16px; }
+    .eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: #6a7b91; margin-bottom: 3px; }
+    .heading { font-size: 15px; font-weight: 800; line-height: 1.2; color: #183b6b; margin-bottom: 8px; }
+    .trust-badges { display: flex; flex-direction: column; gap: 3px; margin-bottom: 10px; padding: 8px 10px; background: #eaf2fb; border-radius: 10px; border-left: 3px solid #2a7ab5; }
+    .trust-badge { font-size: 11px; font-weight: 700; color: #1a3d5c; display: flex; align-items: center; gap: 5px; }
+    .trust-badge.star { color: #b07800; }
+    .phone { margin-bottom: 5px; font-size: 26px; font-weight: 800; }
+    .phone a { color: #2a7ab5; text-decoration: none; }
+    .status { font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+    .status.open  { color: #2e7d32; }
+    .status.closed { color: #c62828; }
+    .toggle { display: inline-flex; background: #e7eef9; border-radius: 999px; padding: 3px; margin-bottom: 10px; gap: 3px; }
+    .toggle button { background: transparent; color: #4f6177; border: none; border-radius: 999px; padding: 5px 14px; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer; font-family: 'Roboto', Arial, sans-serif; }
+    .toggle button.active { background: #2a7ab5; color: #fff; box-shadow: 0 3px 8px rgba(42, 122, 181, 0.22); }
+    .title { font-size: 11px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 7px; color: #183b6b; }
+    .days { display: flex; flex-direction: column; margin-bottom: 10px; }
+    .day-row { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; text-transform: uppercase; padding: 5px 0; border-bottom: 1px solid #dbe5f2; color: #1f2f44; }
+    .day-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .day-label { min-width: 90px; }
+    .day-hours { color: #5a6d84; white-space: nowrap; text-align: right; font-weight: 600; }
+    .address { padding-top: 10px; border-top: 1px solid #dbe5f2; font-size: 11px; font-weight: 600; line-height: 1.6; color: #5e6f83; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .address-label { color: #183b6b; font-weight: 800; margin-bottom: 2px; font-size: 10px; letter-spacing: 1.4px; }
+    .directions { flex-shrink: 0; font-size: 11px; font-weight: 700; letter-spacing: 1px; color: #fff; background: #2a7ab5; text-decoration: none; text-transform: uppercase; padding: 7px 14px; border-radius: 999px; white-space: nowrap; }
+    .directions:hover { background: #1a5a8a; }
+    @media (min-width: 769px) {
+      .card { max-width: 576px; }
+      .cta-banner { padding: 20px 20px 17px; }
+      .cta-banner .cta-headline { font-size: 18px; }
+      .cta-banner .cta-sub { font-size: 13px; margin-bottom: 14px; }
+      .cta-btn { font-size: 13px; padding: 10px 26px; }
+      .card-body { padding: 17px 19px; }
+      .eyebrow { font-size: 12px; }
+      .heading { font-size: 18px; }
+      .trust-badges { padding: 10px 12px; margin-bottom: 12px; }
+      .trust-badge { font-size: 13px; }
+      .phone { font-size: 31px; margin-bottom: 6px; }
+      .status { font-size: 13px; margin-bottom: 10px; }
+      .toggle button { font-size: 13px; padding: 6px 17px; }
+      .title { font-size: 13px; margin-bottom: 8px; }
+      .day-row { font-size: 14px; padding: 6px 0; }
+      .day-label { min-width: 108px; }
+      .address { font-size: 13px; padding-top: 12px; }
+      .address-label { font-size: 12px; }
+      .directions { font-size: 13px; padding: 8px 17px; }
+    }
+    .strip { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 14px 16px; background: #f0f4fa; border-top: 1.5px solid #d9e4f5; flex-wrap: wrap; }
+    .strip a { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; }
+    .strip .lbl { font-family: 'Roboto', Arial, sans-serif; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: #6a7b91; font-weight: 700; }
+    .strip .ico { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; transition: transform .15s; }
+    .strip a:hover .ico { transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="cta-banner">
+      <div class="cta-headline">Schedule Your Child's Visit with Confidence</div>
+      <div class="cta-sub">We provide gentle, stress-free care for kids of all ages</div>
+      <a class="cta-btn" href="https://secureform.dentalcenterpediatrics.com/appointment-form.html" target="_blank">Book Your Child's Visit</a>
+    </div>
+    <div class="card-body">
+      <div class="eyebrow">Contact &amp; Hours</div>
+      <div class="heading">We're Here to Help Your Child Feel Comfortable</div>
+      <div class="trust-badges">
+        <div class="trust-badge star">⭐ Trusted by families across Plymouth</div>
+        <div class="trust-badge">✔ Gentle care for nervous children</div>
+        <div class="trust-badge">✔ Board-certified pediatric dentists</div>
+      </div>
+      <div class="phone"><a id="phone-link" href="tel:5088301212">📞 (508) 830-1212</a></div>
+      <div id="open-status" class="status"></div>
+      <div class="toggle">
+        <button id="btn-winter" type="button" class="active">Winter</button>
+        <button id="btn-summer" type="button">Summer</button>
+      </div>
+      <div class="title" id="season-title"></div>
+      <div class="days" id="days-list"></div>
+      <div class="address">
+        <div>
+          <div class="address-label">Visit Us</div>
+          <div id="addr-line1">45 Resnik Rd, Ste 306</div>
+          <div id="addr-line2">Plymouth, MA 02360</div>
+        </div>
+        <a class="directions" href="https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526928,-70.7113271,17z" target="_blank" rel="noopener">Get Directions</a>
+      </div>
+    </div>
+    <div class="strip">
+      <a href="https://www.facebook.com/DentalCenterPediatrics" target="_blank">
+        <div class="ico" style="background:#1877F2"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg></div>
+        <span class="lbl">Facebook</span>
+      </a>
+      <a href="https://www.instagram.com/dentalcenterpediatrics/" target="_blank">
+        <div class="ico" style="background:linear-gradient(135deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></div>
+        <span class="lbl">Instagram</span>
+      </a>
+      <a href="https://www.yelp.com/biz/dental-center-pediatrics-plymouth" target="_blank">
+        <div class="ico" style="background:#D32323"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M20.996 12.703l-5.5 1.706c-.96.297-1.874-.72-1.494-1.655l2.207-5.29c.397-.955 1.656-.9 2.009.083l3.293 4.583c.36.502.007 1.237-.515 1.573zm-9.388 3.253l-1.17 5.49c-.21.975-1.425 1.27-2.055.474l-3.75-4.725c-.43-.543-.178-1.331.487-1.548l5.378-1.68c.921-.288 1.74.62 1.11 1.489zM11.5 11.5l-5.678-.042c-.994-.007-1.47-1.185-.776-1.882l3.836-3.773c.551-.541 1.4-.264 1.608.49l1.842 5.207zM13 12.5v-5.5c0-1.024 1.272-1.448 1.907-.683l3.75 4.583c.43.524.116 1.317-.543 1.446L13.5 13c-.277.056-.5-.197-.5-.5zm-2.5 1c0 .276-.22.5-.5.5l-5.5.5c-1.02.093-1.622-1.128-1.012-1.877l3.75-4.62c.43-.529 1.228-.382 1.49.27l2.272 4.727c.063.138.093.286.093.384c-.02.039-.038.076-.093.116z"/></svg></div>
+        <span class="lbl">Yelp</span>
+      </a>
+      <a href="https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526928,-70.7113271,17z" target="_blank">
+        <div class="ico" style="background:#fff;border:1px solid #d9e4f5"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#EA4335"/></svg></div>
+        <span class="lbl">Directions</span>
+      </a>
+      <a href="https://share.google/Z96wGok8SfLoQ28Ap" target="_blank">
+        <div class="ico" style="background:#fff;border:1px solid #d9e4f5"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg></div>
+        <span class="lbl">Reviews</span>
+      </a>
+      <a href="https://ndg2ndg.github.io/DentalCP/chat.html" target="_blank">
+        <div class="ico" style="background:#4A90D9"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg></div>
+        <span class="lbl">Chat</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // ── CONFIG — set to your inbox server's public URL ────────────
+    var INBOX_URL = "";
+
+    // Load inboxUrl from Flask /config — no hardcoded URLs needed.
+    // Change credentials.json to switch environments.
+    function getOrigin() {
+      var meta = document.querySelector("meta[name='inbox-url']");
+      return meta ? meta.content : window.location.origin;
+    }
+
+    fetch(getOrigin() + "/config")
+      .then(function(r) { return r.json(); })
+      .then(function(cfg) {
+        INBOX_URL = cfg.inboxUrl || getOrigin();
+        // Re-fetch practice info now that we have the URL
+        fetch(INBOX_URL + "/practice-info")
+          .then(function(r){ return r.json(); })
+          .then(applyPracticeInfo)
+          .catch(function(){ applyPracticeInfo(FALLBACK); });
+      })
+      .catch(function() {
+        INBOX_URL = getOrigin();
+        applyPracticeInfo(FALLBACK);
+      });
+    // ─────────────────────────────────────────────────────────────
+
+    var OFFICE_TIMEZONE = "America/New_York";
+    var hoursData = null;
+    var currentSeason = "winter";
+
+    function parseTime(str) {
+      var match = str.match(/(\d+):?(\d*)\s*(AM|PM)/i);
+      if (!match) return null;
+      var hour = parseInt(match[1], 10), min = match[2] ? parseInt(match[2], 10) : 0, ampm = match[3].toUpperCase();
+      if (ampm === "PM" && hour !== 12) hour += 12;
+      if (ampm === "AM" && hour === 12) hour = 0;
+      return hour * 60 + min;
+    }
+
+    function getOfficeNowParts() {
+      var now = new Date();
+      var parts = new Intl.DateTimeFormat("en-US", { timeZone: OFFICE_TIMEZONE, weekday: "long", hour: "numeric", minute: "numeric", hour12: false }).formatToParts(now);
+      var r = {};
+      parts.forEach(function(p) { if (p.type !== "literal") r[p.type] = p.value; });
+      return { weekday: r.weekday, hour: parseInt(r.hour, 10), minute: parseInt(r.minute, 10) };
+    }
+
+    function getNextOpenInfo(data, idx, map) {
+      for (var i = 1; i <= 7; i++) {
+        var nd = map[(idx + i) % 7];
+        var nx = data.days.find(function(d) { return d.label === nd; });
+        if (nx) return "Closed (opens " + nd + " at " + nx.hours.split("-")[0].trim() + ")";
+      }
+      return "Closed";
+    }
+
+    function getTodayStatus(data) {
+      var o = getOfficeNowParts(), now = o.hour * 60 + o.minute;
+      var map = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      var idx = map.indexOf(o.weekday);
+      var td = data.days.find(function(d) { return d.label === o.weekday; });
+      if (!td) return { open: false, message: "● " + getNextOpenInfo(data, idx, map) };
+      var pts = td.hours.split("-");
+      if (pts.length !== 2) return { open: false, message: "● Hours unavailable" };
+      var ot = parseTime(pts[0].trim()), ct = parseTime(pts[1].trim());
+      if (ot === null || ct === null) return { open: false, message: "● Hours unavailable" };
+      if (now >= ot && now < ct) return { open: true,  message: "● Open now (until " + pts[1].trim() + ")" };
+      if (now < ot)              return { open: false, message: "● Closed (opens today at " + pts[0].trim() + ")" };
+      return { open: false, message: "● " + getNextOpenInfo(data, idx, map) };
+    }
+
+    function setSeason(season) {
+      if (!hoursData) return;
+      currentSeason = season;
+      var data = hoursData.hours[season];
+      if (!data) return;
+      document.getElementById("season-title").textContent = data.title;
+      var list = document.getElementById("days-list");
+      list.innerHTML = "";
+      data.days.forEach(function(d) {
+        var row = document.createElement("div"); row.className = "day-row";
+        var lbl = document.createElement("span"); lbl.className = "day-label"; lbl.textContent = d.label;
+        var hrs = document.createElement("span"); hrs.className = "day-hours"; hrs.textContent = d.hours;
+        row.appendChild(lbl); row.appendChild(hrs); list.appendChild(row);
+      });
+      document.getElementById("btn-winter").className = season === "winter" ? "active" : "";
+      document.getElementById("btn-summer").className = season === "summer" ? "active" : "";
+      var s = getTodayStatus(data);
+      var el = document.getElementById("open-status");
+      el.textContent = s.message;
+      el.className = "status " + (s.open ? "open" : "closed");
+    }
+
+    function applyPracticeInfo(info) {
+      hoursData = info;
+      // Update phone link if different
+      if (info.phone) {
+        var digits = info.phone.replace(/\D/g, "");
+        var el = document.getElementById("phone-link");
+        el.href = "tel:" + digits;
+        el.textContent = "📞 " + info.phone;
+      }
+      setSeason(currentSeason);
+    }
+
+    // Fetch from server; fall back to embedded data if server unreachable
+    var FALLBACK = {
+      phone: "(508) 830-1212",
+      hours: {
+        winter: { title: "Winter Office Hours", days: [
+          { label: "Monday",    hours: "9AM - 5PM"    },
+          { label: "Tuesday",   hours: "8:30AM - 5PM" },
+          { label: "Wednesday", hours: "8:30AM - 5PM" },
+          { label: "Thursday",  hours: "9AM - 5PM"    },
+          { label: "Friday",    hours: "9AM - 2PM"    }
+        ]},
+        summer: { title: "Summer Office Hours", days: [
+          { label: "Monday",    hours: "9AM - 5PM"    },
+          { label: "Tuesday",   hours: "8:30AM - 5PM" },
+          { label: "Wednesday", hours: "8:30AM - 5PM" },
+          { label: "Thursday",  hours: "9AM - 5PM"    },
+          { label: "Friday",    hours: "9AM - 2PM"    }
+        ]}
+      }
+    };
+
+    // practice-info fetch is handled inside loadConfig above
+
+    document.getElementById("btn-winter").addEventListener("click", function() { setSeason("winter"); });
+    document.getElementById("btn-summer").addEventListener("click", function() { setSeason("summer"); });
+  </script>
+</body>
+</html>

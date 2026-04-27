@@ -85,9 +85,29 @@
 </div>
 
 <script>
-// ── CONFIG — change to your server's public URL ────────────────
-const INBOX_URL = "http://localhost:5001";
+// ── CONFIG ────────────────────────────────────────────────────
+// inboxUrl is loaded dynamically from Flask /config endpoint.
+// To switch environments, update credentials.json only.
+// No code edits needed between development and production.
 // ──────────────────────────────────────────────────────────────
+let INBOX_URL = "";
+
+async function loadConfig() {
+  // When embedded via Google Sites iframe, the widget origin
+  // is secureform.dentalcenterpediatrics.com — but the Flask
+  // server is at inbox.dentalcp.com. We use a <meta> tag to
+  // pass the server URL into the widget at embed time.
+  // Fallback: use window.location.origin (works for direct Flask serving).
+  const metaUrl = (document.querySelector("meta[name='inbox-url']") || {}).content;
+  const origin  = metaUrl || window.location.origin;
+  try {
+    const r   = await fetch(origin + "/config");
+    const cfg = await r.json();
+    INBOX_URL = cfg.inboxUrl || origin;
+  } catch (e) {
+    INBOX_URL = origin;
+  }
+}
 
 const bubble  = document.getElementById("bubble");
 const panel   = document.getElementById("panel");
@@ -99,8 +119,13 @@ const badge   = document.getElementById("bubble-badge");
 let history   = [];
 let handedOff = false;
 let opened    = false;
+const SESSION_ID = 'wc-' + Date.now() + '-' + Math.random().toString(36).slice(2, 7);
 
-bubble.addEventListener("click", () => {
+// Load config immediately on page load
+loadConfig();
+
+bubble.addEventListener("click", async () => {
+  if (!INBOX_URL) await loadConfig();
   const isOpen = panel.classList.toggle("open");
   bubble.classList.toggle("open", isOpen);
   badge.style.display = "none";
@@ -111,7 +136,10 @@ function sendGreeting() {
   appendBot("Hi there! \uD83D\uDC4B I'm the virtual assistant for Dental Center Pediatrics. I can answer questions about our services, hours, and insurance \u2014 or help you request an appointment. What can I help you with today?");
 }
 
-setTimeout(() => {
+// Load config immediately on page load
+  loadConfig();
+
+  setTimeout(() => {
   if (!opened) { badge.textContent = "1"; badge.style.display = "flex"; }
 }, 4000);
 
@@ -127,7 +155,7 @@ async function sendMessage() {
     const res  = await fetch(INBOX_URL + "/webchat/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ messages: history })
+      body:    JSON.stringify({ messages: history, session_id: SESSION_ID })
     });
     const data = await res.json();
     typingEl.remove(); setLoading(false);
