@@ -24,12 +24,6 @@ git commit -m "%MSG%"
 echo.
 echo Syncing with GitHub...
 git pull origin main --rebase
-if %errorlevel% neq 0 (
-    echo.
-    echo ERROR: Sync failed. Please contact IT support.
-    pause
-    exit /b 1
-)
 
 :: Push
 echo.
