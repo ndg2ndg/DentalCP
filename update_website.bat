@@ -16,7 +16,7 @@ if "%MSG%"==***REMOVED***set MSG=Auto update %date% %time%
 :: Stage ALL files, commit and push
 git add .
 git commit -m "%MSG%"
-git push origin main 2>nul || git push origin master:main
+git push origin main
 echo.
 echo ================================
 echo  Done! GitHub updated.
