@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-30T08:27:38.998Z",
+  "lastUpdated": "2026-04-30T14:06:18.806Z",
   "displayCount": 664,
   "totalCount": 787,
   "business": {
@@ -104,7 +104,7 @@
       {
         "sourceName": "Google",
         "sourceAlias": "google",
-        "avgRating": 4.7,
+        "avgRating": 4.74,
         "reviewCount": 496
       },
       {
@@ -128,13 +128,13 @@
       {
         "sourceName": "Facebook",
         "sourceAlias": "facebook",
-        "avgRating": 4.6,
+        "avgRating": 4.61,
         "reviewCount": 32
       },
       {
         "sourceName": "RateABiz",
         "sourceAlias": "rateabiz",
-        "avgRating": 4.9,
+        "avgRating": 4.92,
         "reviewCount": 150
       }
     ],
@@ -171,7 +171,7 @@
       {
         "sourceName": "Google",
         "sourceAlias": "google",
-        "avgRating": 4.7,
+        "avgRating": 4.74,
         "reviewCount": 496
       },
       {
@@ -195,13 +195,13 @@
       {
         "sourceName": "Facebook",
         "sourceAlias": "facebook",
-        "avgRating": 4.6,
+        "avgRating": 4.61,
         "reviewCount": 32
       },
       {
         "sourceName": "RateABiz",
         "sourceAlias": "rateabiz",
-        "avgRating": 4.9,
+        "avgRating": 4.92,
         "reviewCount": 150
       },
       {
@@ -18507,7 +18507,7 @@
       "reviewId": "151093242596476373",
       "rating": 5,
       "status": "Published",
-      "comment": "Love love love this office.... Everyone here is so nice can’t say enough about them all. So I��m not going to what I am going to say is that I would recommend them to everyone and I have",
+      "comment": "Love love love this office.... Everyone here is so nice can’t say enough about them all. So I’m not going to what I am going to say is that I would recommend them to everyone and I have",
       "reviewer": {
         "name": "Lindsay Spurrier",
         "thumbnail": "https://d3cnqzq0ivprch.cloudfront.net/prod/css/images/default-profile.png"
