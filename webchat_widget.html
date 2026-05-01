@@ -190,10 +190,7 @@ function initWidget(inboxUrl) {
   setInterval(fetchStatus, 60000);
 }
 
-fetch(getOrigin() + '/config')
-  .then(function(r) { return r.json(); })
-  .then(function(cfg) { initWidget(cfg.inboxUrl || getOrigin()); })
-  .catch(function() { initWidget(getOrigin()); });
+initWidget('https://dcp-inbox.consulting4real.com');
 
 // ── Status ─────────────────────────────────────────────────
 function applyStatus(s) {
