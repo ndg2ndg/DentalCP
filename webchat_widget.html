@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Chat — Dental Center Pediatrics</title>
+  <!--
+    EMBED ON YOUR WEBSITE (add just before </body>):
+    <script>
+      (function(){
+        var f = document.createElement('iframe');
+        f.src = 'https://ndg2ndg.github.io/DentalCP/webchat_widget.html';
+        f.style.cssText = 'position:fixed;bottom:0;right:0;width:400px;height:580px;border:none;z-index:9999;background:transparent;';
+        f.allow = 'microphone';
+        document.body.appendChild(f);
+      })();
+    </script>
+
+    OR as a direct iframe:
+    <iframe src="https://ndg2ndg.github.io/DentalCP/webchat_widget.html"
+            style="position:fixed;bottom:0;right:0;width:400px;height:580px;border:none;z-index:9999;"
+            allow="microphone"></iframe>
+
+    The widget auto-discovers the inbox server via /config.
+    Override by adding:  <meta name="inbox-url" content="https://your-server.example.com">
+  -->
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: transparent; overflow: hidden; font-family: 'Segoe UI', sans-serif; }
+
+    /* ── Bubble button ─────────────────────────────────── */
+    #bubble-wrap {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+    #bubble {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #1a2e44;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,.25);
+      border: 3px solid #64748b;   /* status ring — updated by JS */
+      transition: border-color .4s, transform .15s;
+      position: relative;
+    }
+    #bubble:hover { transform: scale(1.08); }
+    #bubble svg { width: 26px; height: 26px; fill: #fff; }
+
+    /* Small badge dot on the bubble */
+    #bubble-dot {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #64748b;
+      border: 2px solid #fff;
+      transition: background .4s;
+    }
+
+    /* ── Chat panel ─────────────────────────────────────── */
+    #chat-panel {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 370px;
+      height: 500px;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,.2);
+      display: none;
+      flex-direction: column;
+      z-index: 9998;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      animation: slideUp .2s ease;
+    }
+    #chat-panel.open { display: flex; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Panel header (mirrors WEBCHAT_HTML header) */
+    #panel-header {
+      background: #1a2e44;
+      color: #fff;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    #panel-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #64748b;
+      flex-shrink: 0;
+      transition: background .4s;
+    }
+    #panel-title { font-size: 14px; font-weight: 600; flex: 1; }
+    #panel-status { font-size: 11px; opacity: .75; display: block; margin-top: 2px; }
+    #panel-close {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,.7);
+      font-size: 20px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 0 0 8px;
+    }
+    #panel-close:hover { color: #fff; }
+
+    /* Chat iframe fills the rest */
+    #chat-iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+    }
+
+    /* Tooltip on bubble hover */
+    #bubble-tip {
+      position: absolute;
+      right: 66px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #1a2e44;
+      color: #fff;
+      font-size: 12px;
+      white-space: nowrap;
+      padding: 5px 10px;
+      border-radius: 8px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+    }
+    #bubble-wrap:hover #bubble-tip { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<!-- ── Chat panel ──────────────────────────────────────── -->
+<div id="chat-panel">
+  <div id="panel-header">
+    <span id="panel-dot"></span>
+    <div style="flex:1">
+      <div id="panel-title">Chat with Our Team</div>
+      <span id="panel-status">Checking availability…</span>
+    </div>
+    <button id="panel-close" onclick="closeChat()" title="Close chat">&times;</button>
+  </div>
+  <!-- iframe loads the inbox /webchat page after INBOX_URL is resolved -->
+  <iframe id="chat-iframe" src="about:blank" allow="microphone"></iframe>
+</div>
+
+<!-- ── Bubble button ───────────────────────────────────── -->
+<div id="bubble-wrap">
+  <span id="bubble-tip">Chat with us</span>
+  <div id="bubble" onclick="toggleChat()" title="Chat with us">
+    <!-- Chat icon -->
+    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    <span id="bubble-dot"></span>
+  </div>
+</div>
+
+<script>
+var INBOX_URL = '';
+var chatOpen  = false;
+var iframeLoaded = false;
+
+var STATUS_COLORS = { open: '#22c55e', open_busy: '#f59e0b', closed: '#64748b' };
+
+// ── Resolve inbox URL ──────────────────────────────────────
+function getOrigin() {
+  var meta = document.querySelector("meta[name='inbox-url']");
+  return meta ? meta.content.replace(/\/$/, '') : window.location.origin;
+}
+
+function initWidget(inboxUrl) {
+  INBOX_URL = inboxUrl;
+  fetchStatus();
+  setInterval(fetchStatus, 60000);
+}
+
+fetch(getOrigin() + '/config')
+  .then(function(r) { return r.json(); })
+  .then(function(cfg) { initWidget(cfg.inboxUrl || getOrigin()); })
+  .catch(function() { initWidget(getOrigin()); });
+
+// ── Status ─────────────────────────────────────────────────
+function applyStatus(s) {
+  var color = STATUS_COLORS[s.status] || '#64748b';
+  var text  = s.statusText || '';
+
+  // Bubble ring + dot
+  var bub = document.getElementById('bubble');
+  var bdot = document.getElementById('bubble-dot');
+  if (bub)  bub.style.borderColor = color;
+  if (bdot) bdot.style.background = color;
+
+  // Panel header dot + text
+  var pdot = document.getElementById('panel-dot');
+  var pst  = document.getElementById('panel-status');
+  if (pdot) pdot.style.background = color;
+  if (pst)  pst.textContent = text;
+
+  // Tooltip
+  var tip = document.getElementById('bubble-tip');
+  if (tip) tip.textContent = s.isOpen ? 'Chat with us' : 'Leave us a message';
+}
+
+function fetchStatus() {
+  if (!INBOX_URL) return;
+  fetch(INBOX_URL + '/api/office-status')
+    .then(function(r) { return r.json(); })
+    .then(applyStatus)
+    .catch(function() {});
+}
+
+// ── Toggle chat ────────────────────────────────────────────
+function toggleChat() {
+  chatOpen ? closeChat() : openChat();
+}
+
+function openChat() {
+  chatOpen = true;
+  var panel = document.getElementById('chat-panel');
+  panel.classList.add('open');
+
+  // Lazy-load the iframe on first open
+  if (!iframeLoaded && INBOX_URL) {
+    document.getElementById('chat-iframe').src = INBOX_URL + '/webchat';
+    iframeLoaded = true;
+  }
+}
+
+function closeChat() {
+  chatOpen = false;
+  document.getElementById('chat-panel').classList.remove('open');
+}
+</script>
+</body>
+</html>
