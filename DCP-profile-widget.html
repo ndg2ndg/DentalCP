@@ -9,117 +9,53 @@
     html, body { background: transparent; font-family: 'Poppins', sans-serif; }
     body { padding: 6px; }
 
-    .card {
-      width: 100%; max-width: 560px; margin: 0 auto;
+    a.widget {
+      display: block;
+      width: 100%; max-width: 320px; margin: 0 auto;
       background: #fff; border: 1px solid #e2e8f0;
-      border-radius: 12px; overflow: hidden;
+      border-radius: 12px; padding: 16px 18px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      text-decoration: none; cursor: pointer;
+      transition: box-shadow .15s, transform .15s;
+    }
+    a.widget:hover {
+      box-shadow: 0 6px 22px rgba(0,0,0,0.13);
+      transform: translateY(-2px);
     }
 
-    /* ── Top fold ──────────────────────────────────────── */
-    .top-fold {
-      background: #fff;
-      border-bottom: 1px solid #e2e8f0;
-      padding: 16px 18px;
-    }
     .biz-name {
-      font-size: 16px; font-weight: 700; color: #0f2744; margin-bottom: 6px;
+      font-size: 14px; font-weight: 700; color: #0f2744; margin-bottom: 8px;
     }
     .rating-row {
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 12px;
     }
     .avg {
-      font-size: 36px; font-weight: 700; color: #0f2744; line-height: 1;
+      font-size: 40px; font-weight: 700; color: #0f2744; line-height: 1;
     }
-    .rating-detail { display: flex; flex-direction: column; gap: 2px; }
-    .stars-row { display: flex; align-items: center; gap: 2px; }
+    .rating-detail { display: flex; flex-direction: column; gap: 3px; }
+    .stars-row { display: flex; gap: 2px; }
     .star { font-size: 18px; line-height: 1; }
     .star.on  { color: #f57c00; }
     .star.off { color: #ddd; }
-    .count-link {
-      font-size: 12px; color: #1a6bcc; font-weight: 500;
-      text-decoration: none; cursor: pointer;
+    .rev-count {
+      font-size: 12px; color: #64748b; font-weight: 500;
     }
-    .count-link:hover { text-decoration: underline; }
-
-    /* ── Review cards ──────────────────────────────────── */
-    .reviews { padding: 0 18px 10px; }
-
-    .rev-card {
-      padding: 14px 0;
-      border-bottom: 1px solid #f0f4f8;
-    }
-    .rev-card:last-child { border-bottom: none; }
-
-    .rev-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
-    .rev-avatar {
-      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
-      background: #0e67b4; color: #fff;
-      font-size: 15px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .rev-info { flex: 1; min-width: 0; }
-    .rev-name {
-      font-size: 13px; font-weight: 600; color: #0f2744;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .rev-meta-row {
-      display: flex; align-items: center; gap: 6px; margin-top: 2px; flex-wrap: wrap;
-    }
-    .rev-stars { font-size: 13px; color: #f57c00; letter-spacing: 1px; }
-    .rev-dot { color: #cbd5e1; font-size: 10px; }
-    .rev-source { font-size: 11px; color: #64748b; font-weight: 500; }
-    .rev-date   { font-size: 11px; color: #94a3b8; }
-
-    .rev-text {
-      font-size: 12px; color: #334155; line-height: 1.6;
-      display: -webkit-box; -webkit-line-clamp: 4;
-      -webkit-box-orient: vertical; overflow: hidden;
-    }
-
-    /* ── CTA footer ────────────────────────────────────── */
-    .cta-row {
-      padding: 12px 18px 14px; text-align: center;
-      border-top: 1px solid #e2e8f0; background: #f8fafc;
-    }
-    .cta-btn {
-      display: inline-block;
-      background: #0e67b4; color: #fff;
-      font-family: 'Poppins', sans-serif;
-      font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
-      text-decoration: none; padding: 9px 26px;
-      border-radius: 999px;
-      box-shadow: 0 2px 8px rgba(14,103,180,0.3);
-      transition: background .15s, transform .15s;
-    }
-    .cta-btn:hover { background: #0a4f8f; transform: translateY(-1px); }
   </style>
 </head>
 <body>
-<div class="card">
 
-  <div class="top-fold">
-    <div class="biz-name">Dental Center Pediatrics</div>
-    <div class="rating-row">
-      <span class="avg" id="avg">—</span>
-      <div class="rating-detail">
-        <div class="stars-row" id="stars-row"></div>
-        <a class="count-link" id="count-link"
-           href="https://secureform.dentalcenterpediatrics.com/DCP-profile.html"
-           target="_blank" rel="noopener">Loading…</a>
-      </div>
+<a class="widget"
+   href="https://secureform.dentalcenterpediatrics.com/DCP-profile.html"
+   target="_blank" rel="noopener noreferrer">
+  <div class="biz-name">Dental Center Pediatrics</div>
+  <div class="rating-row">
+    <span class="avg" id="avg">—</span>
+    <div class="rating-detail">
+      <div class="stars-row" id="stars-row"></div>
+      <span class="rev-count" id="rev-count">Loading…</span>
     </div>
   </div>
-
-  <div class="reviews" id="reviews-container"></div>
-
-  <div class="cta-row">
-    <a class="cta-btn"
-       href="https://secureform.dentalcenterpediatrics.com/DCP-profile.html"
-       target="_blank" rel="noopener">See All Reviews</a>
-  </div>
-
-</div>
+</a>
 
 <script>
   function renderStars(avg) {
@@ -133,62 +69,20 @@
     }
   }
 
-  function esc(s) {
-    return String(s)
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-
-  function formatDate(str) {
-    if (!str) return '';
-    var d = new Date(str);
-    if (isNaN(d)) return '';
-    return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-  }
+  renderStars(4.8);
 
   fetch('reviews.json')
     .then(function(r) { return r.json(); })
     .then(function(data) {
       var avg   = parseFloat(data.business.avgRating);
       var count = parseInt(data.business.reviewCount, 10);
-
-      document.getElementById('avg').textContent = avg.toFixed(1);
+      document.getElementById('avg').textContent      = avg.toFixed(1);
+      document.getElementById('rev-count').textContent = count.toLocaleString() + ' Reviews';
       renderStars(avg);
-      document.getElementById('count-link').textContent =
-        count.toLocaleString() + ' Reviews';
-
-      var reviews = (data.reviews || [])
-        .filter(function(r) { return r.status === 'Published' && r.comment; })
-        .slice(0, 5);
-
-      var container = document.getElementById('reviews-container');
-      container.innerHTML = reviews.map(function(r) {
-        var name    = esc((r.reviewer && r.reviewer.name) || 'Patient');
-        var initial = name.charAt(0).toUpperCase();
-        var strs    = '★'.repeat(r.rating) + (r.rating < 5 ? '☆'.repeat(5 - r.rating) : '');
-        var src     = esc(r.sourceName || '');
-        var date    = formatDate(r.reviewDate);
-        var text    = esc(r.comment || '');
-        return '<div class="rev-card">' +
-          '<div class="rev-top">' +
-            '<div class="rev-avatar">' + initial + '</div>' +
-            '<div class="rev-info">' +
-              '<div class="rev-name">' + name + '</div>' +
-              '<div class="rev-meta-row">' +
-                '<span class="rev-stars">' + strs + '</span>' +
-                (src  ? '<span class="rev-dot">·</span><span class="rev-source">' + src  + '</span>' : '') +
-                (date ? '<span class="rev-dot">·</span><span class="rev-date">'   + date + '</span>' : '') +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="rev-text">' + text + '</div>' +
-        '</div>';
-      }).join('');
     })
     .catch(function() {
       document.getElementById('avg').textContent      = '4.8';
-      document.getElementById('count-link').textContent = 'See Reviews';
-      renderStars(4.8);
+      document.getElementById('rev-count').textContent = 'See Reviews';
     });
 </script>
 </body>
