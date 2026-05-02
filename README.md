@@ -15,6 +15,7 @@ All files in this repo are live at the base URL above + filename.
 | `hours_widget.html` | https://secureform.dentalcenterpediatrics.com/hours_widget.html | Office hours display (embed in Google Sites) |
 | `chat.html` | https://secureform.dentalcenterpediatrics.com/chat.html | Chat page |
 | `DCP-reviews.html` | https://secureform.dentalcenterpediatrics.com/DCP-reviews.html | Reviews widget |
+| `DCP-profile.html` | https://secureform.dentalcenterpediatrics.com/DCP-profile.html | Birdeye business profile (footer hidden) |
 | `docrelay.html` | https://secureform.dentalcenterpediatrics.com/docrelay.html | Document relay |
 | `records-release-request.html` | https://secureform.dentalcenterpediatrics.com/records-release-request.html | Records release request form |
 | `social-footer.html` | https://secureform.dentalcenterpediatrics.com/social-footer.html | Social media footer |
