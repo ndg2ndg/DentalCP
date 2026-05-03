@@ -14,7 +14,7 @@ if not exist hours_widget.html (
 
 :: Get commit message from user
 set /p MSG="Enter update description (or press Enter for auto): "
-if "%MSG%"==***REMOVED***set MSG=Auto update %date% %time%
+if "%MSG%"=="" set MSG=Auto update %date% %time%
 
 :: Stage and commit
 git add .
