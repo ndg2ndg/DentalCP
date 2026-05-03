@@ -3,7 +3,9 @@
     "allow": [
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "PowerShell(Select-String -Path \"I:\\\\Dev\\\\DentalCP\\\\DCP-profile.html\" -Pattern \"cover|hero|banner|background-image\" -SimpleMatch | Select-Object -First 5 | ForEach-Object { $_.Line.Substring\\(0, [Math]::Min\\(300, $_.Line.Length\\)\\) })",
+      "WebFetch(domain:d3cnqzq0ivprch.cloudfront.net)"
     ]
   }
 }
