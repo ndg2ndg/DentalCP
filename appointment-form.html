@@ -32,6 +32,9 @@
              | Changed submit button text from               |
              | "SUBMIT REQUEST" to "REQUEST YOUR CHILD'S     |
              | VISIT"                                        |
+  2026-05-08 | Expanded SMS consent language for Twilio      | Claude
+             | toll-free verification. Removed pre-checked   |
+             | state from consent checkbox (TCPA compliance) |
   ---------------------------------------------------------------
 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -264,8 +267,8 @@
     </div>
 
     <div class="consent-row">
-      <input type="checkbox" id="sms_consent" checked>
-      <span>By submitting this form, I consent to receive texts from Dental Center Pediatrics.</span>
+      <input type="checkbox" id="sms_consent">
+      <span>By submitting this form, I consent to receive SMS messages from Dental Center Pediatrics regarding appointment reminders, confirmations, and practice updates. Message and data rates may apply. Message frequency varies. Reply STOP to opt out or HELP for assistance.</span>
     </div>
 
     <button type="button" class="submit-btn" id="submitBtn" onclick="submitForm()">Request Your Child's Visit</button>
