@@ -1,0 +1,12 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allowlisted false positives"
+files = [
+  "reviews.json",
+  "CLAUDE.md"
+]
+paths = [
+  ".git"
+]

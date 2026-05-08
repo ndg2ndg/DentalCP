@@ -2,4 +2,5 @@ credentials.json
 secrets.txt
 bfg.jar
 .env
+.claude/settings.local.json
 node_modules/

@@ -13,6 +13,13 @@
 const https = require("https");
 const fs    = require("fs");
 
+if (fs.existsSync(".env")) {
+  fs.readFileSync(".env", "utf8").split("\n").forEach(line => {
+    const [k, ...v] = line.trim().split("=");
+    if (k && !k.startsWith("#") && !process.env[k]) process.env[k] = v.join("=");
+  });
+}
+
 const API_KEY     = process.env.BIRDEYE_API_KEY;
 const BUSINESS_ID = process.env.BIRDEYE_BID;
 
