@@ -20,6 +20,12 @@ if (fs.existsSync(".env")) {
   });
 }
 
+// NODE_EXTRA_CA_CERTS is a startup-time variable so we apply it manually here
+if (process.env.NODE_EXTRA_CA_CERTS && fs.existsSync(process.env.NODE_EXTRA_CA_CERTS)) {
+  const https = require("https");
+  https.globalAgent.options.ca = fs.readFileSync(process.env.NODE_EXTRA_CA_CERTS);
+}
+
 const API_KEY     = process.env.BIRDEYE_API_KEY;
 const BUSINESS_ID = process.env.BIRDEYE_BID;
 
