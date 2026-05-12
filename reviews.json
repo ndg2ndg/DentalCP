@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-11T19:53:23.920Z",
-  "displayCount": 664,
-  "totalCount": 787,
+  "lastUpdated": "2026-05-12T03:37:21.609Z",
+  "displayCount": 665,
+  "totalCount": 788,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 664,
+    "reviewCount": 665,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 496
+        "reviewCount": 497
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 625
+        "reviewCount": 626
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 496
+        "reviewCount": 497
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 632
+        "reviewCount": 633
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "5540358375457288937",
+      "rating": 5,
+      "status": "Published",
+      "comment": "Appointment scheduling was a breeze, staff were kind and welcoming, and Dr. Maria was so patient and made my two year old feel so comfortable. I could not be more pleased with how well my son’s first ever dentist appointment went, thanks to Dental Center Pediatrics!",
+      "reviewer": {
+        "name": "Kayla Cappellucci",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/457288937/fb35ed5a49ca4f2daea3055c372fea91.png"
+      },
+      "reviewDate": "May 11, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Kayla. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "May 11, 2026 04:36 PM"
+    },
     {
       "reviewId": "5442403665447540336",
       "rating": 5,
@@ -10268,6 +10283,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "5540358375457288937",
+      "rating": 5,
+      "status": "Published",
+      "comment": "Appointment scheduling was a breeze, staff were kind and welcoming, and Dr. Maria was so patient and made my two year old feel so comfortable. I could not be more pleased with how well my son’s first ever dentist appointment went, thanks to Dental Center Pediatrics!",
+      "reviewer": {
+        "name": "Kayla Cappellucci",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/457288937/fb35ed5a49ca4f2daea3055c372fea91.png"
+      },
+      "reviewDate": "May 11, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Kayla. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "May 11, 2026 04:36 PM"
+    },
     {
       "reviewId": "5493438111452624687",
       "rating": 1,
