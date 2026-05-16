@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-15T19:43:44.597Z",
+  "lastUpdated": "2026-05-16T03:32:24.226Z",
   "displayCount": 665,
-  "totalCount": 788,
+  "totalCount": 789,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -208,13 +208,13 @@
         "sourceName": "Direct Feedback",
         "sourceAlias": "direct_feedback",
         "avgRating": 0,
-        "reviewCount": 75
+        "reviewCount": 76
       }
     ],
     "ratings": [
       {
         "rating": 0,
-        "reviewCount": 89
+        "reviewCount": 90
       },
       {
         "rating": 1,
@@ -10283,6 +10283,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "5547702170458018426",
+      "rating": 0,
+      "status": "Parked",
+      "comment": "Having the pre-registration online. When the receptionist clearly could have done something to help. An older receptionist finally did take my phone to help me but I got there early In preparation for paperwork not everyone uses the online. I felt like I was doing a job thats wasn't mine to do. Also they took my child in for x-rays without me which was fine but after i saw her leave the xray room I had to ask where my child was and I was brushed off. Another young man did push for me to go in the room where my child was left alone with someone and couldn't advocate for herself. Also after consultation a different tech that I never met prior other than her telling me I couldn't see my kid insisted I had to make another appointment that would have cost me 3,500 out of pocket which wasn't really necessary. Overall i left the appointment very upset but thankful I knew to advocate for myself and was grateful for the only 2 people having my back during the process including check in... not everyone uses the online for everything. I felt like i had to work to hard  to advocate for my child and myself while doing a job that wasn't mine at check in. And even the ortho consultation felt rushed. I had alot of questions and just felt they wanted money or an unnecessary appointment like this one.",
+      "reviewer": {
+        "name": "Julie Godfrey",
+        "thumbnail": "https://d3cnqzq0ivprch.cloudfront.net/prod/css/images/default-profile.png"
+      },
+      "reviewDate": "May 15, 2026",
+      "sourceName": "Direct Feedback",
+      "reviewUrl": "https://birdeye.com/dental-center-pediatrics-151691706474903",
+      "response": "",
+      "responseDate": ""
+    },
     {
       "reviewId": "5540358375457288937",
       "rating": 5,
