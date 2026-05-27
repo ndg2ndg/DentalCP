@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-05-27T10:00:38.723Z",
-  "displayCount": 667,
-  "totalCount": 791,
+  "lastUpdated": "2026-05-27T15:54:39.478Z",
+  "displayCount": 666,
+  "totalCount": 790,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 667,
+    "reviewCount": 666,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 499
+        "reviewCount": 498
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 628
+        "reviewCount": 627
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 499
+        "reviewCount": 498
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 635
+        "reviewCount": 634
       }
     ]
   },
@@ -320,21 +320,6 @@
       "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
       "response": "Thank you so much for your kind words, Kerry. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
       "responseDate": "May 26, 2026 07:29 PM"
-    },
-    {
-      "reviewId": "5565968405459836441",
-      "rating": 5,
-      "status": "Published",
-      "comment": "Highly recommend Dr. Elizabeth and Dr. Bob; both are incredible with children! Office is always clean and staff are friendly.",
-      "reviewer": {
-        "name": "Emma Ripatrazone",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/459836441/40e85ee5818c41b5ba926de08ab48240.png"
-      },
-      "reviewDate": "May 26, 2026",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "Thank you so much for your kind words, Emma. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
-      "responseDate": "May 26, 2026 05:29 PM"
     },
     {
       "reviewId": "5540358375457288937",
@@ -10327,21 +10312,6 @@
       "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
       "response": "Thank you so much for your kind words, Kerry. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
       "responseDate": "May 26, 2026 07:29 PM"
-    },
-    {
-      "reviewId": "5565968405459836441",
-      "rating": 5,
-      "status": "Published",
-      "comment": "Highly recommend Dr. Elizabeth and Dr. Bob; both are incredible with children! Office is always clean and staff are friendly.",
-      "reviewer": {
-        "name": "Emma Ripatrazone",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/459836441/40e85ee5818c41b5ba926de08ab48240.png"
-      },
-      "reviewDate": "May 26, 2026",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "Thank you so much for your kind words, Emma. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
-      "responseDate": "May 26, 2026 05:29 PM"
     },
     {
       "reviewId": "5547702170458018426",
