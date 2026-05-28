@@ -369,11 +369,23 @@ async function sendMessage() {
         body:    JSON.stringify({ messages: chatHistory, session_id: SESSION_ID })
       });
       console.log('[webchat] Response status:', res.status, res.statusText);
+      var rawText = await res.text();
+      console.log('[webchat] Raw response body:', rawText);
       if (!res.ok) {
-        var errBody = await res.text();
-        throw new Error('HTTP ' + res.status + ' ' + res.statusText + ': ' + errBody);
+        throw new Error('HTTP ' + res.status + ' ' + res.statusText + ': ' + rawText);
       }
-      var data = await res.json();
+      var data;
+      try {
+        data = JSON.parse(rawText);
+      } catch (parseErr) {
+        console.error('[webchat] JSON parse failed — raw body was:', rawText, '| error:', parseErr.message);
+        throw parseErr;
+      }
+      console.log('[webchat] Parsed data:', data, '| reply field:', data.reply);
+      if (!data || typeof data.reply !== 'string') {
+        console.error('[webchat] Unexpected response shape — full data:', JSON.stringify(data));
+        throw new Error('Response missing reply field');
+      }
       if (typingEl) { typingEl.remove(); }
       setLoading(false);
       appendBot(data.reply);
