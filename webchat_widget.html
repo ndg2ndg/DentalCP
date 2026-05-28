@@ -244,7 +244,7 @@ var SESSION_ID = sessionStorage.getItem('wc_session_id') ||
 sessionStorage.setItem('wc_session_id', SESSION_ID);
 
 // ── State ───────────────────────────────────────────────────
-var history       = [];
+var chatHistory   = [];
 var handedOff     = false;  // appointment-style handoff (chat ended)
 var liveMode      = false;  // real-time agent session
 var opened        = false;
@@ -347,7 +347,7 @@ async function sendMessage() {
 
   if (handedOff) return;
 
-  history.push({ role: 'user', content: text });
+  chatHistory.push({ role: 'user', content: text });
   setLoading(true);
   var typingEl = showTyping();
 
@@ -355,7 +355,7 @@ async function sendMessage() {
     var res = await fetch(INBOX_URL + '/webchat/chat', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ messages: history, session_id: SESSION_ID })
+      body:    JSON.stringify({ messages: chatHistory, session_id: SESSION_ID })
     });
     if (!res.ok) {
       var errBody = await res.text();
@@ -364,7 +364,7 @@ async function sendMessage() {
     var data = await res.json();
     typingEl.remove(); setLoading(false);
     appendBot(data.reply);
-    history.push({ role: 'assistant', content: data.reply });
+    chatHistory.push({ role: 'assistant', content: data.reply });
 
     if (data.live) {
       activateLiveMode();
