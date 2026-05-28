@@ -326,55 +326,72 @@ setTimeout(function() {
 
 // ── Send message ────────────────────────────────────────────
 async function sendMessage() {
-  var text = inp.value.trim();
-  if (!text) return;
-  appendUser(text);
-  inp.value = ''; inp.style.height = '';
-
-  // Live mode: route to patient-message endpoint
-  if (liveMode) {
-    try {
-      await fetch(INBOX_URL + '/webchat/patient-message', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ session_id: SESSION_ID, text: text })
-      });
-    } catch(e) {
-      console.error('[webchat] Patient message error:', e);
-    }
-    return;
-  }
-
-  if (handedOff) return;
-
-  chatHistory.push({ role: 'user', content: text });
-  setLoading(true);
-  var typingEl = showTyping();
+  console.log('[webchat] sendMessage called — INBOX_URL:', INBOX_URL,
+    '| SESSION_ID:', SESSION_ID,
+    '| liveMode:', liveMode,
+    '| handedOff:', handedOff,
+    '| chatHistory.length:', chatHistory.length,
+    '| inp:', !!inp,
+    '| sendBtn:', !!sendBtn);
 
   try {
-    var res = await fetch(INBOX_URL + '/webchat/chat', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ messages: chatHistory, session_id: SESSION_ID })
-    });
-    if (!res.ok) {
-      var errBody = await res.text();
-      throw new Error('HTTP ' + res.status + ' ' + res.statusText + ': ' + errBody);
-    }
-    var data = await res.json();
-    typingEl.remove(); setLoading(false);
-    appendBot(data.reply);
-    chatHistory.push({ role: 'assistant', content: data.reply });
+    var text = inp.value.trim();
+    if (!text) return;
+    appendUser(text);
+    inp.value = ''; inp.style.height = '';
 
-    if (data.live) {
-      activateLiveMode();
-    } else if (data.handoff) {
-      triggerHandoff();
+    // Live mode: route to patient-message endpoint
+    if (liveMode) {
+      try {
+        await fetch(INBOX_URL + '/webchat/patient-message', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ session_id: SESSION_ID, text: text })
+        });
+      } catch(e) {
+        console.error('[webchat] Patient message error — name:', e.name, '| message:', e.message, '| stack:', e.stack);
+      }
+      return;
+    }
+
+    if (handedOff) return;
+
+    chatHistory.push({ role: 'user', content: text });
+    setLoading(true);
+    var typingEl = showTyping();
+
+    try {
+      var fetchURL = INBOX_URL + '/webchat/chat';
+      console.log('[webchat] About to POST to:', fetchURL, '| payload size:', JSON.stringify({ messages: chatHistory, session_id: SESSION_ID }).length, 'bytes');
+      var res = await fetch(fetchURL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ messages: chatHistory, session_id: SESSION_ID })
+      });
+      console.log('[webchat] Response status:', res.status, res.statusText);
+      if (!res.ok) {
+        var errBody = await res.text();
+        throw new Error('HTTP ' + res.status + ' ' + res.statusText + ': ' + errBody);
+      }
+      var data = await res.json();
+      if (typingEl) { typingEl.remove(); }
+      setLoading(false);
+      appendBot(data.reply);
+      chatHistory.push({ role: 'assistant', content: data.reply });
+
+      if (data.live) {
+        activateLiveMode();
+      } else if (data.handoff) {
+        triggerHandoff();
+      }
+    } catch(e) {
+      console.error('[webchat] AI call failed — name:', e.name, '| message:', e.message, '| stack:', e.stack);
+      if (typingEl) { typingEl.remove(); }
+      setLoading(false);
+      appendBot("I'm having trouble connecting right now. Please call us at (508) 830-1212 and we'll be happy to help!");
     }
   } catch(e) {
-    console.error('[webchat] AI call failed:', e);
-    typingEl.remove(); setLoading(false);
-    appendBot("I'm having trouble connecting right now. Please call us at (508) 830-1212 and we'll be happy to help!");
+    console.error('[webchat] Unexpected top-level error in sendMessage — name:', e.name, '| message:', e.message, '| stack:', e.stack);
   }
 }
 
