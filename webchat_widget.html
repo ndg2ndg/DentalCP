@@ -178,6 +178,42 @@
     @media(max-width:400px){
       #panel{width:calc(100vw - 24px);right:12px;height:90vh;bottom:80px;}
     }
+
+    /* ── Consent overlay ──────────────────────────────────────── */
+    #consent-overlay{
+      position:absolute;inset:0;z-index:10;
+      background:var(--white);border-radius:18px;
+      display:flex;flex-direction:column;
+      padding:22px 20px 20px;overflow-y:auto;
+    }
+    #consent-overlay.hidden{display:none;}
+    .consent-title{
+      font-size:16px;font-weight:700;color:var(--navy);
+      margin-bottom:14px;
+    }
+    .consent-emergency{
+      background:#fff8e1;border:1px solid #ffc107;border-radius:10px;
+      padding:10px 13px;font-size:12px;color:#795500;line-height:1.5;
+      margin-bottom:14px;
+    }
+    .consent-body{
+      font-size:12px;color:var(--slate);line-height:1.65;
+      margin-bottom:14px;
+    }
+    .consent-links{
+      display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap;
+    }
+    .consent-links a{
+      font-size:12px;color:var(--blue);text-decoration:underline;
+    }
+    .consent-links a:hover{color:var(--blue-dk);}
+    #consent-btn{
+      width:100%;padding:11px;border:none;border-radius:12px;
+      background:var(--blue);color:#fff;font-size:14px;font-weight:600;
+      font-family:'DM Sans',sans-serif;cursor:pointer;
+      transition:background .15s;
+    }
+    #consent-btn:hover{background:var(--blue-dk);}
   </style>
 </head>
 <body>
@@ -206,6 +242,18 @@
     <button class="hdr-close" onclick="closePanel()" title="Close chat">&times;</button>
   </div>
 
+  <!-- Consent overlay -->
+  <div id="consent-overlay">
+    <div class="consent-title">Before we get started</div>
+    <div class="consent-emergency">If you are experiencing a medical emergency, please go to your nearest emergency room or call 911.</div>
+    <p class="consent-body">By continuing, you consent to Dental Center Pediatrics storing, transmitting, and communicating your child's patient information electronically, and to receiving appointment reminders and practice communications via email and SMS text message. Standard messaging rates may apply.</p>
+    <div class="consent-links">
+      <a href="https://secureform.dentalcenterpediatrics.com/policies/hipaa-notice.pdf" target="_blank" rel="noopener noreferrer">HIPAA Notice</a>
+      <a href="https://secureform.dentalcenterpediatrics.com/policies/internet-consent.pdf" target="_blank" rel="noopener noreferrer">Internet Consent</a>
+    </div>
+    <button id="consent-btn" onclick="acceptConsent()">Continue &#x2192;</button>
+  </div>
+
   <div id="msgs"></div>
 
   <div class="input-bar">
@@ -225,6 +273,23 @@
 <script>
 // ── Server URL ──────────────────────────────────────────────
 var INBOX_URL = 'https://dcp-inbox.consulting4real.com';
+
+// ── Consent gate ────────────────────────────────────────────
+var consentOverlay = document.getElementById('consent-overlay');
+var consentGiven   = sessionStorage.getItem('wc_consent') === '1';
+if (consentGiven) {
+  consentOverlay.classList.add('hidden');
+} else {
+  document.getElementById('user-input').disabled = true;
+  document.getElementById('send-btn').disabled   = true;
+}
+function acceptConsent() {
+  sessionStorage.setItem('wc_consent', '1');
+  consentOverlay.classList.add('hidden');
+  inp.disabled     = false;
+  sendBtn.disabled = false;
+  inp.focus();
+}
 
 var STATUS_COLORS = { open: '#22c55e', open_busy: '#f59e0b', closed: '#64748b' };
 
