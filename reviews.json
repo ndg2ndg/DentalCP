@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-08T20:23:19.060Z",
-  "displayCount": 668,
-  "totalCount": 792,
+  "lastUpdated": "2026-06-09T03:53:32.998Z",
+  "displayCount": 669,
+  "totalCount": 793,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 668,
+    "reviewCount": 669,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 500
+        "reviewCount": 501
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 629
+        "reviewCount": 630
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 500
+        "reviewCount": 501
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 636
+        "reviewCount": 637
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "5591956855462423606",
+      "rating": 5,
+      "status": "Published",
+      "comment": "",
+      "reviewer": {
+        "name": "laura pasys",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/462423606/eaf0fad390df4d4cb2c8a3630a49bf9b.png"
+      },
+      "reviewDate": "Jun 08, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "We really appreciate Laura  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
+      "responseDate": "Jun 08, 2026 08:05 PM"
+    },
     {
       "reviewId": "5579812515461214375",
       "rating": 5,
@@ -10328,6 +10343,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "5591956855462423606",
+      "rating": 5,
+      "status": "Published",
+      "comment": "",
+      "reviewer": {
+        "name": "laura pasys",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/462423606/eaf0fad390df4d4cb2c8a3630a49bf9b.png"
+      },
+      "reviewDate": "Jun 08, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "We really appreciate Laura  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
+      "responseDate": "Jun 08, 2026 08:05 PM"
+    },
     {
       "reviewId": "5579812515461214375",
       "rating": 5,
