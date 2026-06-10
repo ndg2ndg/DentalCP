@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-10T10:09:46.079Z",
-  "displayCount": 669,
-  "totalCount": 793,
+  "lastUpdated": "2026-06-10T20:35:01.015Z",
+  "displayCount": 670,
+  "totalCount": 794,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 669,
+    "reviewCount": 670,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 501
+        "reviewCount": 502
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 630
+        "reviewCount": 631
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 501
+        "reviewCount": 502
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 637
+        "reviewCount": 638
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "5594395145462666216",
+      "rating": 5,
+      "status": "Published",
+      "comment": "I’m so happy we found Dental Center Pediatrics! My 4-year-old son tends to get a little anxious before appointments, but they are quick to bring the kids back, which helps ease any nerves.\n\nOne thing I absolutely love is that each chair has its own TV, which does a great job keeping the kids occupied and distracted during their visit. It makes the entire experience much more enjoyable and less stressful for little ones.\n\nLeanne, the dental hygienist, was kind, patient, and so great with my son. She explained everything she was doing along the way, which helped my son feel relaxed and at ease throughout the appointment.\n\nWe’ve had such a positive experience here and would highly recommend Dental Center Pediatrics to any family looking for compassionate, child friendly dental care!",
+      "reviewer": {
+        "name": "Alyssa Hickey",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/462666216/c3024c8f67d343fe8dbc3397a1a0f844.png"
+      },
+      "reviewDate": "Jun 10, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Alyssa. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Jun 10, 2026 10:35 AM"
+    },
     {
       "reviewId": "5591956855462423606",
       "rating": 5,
@@ -10343,6 +10358,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "5594395145462666216",
+      "rating": 5,
+      "status": "Published",
+      "comment": "I’m so happy we found Dental Center Pediatrics! My 4-year-old son tends to get a little anxious before appointments, but they are quick to bring the kids back, which helps ease any nerves.\n\nOne thing I absolutely love is that each chair has its own TV, which does a great job keeping the kids occupied and distracted during their visit. It makes the entire experience much more enjoyable and less stressful for little ones.\n\nLeanne, the dental hygienist, was kind, patient, and so great with my son. She explained everything she was doing along the way, which helped my son feel relaxed and at ease throughout the appointment.\n\nWe’ve had such a positive experience here and would highly recommend Dental Center Pediatrics to any family looking for compassionate, child friendly dental care!",
+      "reviewer": {
+        "name": "Alyssa Hickey",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/462666216/c3024c8f67d343fe8dbc3397a1a0f844.png"
+      },
+      "reviewDate": "Jun 10, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Alyssa. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Jun 10, 2026 10:35 AM"
+    },
     {
       "reviewId": "5591956855462423606",
       "rating": 5,
