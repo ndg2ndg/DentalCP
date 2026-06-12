@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-11T20:29:18.876Z",
+  "lastUpdated": "2026-06-12T04:20:26.896Z",
   "displayCount": 670,
-  "totalCount": 794,
+  "totalCount": 795,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 502
+        "reviewCount": 503
       },
       {
         "sourceName": "Wellness",
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 502
+        "reviewCount": 503
       },
       {
         "sourceName": "Wellness",
@@ -218,7 +218,7 @@
       },
       {
         "rating": 1,
-        "reviewCount": 27
+        "reviewCount": 28
       },
       {
         "rating": 2,
@@ -10358,6 +10358,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "5597237371462948801",
+      "rating": 1,
+      "status": "Parked",
+      "comment": "",
+      "reviewer": {
+        "name": "Paulette Fields",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/462948801/0fd77693567448b799b88303ccb1977a.png"
+      },
+      "reviewDate": "Jun 11, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "",
+      "responseDate": ""
+    },
     {
       "reviewId": "5594395145462666216",
       "rating": 5,
