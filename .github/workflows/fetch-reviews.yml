@@ -1,3 +1,32 @@
+# =============================================================================
+# Workflow : Fetch Birdeye Reviews
+# Repo     : ndg2ndg/DentalCP
+# File     : .github/workflows/fetch-reviews.yml
+# Author   : Lord / Consulting4Real LLC
+# Updated  : 2026-06-15
+#
+# Purpose:
+#   Fetches all Birdeye review data every 6 hours and commits reviews.json
+#   to the repo for use by the DCP microsite.
+#
+# Problem fixed (2026-06-15):
+#   The original "Commit and push reviews" step used `git pull --rebase`
+#   inside a retry loop. When two workflow runs overlapped (e.g. a manual
+#   workflow_dispatch fired while a scheduled run was in flight), both wrote
+#   a full replacement of reviews.json and raced to push. The rebase hit a
+#   merge conflict it could not auto-resolve, then the retry loop re-entered
+#   the same broken rebase state on every attempt — never recovering.
+#
+# Fix:
+#   1. concurrency: group prevents two runs from executing simultaneously.
+#      cancel-in-progress: true drops the older run when a new one starts.
+#   2. The push step now does fetch + reset --hard + re-run the JS script
+#      inside the retry loop, so each attempt starts from a clean known state
+#      with freshly fetched data applied on top. No rebase, no conflict possible.
+#   3. If remote already has identical data the step exits cleanly (no empty
+#      commit). If all 5 attempts fail the step exits 1 (workflow fails visibly).
+# =============================================================================
+
 name: Fetch Birdeye Reviews
 
 on:
@@ -7,6 +36,12 @@ on:
 
 permissions:
   contents: write
+
+# Prevent concurrent runs from racing on reviews.json.
+# If a new run starts while one is in progress, the older one is cancelled.
+concurrency:
+  group: fetch-reviews
+  cancel-in-progress: true
 
 jobs:
   fetch:
@@ -27,13 +62,43 @@ jobs:
         run: node fetch-reviews-to-json.js
 
       - name: Commit and push reviews
+        env:
+          BIRDEYE_API_KEY: ${{ secrets.BIRDEYE_API_KEY }}
+          BIRDEYE_BID: ${{ secrets.BIRDEYE_BID }}
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add reviews.json
-          git diff --staged --quiet || git commit -m "Update reviews data"
+
           for i in 1 2 3 4 5; do
-            git pull --rebase origin main && git push origin main && break
+            echo "--- Push attempt $i ---"
+
+            # Reset to exact current state of remote — eliminates any
+            # prior conflict, partial rebase, or stale local state.
+            git fetch origin main
+            git reset --hard origin/main
+
+            # Re-fetch fresh data on top of clean remote state.
+            # reviews.json is always fully overwritten — no merging needed.
+            node fetch-reviews-to-json.js
+
+            git add reviews.json
+
+            # If remote already has identical content, nothing to do.
+            if git diff --staged --quiet; then
+              echo "No changes to commit — reviews.json already up to date."
+              exit 0
+            fi
+
+            git commit -m "Update reviews data"
+
+            if git push origin main; then
+              echo "Push succeeded on attempt $i."
+              exit 0
+            fi
+
             echo "Push attempt $i failed, retrying in 5s..."
             sleep 5
           done
+
+          echo "ERROR: All 5 push attempts failed."
+          exit 1
