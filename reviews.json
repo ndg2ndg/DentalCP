@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-24T14:38:50.510Z",
-  "displayCount": 673,
-  "totalCount": 798,
+  "lastUpdated": "2026-06-24T19:51:27.091Z",
+  "displayCount": 674,
+  "totalCount": 799,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 673,
+    "reviewCount": 674,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 506
+        "reviewCount": 507
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 634
+        "reviewCount": 635
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 506
+        "reviewCount": 507
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 641
+        "reviewCount": 642
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "5617852275464999972",
+      "rating": 5,
+      "status": "Published",
+      "comment": "I have two kids one HATES anything to do with her teeth, she needs to do it herself or it's out of the question. The other is too young to have many opinions. The oldest screamed, hid and caused a scene. The team stayed calm and worked with us through the tears. We left teary eyed with a clean bill of health.",
+      "reviewer": {
+        "name": "Monee Vance",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/464999972/1bbc103d3ae9478ea14fe7c89240fae1.png"
+      },
+      "reviewDate": "Jun 24, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Monee. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Jun 24, 2026 01:59 PM"
+    },
     {
       "reviewId": "5607416315463960357",
       "rating": 5,
@@ -10403,6 +10418,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "5617852275464999972",
+      "rating": 5,
+      "status": "Published",
+      "comment": "I have two kids one HATES anything to do with her teeth, she needs to do it herself or it's out of the question. The other is too young to have many opinions. The oldest screamed, hid and caused a scene. The team stayed calm and worked with us through the tears. We left teary eyed with a clean bill of health.",
+      "reviewer": {
+        "name": "Monee Vance",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/464999972/1bbc103d3ae9478ea14fe7c89240fae1.png"
+      },
+      "reviewDate": "Jun 24, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Monee. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Jun 24, 2026 01:59 PM"
+    },
     {
       "reviewId": "5607416315463960357",
       "rating": 5,
