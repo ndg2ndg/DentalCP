@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-06-26T19:54:31.592Z",
-  "displayCount": 674,
-  "totalCount": 799,
+  "lastUpdated": "2026-06-27T03:49:30.858Z",
+  "displayCount": 675,
+  "totalCount": 800,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 674,
+    "reviewCount": 675,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 507
+        "reviewCount": 508
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 635
+        "reviewCount": 636
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 507
+        "reviewCount": 508
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 642
+        "reviewCount": 643
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "5621702195465382579",
+      "rating": 5,
+      "status": "Published",
+      "comment": "",
+      "reviewer": {
+        "name": "Samantha McVay",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/465382579/ba67313ec7bc45cea950c23610b963b3.png"
+      },
+      "reviewDate": "Jun 26, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "We really appreciate Samantha  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
+      "responseDate": "Jun 26, 2026 07:38 PM"
+    },
     {
       "reviewId": "5617852275464999972",
       "rating": 5,
@@ -10418,6 +10433,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "5621702195465382579",
+      "rating": 5,
+      "status": "Published",
+      "comment": "",
+      "reviewer": {
+        "name": "Samantha McVay",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/465382579/ba67313ec7bc45cea950c23610b963b3.png"
+      },
+      "reviewDate": "Jun 26, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "We really appreciate Samantha  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
+      "responseDate": "Jun 26, 2026 07:38 PM"
+    },
     {
       "reviewId": "5617852275464999972",
       "rating": 5,
