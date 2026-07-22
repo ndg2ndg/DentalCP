@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-22T00:41:58.574Z",
+  "lastUpdated": "2026-07-22T06:59:46.524Z",
   "displayCount": 675,
   "totalCount": 800,
   "business": {
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "5077823955411230343",
+      "rating": 5,
+      "status": "Published",
+      "comment": "My daughter loved and I glad too\nThe first time they did a lot of x-rays and the follow-up was scheduled quickly.",
+      "reviewer": {
+        "name": "Esangela Lopes",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/411230343/020d127a2a8f403e8d6207595573a202.png"
+      },
+      "reviewDate": "Jul 21, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Esangela. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Jul 21, 2026 08:56 PM"
+    },
     {
       "reviewId": "5621702195465382579",
       "rating": 5,
@@ -950,21 +965,6 @@
       "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
       "response": "Thank you so much for your kind words, Denise. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
       "responseDate": "Oct 24, 2025 07:17 PM"
-    },
-    {
-      "reviewId": "5077823955411230343",
-      "rating": 5,
-      "status": "Published",
-      "comment": "My daughter loved and I glad too\nThe first time they did a lot of x-rays and the follow-up was scheduled quickly.",
-      "reviewer": {
-        "name": "Esangela Lopes",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/411230343/020d127a2a8f403e8d6207595573a202.png"
-      },
-      "reviewDate": "Oct 06, 2025",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "Thank you so much for your kind words, Esangela. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
-      "responseDate": "Oct 06, 2025 07:14 PM"
     },
     {
       "reviewId": "4141264085317979230",
@@ -10434,6 +10434,21 @@
   ],
   "allReviews": [
     {
+      "reviewId": "5077823955411230343",
+      "rating": 5,
+      "status": "Published",
+      "comment": "My daughter loved and I glad too\nThe first time they did a lot of x-rays and the follow-up was scheduled quickly.",
+      "reviewer": {
+        "name": "Esangela Lopes",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/411230343/020d127a2a8f403e8d6207595573a202.png"
+      },
+      "reviewDate": "Jul 21, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Esangela. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Jul 21, 2026 08:56 PM"
+    },
+    {
       "reviewId": "5621702195465382579",
       "rating": 5,
       "status": "Published",
@@ -11212,21 +11227,6 @@
       "reviewUrl": "https://birdeye.com/dental-center-pediatrics-151691706474903",
       "response": "",
       "responseDate": ""
-    },
-    {
-      "reviewId": "5077823955411230343",
-      "rating": 5,
-      "status": "Published",
-      "comment": "My daughter loved and I glad too\nThe first time they did a lot of x-rays and the follow-up was scheduled quickly.",
-      "reviewer": {
-        "name": "Esangela Lopes",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/411230343/020d127a2a8f403e8d6207595573a202.png"
-      },
-      "reviewDate": "Oct 06, 2025",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "Thank you so much for your kind words, Esangela. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
-      "responseDate": "Oct 06, 2025 07:14 PM"
     },
     {
       "reviewId": "4141264085317979230",
