@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-07-24T00:41:17.383Z",
-  "displayCount": 675,
-  "totalCount": 800,
+  "lastUpdated": "2026-07-24T06:58:26.456Z",
+  "displayCount": 674,
+  "totalCount": 799,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 675,
+    "reviewCount": 674,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 508
+        "reviewCount": 507
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 636
+        "reviewCount": 635
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 508
+        "reviewCount": 507
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 643
+        "reviewCount": 642
       }
     ]
   },
@@ -987,8 +987,8 @@
       "status": "Published",
       "comment": "Great service",
       "reviewer": {
-        "name": "Rei",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/445437331/d547660becec49bd80cd1c1f962091c7.png"
+        "name": "Gilmara Reis",
+        "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocJ9ttk9e0W--Yl6ld4Y6OLge9lC0shnaKksV7zZSOYh6WI1h3V7=s120-c-rp-mo-ba12-br100"
       },
       "reviewDate": "Sep 29, 2025",
       "sourceName": "Google",
@@ -3545,21 +3545,6 @@
       "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
       "response": "Thank you so much for your kind words, Jay. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
       "responseDate": "Jan 27, 2023 09:27 AM"
-    },
-    {
-      "reviewId": "3354297785243152891",
-      "rating": 5,
-      "status": "Published",
-      "comment": "Great !!!!!!!!!!",
-      "reviewer": {
-        "name": "Bruna Oliveira",
-        "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjX2R1J2Az55MI58EPkvU3YbWoSUkZM72NMY6XhoY8veBFp4oCn9=s120-c-rp-mo-br100"
-      },
-      "reviewDate": "Mar 23, 2023",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "Thank you so much for your kind words, Bruna. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
-      "responseDate": "Mar 23, 2023 09:21 PM"
     },
     {
       "reviewId": "3354264925243149696",
@@ -11249,8 +11234,8 @@
       "status": "Published",
       "comment": "Great service",
       "reviewer": {
-        "name": "Rei",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/445437331/d547660becec49bd80cd1c1f962091c7.png"
+        "name": "Gilmara Reis",
+        "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocJ9ttk9e0W--Yl6ld4Y6OLge9lC0shnaKksV7zZSOYh6WI1h3V7=s120-c-rp-mo-ba12-br100"
       },
       "reviewDate": "Sep 29, 2025",
       "sourceName": "Google",
@@ -14422,21 +14407,6 @@
       "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
       "response": "Thank you so much for your kind words, Jay. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
       "responseDate": "Jan 27, 2023 09:27 AM"
-    },
-    {
-      "reviewId": "3354297785243152891",
-      "rating": 5,
-      "status": "Published",
-      "comment": "Great !!!!!!!!!!",
-      "reviewer": {
-        "name": "Bruna Oliveira",
-        "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjX2R1J2Az55MI58EPkvU3YbWoSUkZM72NMY6XhoY8veBFp4oCn9=s120-c-rp-mo-br100"
-      },
-      "reviewDate": "Mar 23, 2023",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "Thank you so much for your kind words, Bruna. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
-      "responseDate": "Mar 23, 2023 09:21 PM"
     },
     {
       "reviewId": "3354264925243149696",
