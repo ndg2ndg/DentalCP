@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-07-27T18:37:13.238Z",
-  "displayCount": 674,
-  "totalCount": 799,
+  "lastUpdated": "2026-07-28T00:41:47.501Z",
+  "displayCount": 675,
+  "totalCount": 800,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 674,
+    "reviewCount": 675,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 507
+        "reviewCount": 508
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 635
+        "reviewCount": 636
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 507
+        "reviewCount": 508
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 642
+        "reviewCount": 643
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "5684072325471595670",
+      "rating": 5,
+      "status": "Published",
+      "comment": "O atendimento sempre excelente. Tanto medico quanto os demais profissionais. Sou muito grata a todos pelo trabalho realizado.",
+      "reviewer": {
+        "name": "juliana oliveira",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/471595670/692e5f2c223141c79b75e38d2b19d27d.png"
+      },
+      "reviewDate": "Jul 27, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Juliana. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Jul 27, 2026 07:46 PM"
+    },
     {
       "reviewId": "5077823955411230343",
       "rating": 5,
@@ -2680,7 +2695,7 @@
       "reviewId": "3915119015296421934",
       "rating": 5,
       "status": "Published",
-      "comment": "Excelente atendimento.\nDesde a recepção, a int��rprete, os dentistas. Tudo excelente. São muito carinhosos e com paciência com a criança.\nSó uma nota:\nEu li alguns comentários e vou compartilhar a minha experiência. O meu filho tem 5 anos e na primeira visita a clínica a Dra Maria nos sugeriu a extrair 4 dentes bastantes estragados. De imediato nos aceitamos. Ela e sua equipe foram extraordinários na cirurgia do meu filho. Não tenho palavras pra agradecer. O pós operatório a recuperação foi super tranquila. Eu só tenho a agradecer",
+      "comment": "Excelente atendimento.\nDesde a recepção, a intérprete, os dentistas. Tudo excelente. São muito carinhosos e com paciência com a criança.\nSó uma nota:\nEu li alguns comentários e vou compartilhar a minha experiência. O meu filho tem 5 anos e na primeira visita a clínica a Dra Maria nos sugeriu a extrair 4 dentes bastantes estragados. De imediato nos aceitamos. Ela e sua equipe foram extraordinários na cirurgia do meu filho. Não tenho palavras pra agradecer. O pós operatório a recuperação foi super tranquila. Eu só tenho a agradecer",
       "reviewer": {
         "name": "Ivania Claudia Barbosa",
         "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocKcwTYFQ2XJkr4b-sLb2cD5b5jUyZstS8u71wFcvCn9y1I2mw=s120-c-rp-mo-br100"
@@ -10418,6 +10433,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "5684072325471595670",
+      "rating": 5,
+      "status": "Published",
+      "comment": "O atendimento sempre excelente. Tanto medico quanto os demais profissionais. Sou muito grata a todos pelo trabalho realizado.",
+      "reviewer": {
+        "name": "juliana oliveira",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/471595670/692e5f2c223141c79b75e38d2b19d27d.png"
+      },
+      "reviewDate": "Jul 27, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Juliana. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Jul 27, 2026 07:46 PM"
+    },
     {
       "reviewId": "5077823955411230343",
       "rating": 5,
