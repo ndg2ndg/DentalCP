@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-08-03T00:45:45.257Z",
+  "lastUpdated": "2026-08-03T07:16:45.157Z",
   "displayCount": 677,
   "totalCount": 802,
   "business": {
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "5421315275445437329",
+      "rating": 5,
+      "status": "Published",
+      "comment": "Excellent work and service, I recommend it!",
+      "reviewer": {
+        "name": "Juliana Oliveira",
+        "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocICivMBM8Wt8OrMfR-cbNxH4cKztiBZuLjNVyLne7EEfqJxeg=s120-c-rp-mo-br100"
+      },
+      "reviewDate": "Aug 02, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Juliana. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Aug 02, 2026 10:08 PM"
+    },
     {
       "reviewId": "5688659205472052290",
       "rating": 5,
@@ -710,21 +725,6 @@
       "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
       "response": "Thank you so much for your kind words, Ap. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
       "responseDate": "Feb 04, 2026 12:39 PM"
-    },
-    {
-      "reviewId": "5421315275445437329",
-      "rating": 5,
-      "status": "Published",
-      "comment": "Excellent work and service, I recommend it!",
-      "reviewer": {
-        "name": "Juliana Oliveira",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/445437329/a416aab3d3164937b32637afa7e9ebdc.png"
-      },
-      "reviewDate": "Feb 02, 2026",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "Thank you so much for your kind words, Juliana. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
-      "responseDate": "Feb 03, 2026 12:09 AM"
     },
     {
       "reviewId": "5274779025430828880",
@@ -10464,6 +10464,21 @@
   ],
   "allReviews": [
     {
+      "reviewId": "5421315275445437329",
+      "rating": 5,
+      "status": "Published",
+      "comment": "Excellent work and service, I recommend it!",
+      "reviewer": {
+        "name": "Juliana Oliveira",
+        "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocICivMBM8Wt8OrMfR-cbNxH4cKztiBZuLjNVyLne7EEfqJxeg=s120-c-rp-mo-br100"
+      },
+      "reviewDate": "Aug 02, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Juliana. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Aug 02, 2026 10:08 PM"
+    },
+    {
       "reviewId": "5688659205472052290",
       "rating": 5,
       "status": "Published",
@@ -10942,21 +10957,6 @@
       "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
       "response": "Thank you so much for your kind words, Ap. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
       "responseDate": "Feb 04, 2026 12:39 PM"
-    },
-    {
-      "reviewId": "5421315275445437329",
-      "rating": 5,
-      "status": "Published",
-      "comment": "Excellent work and service, I recommend it!",
-      "reviewer": {
-        "name": "Juliana Oliveira",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/445437329/a416aab3d3164937b32637afa7e9ebdc.png"
-      },
-      "reviewDate": "Feb 02, 2026",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "Thank you so much for your kind words, Juliana. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
-      "responseDate": "Feb 03, 2026 12:09 AM"
     },
     {
       "reviewId": "5274779025430828880",
@@ -11952,7 +11952,7 @@
       "reviewId": "4646617341368298070",
       "rating": 1,
       "status": "Parked",
-      "comment": "Only giving the one star for the manager Bill I spoke too who seemed understanding of my situation. Unfortunately the front desk receptionist area is filled with unprofessional and extremely rude people who will make your experience horrible, leaving as a first time patient with a bad taste in my mouth. Beware that the gps will begin by guiding you to the wrong address a few buildings down(and they are aware of this so be weary!) so that means if you are ever late due to those complications, do not fear they will just cancel your appointment! And upon walking in they will say “oh we’ve already canceled this appointment” but this isn’t the bad part unfortunately! The front desk receptionists will not only laugh at you to each other and snarky say to each other “I’ll walk out right now I really will” all while your 3 year old daughter is standing with you as you speak to the manager over the phone who agrees with the misbehavior. The shear entitlement of those ladies was down right scary, they believed they could act any sort of way and treat their patients in any manner they please, using “having each other as a witness” as the only excuse to defend themselves to their manager after I had just called out their behavior. Absolutely horrible experience and I am completely disappointed with the way me and my child were treated, and sadly after reading the reviews after this occurrence I have seen multiplied people also speaking forward about the receptionists being rude to them and their children. Very disheartening that they do not do a more thorough job of hiring people when it comes to the pediatric field. These are our children we are talking about, and nobody deserves to be treated small and laughed at by a provider!",
+      "comment": "Only giving the one star for the manager Bill I spoke too who seemed understanding of my situation. Unfortunately the front desk receptionist area is filled with unprofessional and extremely rude people who will make your experience horrible, leaving as a first time patient with a bad taste in my mouth. Beware that the gps will begin by guiding you to the wrong address a few buildings down(and they are aware of this so be weary!) so that means if you are ever late due to those complications, do not fear they will just cancel your appointment! And upon walking in they will say “oh we’ve already canceled this appointment” but this isn’t the bad part unfortunately! The front desk receptionists will not only laugh at you to each other and snarky say to each other “I’ll walk out right now I really will” all while your 3 year old daughter is standing with you as you speak to the manager over the phone who agrees with the misbehavior. The shear entitlement of those ladies was down right scary, they believed they could act any sort of way and treat their patients in any manner they please, using “having each other as a witness�� as the only excuse to defend themselves to their manager after I had just called out their behavior. Absolutely horrible experience and I am completely disappointed with the way me and my child were treated, and sadly after reading the reviews after this occurrence I have seen multiplied people also speaking forward about the receptionists being rude to them and their children. Very disheartening that they do not do a more thorough job of hiring people when it comes to the pediatric field. These are our children we are talking about, and nobody deserves to be treated small and laughed at by a provider!",
       "reviewer": {
         "name": "Julia Daddario",
         "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocIRJqJjYA28bHtcgr021E17pBNvmxP17cRh34Zgs6puHE3iWA=s120-c-rp-mo-br100"
