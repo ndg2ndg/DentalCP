@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-09T12:12:23.262Z",
-  "displayCount": 678,
-  "totalCount": 803,
+  "lastUpdated": "2026-08-09T18:11:47.420Z",
+  "displayCount": 676,
+  "totalCount": 801,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 678,
+    "reviewCount": 676,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 511
+        "reviewCount": 509
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 639
+        "reviewCount": 637
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 511
+        "reviewCount": 509
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 646
+        "reviewCount": 644
       }
     ]
   },
@@ -8482,21 +8482,6 @@
       "responseDate": "Jan 26, 2018 07:00 PM"
     },
     {
-      "reviewId": "124245594577572794",
-      "rating": 5,
-      "status": "Published",
-      "comment": "Love this practice!!\nI love how every person there ease my children's fear of the dentist.\nFrom the front desk to the back rooms they are all kind and sweet!\nI have recommended Dental Center Pediatrics to everyone who has asked me for a dentist for their children.\nThank you for everything you wonderful Ladies do!",
-      "reviewer": {
-        "name": "Marina A",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/reviewer/067054bd54384239ab77df4f547b29cd.png"
-      },
-      "reviewDate": "Aug 26, 2016",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/reviews/data=!4m5!14m4!1m3!1m2!1s105578568882164275225!2s0x89e4bb796d95b6bd%3A0xcfe3333f40d6c670",
-      "response": "",
-      "responseDate": ""
-    },
-    {
       "reviewId": "124391265577734538",
       "rating": 5,
       "status": "Published",
@@ -10325,21 +10310,6 @@
       "reviewUrl": "https://www.rateabiz.com/reviews/dental-center-pediatrics-plymouth-ma/28d875335bea8b7c86023286391f50e2/summary",
       "response": "Thank you for the sweet words!",
       "responseDate": "Jan 26, 2018 07:00 PM"
-    },
-    {
-      "reviewId": "124245585577572796",
-      "rating": 5,
-      "status": "Published",
-      "comment": "It could not have been better!\nMy kids LOVE going to Dental Center Pediatrics and Dr. Maria. Everyone is so friendly that my usually shy kids warm up by the time we are walking back to be seen. They don't want to leave by the end. I always recommend Dental Center Pediatrics to anyone looking and will continue to do so!!",
-      "reviewer": {
-        "name": "John Maroudas",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/reviewer/96d77d08ce4e49368bc06c0ec1c1352c.png"
-      },
-      "reviewDate": "Nov 19, 2014",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/reviews/data=!4m5!14m4!1m3!1m2!1s102811148062383697126!2s0x89e4bb796d95b6bd%3A0xcfe3333f40d6c670",
-      "response": "",
-      "responseDate": ""
     },
     {
       "reviewId": "124391232577734546",
@@ -20409,21 +20379,6 @@
       "responseDate": "Jan 26, 2018 07:00 PM"
     },
     {
-      "reviewId": "124245594577572794",
-      "rating": 5,
-      "status": "Published",
-      "comment": "Love this practice!!\nI love how every person there ease my children's fear of the dentist.\nFrom the front desk to the back rooms they are all kind and sweet!\nI have recommended Dental Center Pediatrics to everyone who has asked me for a dentist for their children.\nThank you for everything you wonderful Ladies do!",
-      "reviewer": {
-        "name": "Marina A",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/reviewer/067054bd54384239ab77df4f547b29cd.png"
-      },
-      "reviewDate": "Aug 26, 2016",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/reviews/data=!4m5!14m4!1m3!1m2!1s105578568882164275225!2s0x89e4bb796d95b6bd%3A0xcfe3333f40d6c670",
-      "response": "",
-      "responseDate": ""
-    },
-    {
       "reviewId": "124391265577734538",
       "rating": 5,
       "status": "Published",
@@ -22312,21 +22267,6 @@
       "reviewUrl": "https://www.rateabiz.com/reviews/dental-center-pediatrics-plymouth-ma/28d875335bea8b7c86023286391f50e2/summary",
       "response": "Thank you for the sweet words!",
       "responseDate": "Jan 26, 2018 07:00 PM"
-    },
-    {
-      "reviewId": "124245585577572796",
-      "rating": 5,
-      "status": "Published",
-      "comment": "It could not have been better!\nMy kids LOVE going to Dental Center Pediatrics and Dr. Maria. Everyone is so friendly that my usually shy kids warm up by the time we are walking back to be seen. They don't want to leave by the end. I always recommend Dental Center Pediatrics to anyone looking and will continue to do so!!",
-      "reviewer": {
-        "name": "John Maroudas",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/reviewer/96d77d08ce4e49368bc06c0ec1c1352c.png"
-      },
-      "reviewDate": "Nov 19, 2014",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/reviews/data=!4m5!14m4!1m3!1m2!1s102811148062383697126!2s0x89e4bb796d95b6bd%3A0xcfe3333f40d6c670",
-      "response": "",
-      "responseDate": ""
     },
     {
       "reviewId": "124391232577734546",
