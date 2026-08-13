@@ -44,7 +44,8 @@
     width:400px;height:600px;max-width:calc(100vw - 24px);max-height:calc(100vh - 110px);
     background:#fff;border-radius:14px;overflow:hidden;
     box-shadow:0 10px 40px rgba(0,0,0,.25);
-    display:none;flex-direction:column;
+    display:none;
+    flex-direction:column;
     pointer-events:auto;
     z-index:10000;
   }
@@ -60,7 +61,7 @@
     transition:background .15s;
   }
   #closeBtn:hover{background:rgba(255,255,255,.15);}
-  #overlay iframe{flex:1;width:100%;border:none;}
+  #overlay iframe{flex:1;width:100%;border:none;display:block;}
 </style>
 </head>
 <body>
@@ -74,12 +75,26 @@
   <div id="overlayHeader">
     <button id="closeBtn" onclick="toggleChat()" aria-label="Close chat">&times;</button>
   </div>
-  <iframe src="https://dcp-inbox.consulting4real.com/webchat" title="Chat with Dental Center Pediatrics"></iframe>
+  <iframe id="chatFrame" data-src="https://dcp-inbox.consulting4real.com/webchat" title="Chat with Dental Center Pediatrics"></iframe>
 </div>
 
 <script>
+var overlay   = document.getElementById('overlay');
+var chatFrame = document.getElementById('chatFrame');
+
+// Belt-and-suspenders: force the hidden state in JS too, in case of any
+// CSS load-order edge case, and don't load the chat iframe at all until
+// the panel is actually opened for the first time.
+overlay.classList.remove('open');
+overlay.style.display = 'none';
+
 function toggleChat() {
-  document.getElementById('overlay').classList.toggle('open');
+  var opening = !overlay.classList.contains('open');
+  overlay.classList.toggle('open');
+  overlay.style.display = opening ? 'flex' : 'none';
+  if (opening && !chatFrame.src) {
+    chatFrame.src = chatFrame.getAttribute('data-src');
+  }
 }
 </script>
 
