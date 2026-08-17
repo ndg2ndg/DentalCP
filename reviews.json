@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-17T12:10:49.749Z",
-  "displayCount": 676,
-  "totalCount": 801,
+  "lastUpdated": "2026-08-17T18:11:06.896Z",
+  "displayCount": 677,
+  "totalCount": 802,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 676,
+    "reviewCount": 677,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 509
+        "reviewCount": 510
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 637
+        "reviewCount": 638
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 509
+        "reviewCount": 510
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 644
+        "reviewCount": 645
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "5780282495481200388",
+      "rating": 5,
+      "status": "Published",
+      "comment": "",
+      "reviewer": {
+        "name": "Nadra Chaudhry",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/481200388/3884b2ba3799427eab7db8979c4f5fe0.png"
+      },
+      "reviewDate": "Aug 17, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "We really appreciate Nadra  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
+      "responseDate": "Aug 17, 2026 11:35 AM"
+    },
     {
       "reviewId": "5730745775476255892",
       "rating": 5,
@@ -10448,6 +10463,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "5780282495481200388",
+      "rating": 5,
+      "status": "Published",
+      "comment": "",
+      "reviewer": {
+        "name": "Nadra Chaudhry",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/481200388/3884b2ba3799427eab7db8979c4f5fe0.png"
+      },
+      "reviewDate": "Aug 17, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "We really appreciate Nadra  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
+      "responseDate": "Aug 17, 2026 11:35 AM"
+    },
     {
       "reviewId": "5730745775476255892",
       "rating": 5,
