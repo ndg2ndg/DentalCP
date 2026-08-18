@@ -41,7 +41,9 @@
 
   #overlay{
     position:fixed;bottom:88px;right:18px;
-    width:400px;height:600px;max-width:calc(100vw - 24px);max-height:calc(100vh - 110px);
+    width:400px;height:600px;
+    max-width:min(calc(100vw - 24px), 100vw);max-height:calc(100vh - 110px);
+    overflow-x:hidden;
     background:#fff;border-radius:14px;overflow:hidden;
     box-shadow:0 10px 40px rgba(0,0,0,.25);
     display:none;
@@ -61,7 +63,7 @@
     transition:background .15s;
   }
   #closeBtn:hover{background:rgba(255,255,255,.15);}
-  #overlay iframe{flex:1;width:100%;border:none;display:block;}
+  #overlay iframe{flex:1;width:100%;max-width:100%;border:none;display:block;}
 </style>
 </head>
 <body>
