@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-08-17T18:11:06.896Z",
+  "lastUpdated": "2026-08-18T00:17:47.308Z",
   "displayCount": 677,
-  "totalCount": 802,
+  "totalCount": 803,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -208,13 +208,13 @@
         "sourceName": "Direct Feedback",
         "sourceAlias": "direct_feedback",
         "avgRating": 0,
-        "reviewCount": 76
+        "reviewCount": 77
       }
     ],
     "ratings": [
       {
         "rating": 0,
-        "reviewCount": 90
+        "reviewCount": 91
       },
       {
         "rating": 1,
@@ -320,6 +320,21 @@
       "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
       "response": "We really appreciate Nadra  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
       "responseDate": "Aug 17, 2026 11:35 AM"
+    },
+    {
+      "reviewId": "5421315345445437336",
+      "rating": 5,
+      "status": "Published",
+      "comment": "My son had great experience, highly recommend. Tooth extraction and filling- no crying",
+      "reviewer": {
+        "name": "Meida Mažylytė",
+        "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjWGd2gH2iKtNdrwNrEucm6GwMICiMZJyDh94YmVpSfqWsp6pV4P=s120-c-rp-mo-ba12-br100"
+      },
+      "reviewDate": "Aug 17, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Meida. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Aug 17, 2026 07:20 PM"
     },
     {
       "reviewId": "5730745775476255892",
@@ -1505,21 +1520,6 @@
       "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
       "response": "Thank you so much for your kind words, Shelby. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
       "responseDate": "Apr 08, 2025 05:37 PM"
-    },
-    {
-      "reviewId": "5421315345445437336",
-      "rating": 5,
-      "status": "Published",
-      "comment": "My son had great experience, highly recommend. Tooth extraction and filling- no crying",
-      "reviewer": {
-        "name": "Meida Mažylytė",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/445437336/5d758f0e2a1d4b29953f2b3a20314e0b.png"
-      },
-      "reviewDate": "Apr 07, 2025",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "We deeply appreciate your kind words, Meida. Your feedback is valuable to us, and we are grateful for your time in sharing your experience.\n\nSincerely,\n\nDental Center Pediatrics",
-      "responseDate": "Apr 30, 2025 11:47 AM"
     },
     {
       "reviewId": "4210440745324844956",
@@ -10464,6 +10464,21 @@
   ],
   "allReviews": [
     {
+      "reviewId": "578133179014412817",
+      "rating": 0,
+      "status": "Parked",
+      "comment": "I called for a appointment because he was a patient had no issues making it we get there check  in they take him back take X-rays and sits in the chair they look in his mouth then all of a sudden she says I can’t help you your a adult 19 but has a social emotional disorder I figure we would have no issues he still sees his pediatrician, shouldn’t you have known that he was over 18 in your computer system I had also been getting text messages from you recently saying to call and make a appointment so a little frustrated",
+      "reviewer": {
+        "name": "Nathan Rubera",
+        "thumbnail": "https://d3cnqzq0ivprch.cloudfront.net/prod/css/images/default-profile.png"
+      },
+      "reviewDate": "Aug 17, 2026",
+      "sourceName": "Direct Feedback",
+      "reviewUrl": "https://birdeye.com/dental-center-pediatrics-151691706474903",
+      "response": "",
+      "responseDate": ""
+    },
+    {
       "reviewId": "5780282495481200388",
       "rating": 5,
       "status": "Published",
@@ -10477,6 +10492,21 @@
       "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
       "response": "We really appreciate Nadra  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
       "responseDate": "Aug 17, 2026 11:35 AM"
+    },
+    {
+      "reviewId": "5421315345445437336",
+      "rating": 5,
+      "status": "Published",
+      "comment": "My son had great experience, highly recommend. Tooth extraction and filling- no crying",
+      "reviewer": {
+        "name": "Meida Mažylytė",
+        "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjWGd2gH2iKtNdrwNrEucm6GwMICiMZJyDh94YmVpSfqWsp6pV4P=s120-c-rp-mo-ba12-br100"
+      },
+      "reviewDate": "Aug 17, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Meida. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Aug 17, 2026 07:20 PM"
     },
     {
       "reviewId": "5730745775476255892",
@@ -11857,21 +11887,6 @@
       "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
       "response": "Thank you so much for your kind words, Shelby. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
       "responseDate": "Apr 08, 2025 05:37 PM"
-    },
-    {
-      "reviewId": "5421315345445437336",
-      "rating": 5,
-      "status": "Published",
-      "comment": "My son had great experience, highly recommend. Tooth extraction and filling- no crying",
-      "reviewer": {
-        "name": "Meida Mažylytė",
-        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/445437336/5d758f0e2a1d4b29953f2b3a20314e0b.png"
-      },
-      "reviewDate": "Apr 07, 2025",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "We deeply appreciate your kind words, Meida. Your feedback is valuable to us, and we are grateful for your time in sharing your experience.\n\nSincerely,\n\nDental Center Pediatrics",
-      "responseDate": "Apr 30, 2025 11:47 AM"
     },
     {
       "reviewId": "4697492941373359794",
