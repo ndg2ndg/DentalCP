@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-09-21T00:45:42.590Z",
-  "displayCount": 678,
-  "totalCount": 804,
+  "lastUpdated": "2026-09-21T06:35:24.038Z",
+  "displayCount": 677,
+  "totalCount": 803,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 678,
+    "reviewCount": 677,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 511
+        "reviewCount": 510
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 639
+        "reviewCount": 638
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 511
+        "reviewCount": 510
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 646
+        "reviewCount": 645
       }
     ]
   },
@@ -2185,7 +2185,7 @@
       "reviewId": "4186518575322465617",
       "rating": 5,
       "status": "Published",
-      "comment": "This is the second time we took our son to Dental Center Pediatrics and we are happy with their treatment and service. They were highly recommended by my kid��s dentist as he had a severe condition and they are doing the best they can in such a short period of time! The staff, the nurse and the doctors are very polite and super friendly!!!",
+      "comment": "This is the second time we took our son to Dental Center Pediatrics and we are happy with their treatment and service. They were highly recommended by my kid’s dentist as he had a severe condition and they are doing the best they can in such a short period of time! The staff, the nurse and the doctors are very polite and super friendly!!!",
       "reviewer": {
         "name": "Tigran Gichunts",
         "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocJQed02VhtBxLWzDIVQ8Utlih7aZjlYTTyVS7Y3JfzbN3WWPA=s120-c-rp-mo-ba2-br100"
@@ -3787,21 +3787,6 @@
       "responseDate": ""
     },
     {
-      "reviewId": "3312223285239083875",
-      "rating": 5,
-      "status": "Published",
-      "comment": "Got us in for an emergency visit immediately - Dr. Maria was so helpful and calming to work with! Very kind and professional staff. So thankful and will be using them as my kids dentist long term after this!",
-      "reviewer": {
-        "name": "Theresa Barnett",
-        "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocLFRqXM44QTFKUP0UjQfyf-W-ZZJNfZj8jkcaUWCqnm__K5_g=s120-c-rp-mo-br100"
-      },
-      "reviewDate": "Feb 15, 2023",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "Thank you so much for your kind words, Theresa. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
-      "responseDate": "Feb 15, 2023 02:58 PM"
-    },
-    {
       "reviewId": "3266715635236575956",
       "rating": 5,
       "status": "Published",
@@ -4857,8 +4842,8 @@
       "status": "Published",
       "comment": "I could not be happier with our experiences with this office. From the desk staff, hygienists to the dentist's, every single person has been on point, helpful and courteous. They make my son feel good about going to the dentist. Can't overstate what an accomplishment that is. Thank you.\n\nUPDATE: Nothing new. The place is still Great!",
       "reviewer": {
-        "name": "Last First",
-        "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocJPh-V1AvecU74Idc66XVYBIDiZLP2O-qQKF06vk1eDCCJKmg=s120-c-rp-mo-ba4-br100"
+        "name": "Justin Wilder",
+        "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjUfNgSbFEZzhvErAUG5jgbAF9l1iycP6-D51HdHhiSYFXUpKCNwfg=s120-c-rp-mo-ba12-br100"
       },
       "reviewDate": "Dec 13, 2021",
       "sourceName": "Google",
@@ -14769,21 +14754,6 @@
       "responseDate": ""
     },
     {
-      "reviewId": "3312223285239083875",
-      "rating": 5,
-      "status": "Published",
-      "comment": "Got us in for an emergency visit immediately - Dr. Maria was so helpful and calming to work with! Very kind and professional staff. So thankful and will be using them as my kids dentist long term after this!",
-      "reviewer": {
-        "name": "Theresa Barnett",
-        "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocLFRqXM44QTFKUP0UjQfyf-W-ZZJNfZj8jkcaUWCqnm__K5_g=s120-c-rp-mo-br100"
-      },
-      "reviewDate": "Feb 15, 2023",
-      "sourceName": "Google",
-      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
-      "response": "Thank you so much for your kind words, Theresa. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
-      "responseDate": "Feb 15, 2023 02:58 PM"
-    },
-    {
       "reviewId": "3266715635236575956",
       "rating": 5,
       "status": "Published",
@@ -16214,8 +16184,8 @@
       "status": "Published",
       "comment": "I could not be happier with our experiences with this office. From the desk staff, hygienists to the dentist's, every single person has been on point, helpful and courteous. They make my son feel good about going to the dentist. Can't overstate what an accomplishment that is. Thank you.\n\nUPDATE: Nothing new. The place is still Great!",
       "reviewer": {
-        "name": "Last First",
-        "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocJPh-V1AvecU74Idc66XVYBIDiZLP2O-qQKF06vk1eDCCJKmg=s120-c-rp-mo-ba4-br100"
+        "name": "Justin Wilder",
+        "thumbnail": "https://lh3.googleusercontent.com/a-/ALV-UjUfNgSbFEZzhvErAUG5jgbAF9l1iycP6-D51HdHhiSYFXUpKCNwfg=s120-c-rp-mo-ba12-br100"
       },
       "reviewDate": "Dec 13, 2021",
       "sourceName": "Google",
