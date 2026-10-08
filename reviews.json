@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-08T00:46:10.997Z",
-  "displayCount": 679,
-  "totalCount": 805,
+  "lastUpdated": "2026-10-08T06:29:45.553Z",
+  "displayCount": 680,
+  "totalCount": 806,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 679,
+    "reviewCount": 680,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 512
+        "reviewCount": 513
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 640
+        "reviewCount": 641
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 512
+        "reviewCount": 513
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 647
+        "reviewCount": 648
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "5905333755493663730",
+      "rating": 5,
+      "status": "Published",
+      "comment": "",
+      "reviewer": {
+        "name": "Noelle Poremski",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/493663730/b547d20fcbaf4b7484f3a14b67ea880f.png"
+      },
+      "reviewDate": "Oct 07, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "We really appreciate Noelle  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
+      "responseDate": "Oct 07, 2026 09:50 PM"
+    },
     {
       "reviewId": "5879240715491059213",
       "rating": 5,
@@ -10493,6 +10508,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "5905333755493663730",
+      "rating": 5,
+      "status": "Published",
+      "comment": "",
+      "reviewer": {
+        "name": "Noelle Poremski",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/493663730/b547d20fcbaf4b7484f3a14b67ea880f.png"
+      },
+      "reviewDate": "Oct 07, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "We really appreciate Noelle  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
+      "responseDate": "Oct 07, 2026 09:50 PM"
+    },
     {
       "reviewId": "5879240715491059213",
       "rating": 5,
