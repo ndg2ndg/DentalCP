@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-10-15T18:18:47.772Z",
-  "displayCount": 680,
-  "totalCount": 806,
+  "lastUpdated": "2026-10-16T00:38:20.572Z",
+  "displayCount": 681,
+  "totalCount": 807,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 680,
+    "reviewCount": 681,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 513
+        "reviewCount": 514
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 641
+        "reviewCount": 642
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 513
+        "reviewCount": 514
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 648
+        "reviewCount": 649
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "5945250045497649301",
+      "rating": 5,
+      "status": "Published",
+      "comment": "",
+      "reviewer": {
+        "name": "Zoya Stamova",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/497649301/64a55eb6dc6e4dda91852d6cdb9b1a92.png"
+      },
+      "reviewDate": "Oct 14, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "We really appreciate Zoya  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
+      "responseDate": "Oct 15, 2026 03:19 PM"
+    },
     {
       "reviewId": "5905333755493663730",
       "rating": 5,
@@ -10508,6 +10523,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "5945250045497649301",
+      "rating": 5,
+      "status": "Published",
+      "comment": "",
+      "reviewer": {
+        "name": "Zoya Stamova",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/497649301/64a55eb6dc6e4dda91852d6cdb9b1a92.png"
+      },
+      "reviewDate": "Oct 14, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "We really appreciate Zoya  for taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics ",
+      "responseDate": "Oct 15, 2026 03:19 PM"
+    },
     {
       "reviewId": "5905333755493663730",
       "rating": 5,
