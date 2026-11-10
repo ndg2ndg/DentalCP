@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-09T15:38:54.519Z",
-  "displayCount": 682,
-  "totalCount": 808,
+  "lastUpdated": "2026-11-10T01:18:45.609Z",
+  "displayCount": 683,
+  "totalCount": 809,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 682,
+    "reviewCount": 683,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 515
+        "reviewCount": 516
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 643
+        "reviewCount": 644
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 515
+        "reviewCount": 516
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 650
+        "reviewCount": 651
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "6013242805504428929",
+      "rating": 5,
+      "status": "Published",
+      "comment": "Excelent",
+      "reviewer": {
+        "name": "Wagna Rodrigues",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/504428929/e873e85342454d4fb2ee0e14cd451437.png"
+      },
+      "reviewDate": "Nov 09, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Wagna. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Nov 09, 2026 12:40 PM"
+    },
     {
       "reviewId": "5952882855498410892",
       "rating": 5,
@@ -5757,7 +5772,7 @@
       "status": "Published",
       "comment": "",
       "reviewer": {
-        "name": "Γιώργος Δήμπας",
+        "name": "Γιώργος Δή��πας",
         "thumbnail": "https://lh3.googleusercontent.com/a/ACg8ocLAPZeBzv8MbGoBdeAEDO3MUiOWoND12eX1Yqwdg3XvNry59A=s120-c-rp-mo-br100"
       },
       "reviewDate": "Sep 10, 2020",
@@ -10538,6 +10553,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "6013242805504428929",
+      "rating": 5,
+      "status": "Published",
+      "comment": "Excelent",
+      "reviewer": {
+        "name": "Wagna Rodrigues",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/504428929/e873e85342454d4fb2ee0e14cd451437.png"
+      },
+      "reviewDate": "Nov 09, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Wagna. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Nov 09, 2026 12:40 PM"
+    },
     {
       "reviewId": "5952882855498410892",
       "rating": 5,
