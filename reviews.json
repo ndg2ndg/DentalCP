@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-11T05:23:47.574Z",
-  "displayCount": 683,
-  "totalCount": 809,
+  "lastUpdated": "2026-11-11T13:48:35.699Z",
+  "displayCount": 684,
+  "totalCount": 810,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 683,
+    "reviewCount": 684,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 516
+        "reviewCount": 517
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 644
+        "reviewCount": 645
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 516
+        "reviewCount": 517
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 651
+        "reviewCount": 652
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "6016602455504763306",
+      "rating": 5,
+      "status": "Published",
+      "comment": "I had a great experience today at the office the staff very friendly and patience with my son he is 3 years old Dr Maria was great . Thank you guys ☺️",
+      "reviewer": {
+        "name": "Taynara Braga",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/504763306/3739e81535e24315bdf8cc943b679328.png"
+      },
+      "reviewDate": "Nov 10, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Taynara. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Nov 11, 2026 04:11 AM"
+    },
     {
       "reviewId": "6013242805504428929",
       "rating": 5,
@@ -10553,6 +10568,21 @@
     }
   ],
   "allReviews": [
+    {
+      "reviewId": "6016602455504763306",
+      "rating": 5,
+      "status": "Published",
+      "comment": "I had a great experience today at the office the staff very friendly and patience with my son he is 3 years old Dr Maria was great . Thank you guys ☺️",
+      "reviewer": {
+        "name": "Taynara Braga",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/504763306/3739e81535e24315bdf8cc943b679328.png"
+      },
+      "reviewDate": "Nov 10, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Taynara. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Nov 11, 2026 04:11 AM"
+    },
     {
       "reviewId": "6013242805504428929",
       "rating": 5,
