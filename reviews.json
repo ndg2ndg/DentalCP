@@ -1,7 +1,7 @@
 {
-  "lastUpdated": "2026-11-17T01:44:07.982Z",
-  "displayCount": 686,
-  "totalCount": 812,
+  "lastUpdated": "2026-11-17T15:41:39.666Z",
+  "displayCount": 687,
+  "totalCount": 813,
   "business": {
     "name": "Dental Center Pediatrics",
     "phone": "(508) 830-1212",
@@ -89,7 +89,7 @@
       }
     ],
     "avgRating": 4.9,
-    "reviewCount": 686,
+    "reviewCount": 687,
     "social": {
       "googleUrl": "https://www.google.com/maps/place/Dental+Center+Pediatrics/@41.9526888,-70.7109409,17z/data=!3m1!4b1!4m5!3m4!1s0x0:0xcfe3333f40d6c670!8m2!3d41.9526888!4d-70.7087522",
       "facebookUrl": "https://www.facebook.com/DentalCenterPediatrics/",
@@ -105,7 +105,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 519
+        "reviewCount": 520
       },
       {
         "sourceName": "Wellness",
@@ -141,7 +141,7 @@
     "ratings": [
       {
         "rating": 5,
-        "reviewCount": 647
+        "reviewCount": 648
       },
       {
         "rating": 4,
@@ -172,7 +172,7 @@
         "sourceName": "Google",
         "sourceAlias": "google",
         "avgRating": 4.74,
-        "reviewCount": 519
+        "reviewCount": 520
       },
       {
         "sourceName": "Wellness",
@@ -234,7 +234,7 @@
       },
       {
         "rating": 5,
-        "reviewCount": 654
+        "reviewCount": 655
       }
     ]
   },
@@ -306,6 +306,21 @@
     }
   ],
   "reviews": [
+    {
+      "reviewId": "6029581085506056430",
+      "rating": 5,
+      "status": "Published",
+      "comment": "Always a great experience for my kids!",
+      "reviewer": {
+        "name": "Jamie Ritchie",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/506056430/56d09f2903374ab2b1e60e59f812ce9b.png"
+      },
+      "reviewDate": "Nov 16, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Jamie. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Nov 16, 2026 09:29 PM"
+    },
     {
       "reviewId": "6029433175506041697",
       "rating": 5,
@@ -970,7 +985,7 @@
       "reviewId": "5291554195432499870",
       "rating": 5,
       "status": "Published",
-      "comment": "The best place ⭐️⭐️⭐️⭐️⭐️🙏🏽",
+      "comment": "The best place ⭐️⭐️⭐��⭐️⭐️🙏🏽",
       "reviewer": {
         "name": "Jorge Ramos",
         "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/432499870/54ec49c73e2c4974b45fce714b691ddb.png"
@@ -10599,6 +10614,21 @@
   ],
   "allReviews": [
     {
+      "reviewId": "6029581085506056430",
+      "rating": 5,
+      "status": "Published",
+      "comment": "Always a great experience for my kids!",
+      "reviewer": {
+        "name": "Jamie Ritchie",
+        "thumbnail": "https://ddjkm7nmu27lx.cloudfront.net/506056430/56d09f2903374ab2b1e60e59f812ce9b.png"
+      },
+      "reviewDate": "Nov 16, 2026",
+      "sourceName": "Google",
+      "reviewUrl": "https://www.google.com/maps/place/Dental%2BCenter%2BPediatrics/data=!4m2!3m1!1s0x89e4bb796d95b6bd:0xcfe3333f40d6c670?cid=14979873132328175216&place_id=ChIJvbaVbXm75IkRcMbWQD8z488",
+      "response": "Thank you so much for your kind words, Jamie. We really appreciate you taking the time out to share your experience with us.\n\nCheers,\n\nDental Center Pediatrics",
+      "responseDate": "Nov 16, 2026 09:29 PM"
+    },
+    {
       "reviewId": "6029433175506041697",
       "rating": 5,
       "status": "Published",
@@ -19362,7 +19392,7 @@
       "reviewId": "146116021592837465",
       "rating": 5,
       "status": "Published",
-      "comment": "We had a wonderful experience at Dental Center Pediatrics! All staff members were friendly & helped greatly to put my son at ease. After his first appointment there he said “I love my new dentist! Can I go back tomorrow?”",
+      "comment": "We had a wonderful experience at Dental Center Pediatrics! All staff members were friendly & helped greatly to put my son at ease. After his first appointment there he said “I love my new dentist! Can I go back tomorrow?���",
       "reviewer": {
         "name": "Chiana Tracy",
         "thumbnail": "https://d3cnqzq0ivprch.cloudfront.net/prod/css/images/default-profile.png"
